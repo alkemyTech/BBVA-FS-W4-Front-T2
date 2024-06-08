@@ -1,11 +1,13 @@
 import './App.css'
 import Page from "./components/UI/page";
+import Login from './login'
 
 function App() {
 
+
   return (
     <Page>
-      <h1>App</h1>
+    <Login/>
     </Page>
   )
 }
