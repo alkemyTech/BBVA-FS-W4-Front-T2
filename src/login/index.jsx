@@ -1,74 +1,202 @@
 import * as React from 'react';
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import openEyesLogo from '../assets/logo.svg'; // Gatito con los ojos abiertos
-import closedEyesLogo from '../assets/logocloseeyes.svg'; // Gatito con los ojos cerrados
+import { useState, useEffect } from 'react';
+import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert, CircularProgress } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import fondoLogin from '../assets/fondoLogin.svg';
+import fondoLoginClosedEyes from '../assets/fondoLoginClosedEyes.svg';
+import LoadingCat from '../assets/components/loadingCat';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  const handleLogin = (event) => {
+  useEffect(() => {
+    const img1 = new Image();
+    const img2 = new Image();
+    let loadedCount = 0;
+    const handleImageLoad = () => {
+      loadedCount += 1;
+      if (loadedCount === 2) {
+        setImagesLoaded(true);
+      }
+    };
+    img1.src = fondoLogin;
+    img2.src = fondoLoginClosedEyes;
+    img1.onload = handleImageLoad;
+    img2.onload = handleImageLoad;
+  }, []);
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    if (username === '' || password === '') {
+    if (userName === '' || password === '') {
       setError(true);
-    } else {
-      setError(false);
-      console.log('Username:', username);
-      console.log('Password:', password);
+      setErrorMessage('El correo electrónico y la contraseña son necesarios');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userName, password })
+      });
+
+      if (response.ok) {
+        const token = response.headers.get('AUTHORIZATION');
+        localStorage.setItem('token', token);
+        console.log('Inicio de sesión exitoso');
+        setError(false);
+      } else {
+        setError(true);
+        setErrorMessage('Usuario o contraseña incorrectos');
+        console.error('Error en el inicio de sesión');
+      }
+    } catch (error) {
+      setError(true);
+      setErrorMessage('Error de red: no se pudo conectar con el servidor');
+      console.error('Error de red:', error);
     }
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  if (!imagesLoaded) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          backgroundColor: '#182346',
+        }}
+      >
+        <LoadingCat/>
+      </Box>
+    );
+  }
+
   return (
     <Box
-      component="form"
       sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
+        backgroundColor: '#182346',
+        padding: 2,
+        width: '100%',
       }}
-      noValidate
-      autoComplete="off"
-      onSubmit={handleLogin}
     >
-      <img
-        src={isPasswordFocused ? closedEyesLogo : openEyesLogo}
-        alt="Logo"
-        style={{ width: '200px', marginBottom: '20px' }}
-      />
-      <Typography variant="h4" component="h1" gutterBottom>
-        Login
-      </Typography>
-      <TextField
-        id="username"
-        label="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        error={error && username === ''}
-        helperText={error && username === '' ? 'Username is required.' : ''}
-      />
-      <TextField
-        id="password"
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        onFocus={() => setIsPasswordFocused(true)}
-        onBlur={() => setIsPasswordFocused(false)}
-        error={error && password === ''}
-        helperText={error && password === '' ? 'Password is required.' : ''}
-      />
-      <Button variant="contained" type="submit" sx={{ mt: 2 }}>
-        Login
-      </Button>
+      <Paper
+        elevation={3}
+        sx={{
+          width: '1170px',
+          display: 'flex',
+          background: '#fff',
+          margin: 'auto',
+          boxShadow: '0 14px 60px rgba(0, 0, 0, 0.06)',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          position: 'relative',
+          zIndex: 1,
+          flexDirection: 'row',
+          alignItems: 'stretch',
+          backgroundImage: `url(${showPassword ? fondoLoginClosedEyes : fondoLogin})`,
+          backgroundSize: 'cover',
+          minHeight: '700px',
+        }}
+      >
+        <Grid container sx={{ flex: 1 }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 3 }}>
+        
+            <Typography variant="h4" component="h1" gutterBottom>
+              Iniciar Sesión
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Inicia sesión en tu cuenta
+            </Typography>
+            {error && <Alert severity="error">{errorMessage}</Alert>}
+            <TextField
+              id="username"
+              label="Correo Electrónico"
+              value={userName}
+              onChange={(e) => setUsername(e.target.value)}
+              error={error && userName === ''}
+              helperText={error && userName === '' ? 'El correo electrónico es necesario' : ''}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              id="password"
+              label="Contraseña"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={error && password === ''}
+              helperText={error && password === '' ? 'La contraseña es necesaria' : ''}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{
+                        padding: 0,
+                        '&:hover': { background: 'none' },
+                        '&:focus': { outline: 'none' },
+                        '& .MuiTouchRipple-root': { display: 'none' },
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mt: 2,
+                mb: 2,
+                width: '100%',
+              }}
+            >
+              <FormControlLabel
+                control={<Checkbox name="rememberMe" />}
+                label="Recuérdame"
+              />
+              <Link href="/" underline="hover">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </Box>
+            <Button variant="contained" type="submit" fullWidth onClick={handleLogin}>
+              Iniciar Sesión
+            </Button>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              ¿Aún no tienes cuenta? <Link href="/signup" underline="hover">Regístrate aquí</Link>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+        
+          </Grid>
+        </Grid>
+      </Paper>
     </Box>
   );
 }
