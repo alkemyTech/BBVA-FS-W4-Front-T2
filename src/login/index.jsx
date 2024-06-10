@@ -1,19 +1,22 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert, CircularProgress } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import fondoLogin from '../assets/fondoLogin.svg';
 import fondoLoginClosedEyes from '../assets/fondoLoginClosedEyes.svg';
 import LoadingCat from '../assets/components/loadingCat';
+import { setUser } from '../Redux/slice/userSlice';
 
 export default function Login() {
-  const [userName, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const user = useSelector((state) => state.user);
+  const { userName, password } = user;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const img1 = new Image();
@@ -50,6 +53,9 @@ export default function Login() {
 
       if (response.ok) {
         const token = response.headers.get('AUTHORIZATION');
+        const user = await response.json(); 
+
+        dispatch(setUser({ userName, password, token, ...user }));
         localStorage.setItem('token', token);
         console.log('Inicio de sesión exitoso');
         setError(false);
@@ -63,6 +69,14 @@ export default function Login() {
       setErrorMessage('Error de red: no se pudo conectar con el servidor');
       console.error('Error de red:', error);
     }
+  };
+
+  const handleUsernameChange = (e) => {
+    dispatch(setUser({ ...user, userName: e.target.value }));
+  };
+
+  const handlePasswordChange = (e) => {
+    dispatch(setUser({ ...user, password: e.target.value }));
   };
 
   const handleClickShowPassword = () => {
@@ -131,7 +145,7 @@ export default function Login() {
               id="username"
               label="Correo Electrónico"
               value={userName}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
               error={error && userName === ''}
               helperText={error && userName === '' ? 'El correo electrónico es necesario' : ''}
               fullWidth
@@ -142,7 +156,7 @@ export default function Login() {
               label="Contraseña"
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               error={error && password === ''}
               helperText={error && password === '' ? 'La contraseña es necesaria' : ''}
               fullWidth
