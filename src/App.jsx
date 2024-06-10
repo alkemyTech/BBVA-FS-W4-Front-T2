@@ -1,13 +1,14 @@
 
 import './App.css'
-import PruebaRedux from './components/pruebaRedux'
+import Page from "./components/UI/page";
+import Login from './login'
 
 function App() {
 
   return (
-    <>
-      <PruebaRedux/>
-    </>
+    <Page>
+    <Login/>
+    </Page>
   )
 }
 
