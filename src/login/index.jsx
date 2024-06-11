@@ -1,40 +1,33 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert, CircularProgress } from '@mui/material';
+import { useState } from 'react';
+import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import fondoLogin from '../assets/fondoLogin.svg';
-import fondoLoginClosedEyes from '../assets/fondoLoginClosedEyes.svg';
+import fondoLogin from '../assets/fondoLogin4.svg';
+import gatoOjosCerrados from '../assets/gatoOjosCerrados.svg';
 import LoadingCat from '../assets/components/loadingCat';
+import { setUser } from '../Redux/slice/userSlice';
+import { useImageLoader } from '../utils/useImageLoader';
+import { useSelector, useDispatch } from 'react-redux';
 
 export default function Login() {
-  const [userName, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
+  const user = useSelector((state) => state.user);
+  const { userName, password } = user;
+  const [error, setError] = useState({ userName: false, password: false });
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const img1 = new Image();
-    const img2 = new Image();
-    let loadedCount = 0;
-    const handleImageLoad = () => {
-      loadedCount += 1;
-      if (loadedCount === 2) {
-        setImagesLoaded(true);
-      }
-    };
-    img1.src = fondoLogin;
-    img2.src = fondoLoginClosedEyes;
-    img1.onload = handleImageLoad;
-    img2.onload = handleImageLoad;
-  }, []);
+  
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (userName === '' || password === '') {
-      setError(true);
+    if (!userName || !password) {
+      setError({
+        userName: !userName,
+        password: !password,
+      });
       setErrorMessage('El correo electrónico y la contraseña son necesarios');
       return;
     }
@@ -43,26 +36,37 @@ export default function Login() {
       const response = await fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userName, password })
+        body: JSON.stringify({ userName, password }),
       });
 
       if (response.ok) {
         const token = response.headers.get('AUTHORIZATION');
+        const user = await response.json(); 
+
+        dispatch(setUser({ userName, password, token, ...user }));
         localStorage.setItem('token', token);
         console.log('Inicio de sesión exitoso');
-        setError(false);
+        setError({ userName: false, password: false });
       } else {
-        setError(true);
+        setError({ userName: true, password: true });
         setErrorMessage('Usuario o contraseña incorrectos');
         console.error('Error en el inicio de sesión');
       }
     } catch (error) {
-      setError(true);
+      setError({ userName: true, password: true });
       setErrorMessage('Error de red: no se pudo conectar con el servidor');
       console.error('Error de red:', error);
     }
+  };
+
+  const handleUsernameChange = (e) => {
+    dispatch(setUser({ ...user, userName: e.target.value }));
+  };
+
+  const handlePasswordChange = (e) => {
+    dispatch(setUser({ ...user, password: e.target.value }));
   };
 
   const handleClickShowPassword = () => {
@@ -80,7 +84,7 @@ export default function Login() {
           backgroundColor: '#182346',
         }}
       >
-        <LoadingCat/>
+        <LoadingCat />
       </Box>
     );
   }
@@ -112,28 +116,24 @@ export default function Login() {
           zIndex: 1,
           flexDirection: 'row',
           alignItems: 'stretch',
-          backgroundImage: `url(${showPassword ? fondoLoginClosedEyes : fondoLogin})`,
+          backgroundImage: `url(${showPassword ? gatoOjosCerrados : fondoLogin})`,
           backgroundSize: 'cover',
           minHeight: '700px',
         }}
       >
         <Grid container sx={{ flex: 1 }}>
           <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 3 }}>
-        
             <Typography variant="h4" component="h1" gutterBottom>
               Iniciar Sesión
             </Typography>
-            <Typography variant="body1" gutterBottom>
-              Inicia sesión en tu cuenta
-            </Typography>
-            {error && <Alert severity="error">{errorMessage}</Alert>}
+            {error.userName || error.password ? <Alert severity="error">{errorMessage}</Alert> : null}
             <TextField
               id="username"
               label="Correo Electrónico"
               value={userName}
-              onChange={(e) => setUsername(e.target.value)}
-              error={error && userName === ''}
-              helperText={error && userName === '' ? 'El correo electrónico es necesario' : ''}
+              onChange={handleUsernameChange}
+              error={error.userName}
+              helperText={error.userName ? 'El correo electrónico es necesario' : ''}
               fullWidth
               margin="normal"
             />
@@ -142,9 +142,9 @@ export default function Login() {
               label="Contraseña"
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={error && password === ''}
-              helperText={error && password === '' ? 'La contraseña es necesaria' : ''}
+              onChange={handlePasswordChange}
+              error={error.password}
+              helperText={error.password ? 'La contraseña es necesaria' : ''}
               fullWidth
               margin="normal"
               InputProps={{
@@ -189,12 +189,10 @@ export default function Login() {
               Iniciar Sesión
             </Button>
             <Typography variant="body2" sx={{ mt: 2 }}>
-              ¿Aún no tienes cuenta? <Link href="/signup" underline="hover">Regístrate aquí</Link>
+              ¿Aún no tienes cuenta? <Link href="/registro" underline="hover">Regístrate aquí</Link>
             </Typography>
           </Grid>
-          <Grid item xs={12} md={6}>
-        
-          </Grid>
+          <Grid item xs={12} md={6} />
         </Grid>
       </Paper>
     </Box>

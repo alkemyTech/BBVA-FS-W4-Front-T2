@@ -1,10 +1,12 @@
-import "./App.css";
+
+import './App.css'
 import { Route, Routes } from "react-router-dom";
 import Page from "./components/UI/page";
 import Login from "./login";
 import PageNotFound from "./components/UI/page/PageNotFound";
-
+import Registro from './singUp';
 function App() {
+
   return (
       <Page>
         <Routes>
