@@ -16,7 +16,7 @@ import logo from '/src/assets/logo.svg';
 const pages = ['Transferir', 'Depositar', 'Mis Transacciones', 'Inversiones', 'Balance'];
 const settings = ['Mi Perfil', 'Datos de cuenta', 'Cerrar Sesion'];
 
-function ResponsiveAppBar() {
+function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -178,4 +178,4 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
+export default Header;
