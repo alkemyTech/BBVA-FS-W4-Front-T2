@@ -3,6 +3,8 @@ import Page from "./components/UI/page";
 import Header from "./components/UI/Header";
 import Login from './login'
 import ResponsiveAppBar from './components/UI/Header';
+import Footer from './components/UI/Footer';
+import Pie from './components/UI/Footer';
 
 function App() {
 
@@ -12,6 +14,7 @@ function App() {
 
     <Login>
     <ResponsiveAppBar/>
+    <Pie/>
     </Login>
     </Page>
   )

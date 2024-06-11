@@ -1,6 +1,6 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 2.5;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -54,9 +54,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-prueba {
-  background-color: #ffffff;
+.prueba {
+  margin: 0;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+  color: inherit;
 }
+
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -69,4 +76,5 @@ prueba {
   button {
     background-color: #f9f9f9;
   }
+
 }
