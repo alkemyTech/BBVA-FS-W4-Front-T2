@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Grid, Alert, CircularProgress } from '@mui/material';
+import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Grid, Alert } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import fondoRegistro from '../assets/fondoLogin4.svg'; // Imagen de fondo para el registro
-import fondoRegistroClosedEyes from '../assets/gatoOjosCerrados.svg'; // Imagen alternativa de fondo para el registro
+import fondoRegistro from '../assets/fondoLogin4.svg';
+import fondoRegistroClosedEyes from '../assets/gatoOjosCerrados.svg';
 import LoadingCat from '../assets/components/loadingCat';
 
 export default function Registro() {
@@ -55,7 +55,7 @@ export default function Registro() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userName,password, firstName, lastName, birthDate  })
+        body: JSON.stringify({ userName, password, firstName, lastName, birthDate })
       });
 
       if (response.ok) {
@@ -88,7 +88,7 @@ export default function Registro() {
           backgroundColor: '#182346',
         }}
       >
-        <LoadingCat/>
+        <LoadingCat />
       </Box>
     );
   }
@@ -127,7 +127,6 @@ export default function Registro() {
       >
         <Grid container sx={{ flex: 1 }}>
           <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 3 }}>
-        
             <Typography variant="h4" component="h1" gutterBottom>
               Registro
             </Typography>
@@ -141,7 +140,7 @@ export default function Registro() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               error={error && firstName === ''}
-              helperText={error            && firstName === '' ? 'El nombre es necesario' : ''}
+              helperText={error && firstName === '' ? 'El nombre es necesario' : ''}
               fullWidth
               margin="normal"
             />
@@ -241,9 +240,7 @@ export default function Registro() {
               Registrarse
             </Button>
           </Grid>
-          <Grid item xs={12} md={6}>
-        
-          </Grid>
+          <Grid item xs={12} md={6}></Grid>
         </Grid>
       </Paper>
     </Box>
