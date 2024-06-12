@@ -1,17 +1,10 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import logo from '/src/assets/logo.svg';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import { useNavigate, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import logo from "../../../../../../../../../../../../../../../../logo.svg";
+import { Logout } from './Logout';
 
 const pages = ['Transferir', 'Depositar', 'Mis Transacciones', 'Inversiones', 'Balance'];
 const settings = ['Mi Perfil', 'Datos de cuenta', 'Cerrar Sesion'];
@@ -19,10 +12,15 @@ const settings = ['Mi Perfil', 'Datos de cuenta', 'Cerrar Sesion'];
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [logout, setLogout] = React.useState(false);
+  const navigate = useNavigate();
+  const userName = useSelector((state) => state.user.userName);
+  console.log("userName:", userName); // Verifica aquí el nombre de usuario
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -35,47 +33,32 @@ function Header() {
     setAnchorElUser(null);
   };
 
+  const handleClickLogout = () => {
+    setLogout(true);
+  };
+
   return (
-
-    <AppBar /* position="static" */ sx={{ backgroundColor: '#182346' }}>
-      <Container Width="100%"sx={{ flexGrow: 1}}>
+    <AppBar position="fixed" sx={{ backgroundColor: '#182346' }}>
+      <Container sx={{ flexGrow: 1 }}>
         <Toolbar disableGutters>
-
-          
-          <Typography 
-          className=''
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.rem',
-              color: 'inherit',
-              textDecoration: 'none',
-
-            }}
-          >
-            WildCat
-          </Typography>
-          <img
-            src={logo}
-            alt="logo"
-            style={{ display: 'flex', marginRight: '1rem', width: '50px', height: '50px' }}
-          />
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Button
+              key={pages}
+              onClick={() => navigate('/')}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              <img src={logo} alt="Logo" style={{ maxHeight: '50px' }} />
+            </Button>
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
-              size="large"
+              size="small"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
-
+              color="primary"
             >
               <MenuIcon />
             </IconButton>
@@ -94,60 +77,32 @@ function Header() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' }
-                ,
+                display: { xs: 'block', md: 'none' },
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}
-                
-                >
-
-                  <Typography textAlign="center"  >{page}</Typography>
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-
-
             </Menu>
           </Box>
-          
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-              
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' 
-                  
-                }}
-              >
-                {page}
-              </Button>
-            ))}
+
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            >
+              <img src={logo} alt="Logo" style={{ height: '40px' }} />
+            </Typography>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={userName} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -178,4 +133,5 @@ function Header() {
     </AppBar>
   );
 }
+
 export default Header;

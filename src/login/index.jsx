@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert} from '@mui/material';
+import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import fondoLogin from '../assets/fondoLogin4.svg';
@@ -12,14 +12,13 @@ import { useSelector, useDispatch } from 'react-redux';
 
 export default function Login() {
   const user = useSelector((state) => state.user);
-  const { userName, password } = user;
+  const [localUser, setLocalUser] = useState({ userName: '', password: '' });
+  const { userName, password } = localUser;
   const [error, setError] = useState({ userName: false, password: false });
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
   const dispatch = useDispatch();
-
-  
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -43,9 +42,9 @@ export default function Login() {
 
       if (response.ok) {
         const token = response.headers.get('AUTHORIZATION');
-        const user = await response.json(); 
+        const userData = await response.json(); 
 
-        dispatch(setUser({ userName, password, token, ...user }));
+        dispatch(setUser({ userName, password, token, ...userData }));
         localStorage.setItem('token', token);
         console.log('Inicio de sesión exitoso');
         setError({ userName: false, password: false });
@@ -62,11 +61,11 @@ export default function Login() {
   };
 
   const handleUsernameChange = (e) => {
-    dispatch(setUser({ ...user, userName: e.target.value }));
+    setLocalUser({ ...localUser, userName: e.target.value });
   };
 
   const handlePasswordChange = (e) => {
-    dispatch(setUser({ ...user, password: e.target.value }));
+    setLocalUser({ ...localUser, password: e.target.value });
   };
 
   const handleClickShowPassword = () => {
