@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -18,9 +17,9 @@ import {
 import { CheckSharp, ClearSharp } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import fondoRegistro from "../../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
-import fondoRegistroClosedEyes from "../../../assets/gatoOjosCerrados.svg"; // Asegúrate de que la ruta es correcta
-import LoadingCat from "../../../assets/components/loadingCat"; // Asegúrate de que la ruta es correcta
+import fondoRegistro from "../../../assets/fondoLogin.svg";
+import fondoRegistroClosedEyes from "../../../assets/gatoOjosCerrados.svg";
+import LoadingCat from "../../../assets/components/loadingCat";
 import { useImageLoader } from "../../../utils/useImageLoader";
 
 export default function Registro() {
@@ -30,12 +29,19 @@ export default function Registro() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState({firstName:false, lastName:false, birthDate:false ,userName:false, password:false, confirmPassword:false });
+  const [error, setError] = useState({
+    firstName: false,
+    lastName: false,
+    birthDate: false,
+    userName: false,
+    password: false,
+    confirmPassword: false,
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false); // Nuevo estado
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoRegistro, fondoRegistroClosedEyes]);
 
-  //ESTO SEGURO SE PUEDE PASAR A UN UTILS
   const requirements = useMemo(
     () => [
       { regex: /.{8,}/, text: "Al menos 8 caracteres" },
@@ -51,24 +57,26 @@ export default function Registro() {
     const allMet = requirements.every((req) => req.regex.test(password));
     setAllRequirementsMet(allMet);
   }, [password, requirements]);
-  ///////////////////////////////////////////////////////////////////
+
   const handleRegistro = async (event) => {
     event.preventDefault();
+    setIsSubmitted(true); // Indicar que se ha enviado el formulario
+
     if (
       !firstName ||
       !lastName ||
       !birthDate ||
       !userName ||
       !password ||
-      !confirmPassword 
+      !confirmPassword
     ) {
       setError({
         userName: !userName,
-        password:!password,
-        firstName:!firstName,
-        lastName:!lastName,
-        confirmPassword:!confirmPassword,
-        birthDate:!birthDate
+        password: !password,
+        firstName: !firstName,
+        lastName: !lastName,
+        confirmPassword: !confirmPassword,
+        birthDate: !birthDate,
       });
       setErrorMessage("Todos los campos son necesarios");
       return;
@@ -76,18 +84,13 @@ export default function Registro() {
 
     if (password !== confirmPassword) {
       setError({
-        userName: !userName,
-        password:!password,
-        firstName:!firstName,
-        lastName:!lastName,
-        confirmPassword:!confirmPassword,
-        birthDate:!birthDate
+        password: true,
+        confirmPassword: true,
       });
       setErrorMessage("Las contraseñas no coinciden");
-      return;
+      return; // Prevenir el envío del formulario
     }
 
-    // Formatear la fecha de nacimiento al formato dd-mm-yyyy
     const [year, month, day] = birthDate.split("-");
     const formattedBirthDate = `${day}-${month}-${year}`;
 
@@ -108,35 +111,12 @@ export default function Registro() {
 
       if (response.ok) {
         console.log("Registro exitoso");
-        setError({
-          userName: !userName,
-          password:!password,
-          firstName:!firstName,
-          lastName:!lastName,
-          confirmPassword:!confirmPassword,
-          birthDate:!birthDate
-        });
+        // setsuccefull
       } else {
-        setError({
-          userName: !userName,
-          password:!password,
-          firstName:!firstName,
-          lastName:!lastName,
-          confirmPassword:!confirmPassword,
-          birthDate:!birthDate
-        });
         setErrorMessage("Error en el registro");
         console.error("Error en el registro");
       }
     } catch (error) {
-      setError({
-        userName: !userName,
-        password:!password,
-        firstName:!firstName,
-        lastName:!lastName,
-        confirmPassword:!confirmPassword,
-        birthDate:!birthDate
-      });
       setErrorMessage("Error de red: no se pudo conectar con el servidor");
       console.error("Error de red:", error);
     }
@@ -182,7 +162,6 @@ export default function Registro() {
           borderRadius: "10px",
           overflow: "hidden",
           position: "relative",
-
           backgroundImage: `url(${
             showPassword ? fondoRegistroClosedEyes : fondoRegistro
           })`,
@@ -195,18 +174,14 @@ export default function Registro() {
             <Typography variant="h4" component="h1" gutterBottom>
               Registro
             </Typography>
-            <Typography variant="body1" gutterBottom>
-              Crea una nueva cuenta
-            </Typography>
-            {error && <Alert severity="error">{errorMessage}</Alert>}
+            {isSubmitted && (error.userName || error.password || error.birthDate || error.lastName || error.confirmPassword) && (
+              <Alert severity="error">{errorMessage}</Alert>
+            )}
             <TextField
               label="Nombre"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              error={error && firstName === ""}
-              helperText={
-                error && firstName === "" ? "El nombre es necesario" : ""
-              }
+              error={isSubmitted && error.firstName}
               fullWidth
               margin="normal"
             />
@@ -214,24 +189,15 @@ export default function Registro() {
               label="Apellido"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              error={error && lastName === ""}
-              helperText={
-                error && lastName === "" ? "El apellido es necesario" : ""
-              }
+              error={isSubmitted && error.lastName}
               fullWidth
               margin="normal"
             />
             <TextField
-              
               type="date"
               value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
-              error={error && birthDate === ""}
-              helperText={
-                error && birthDate === ""
-                  ? "La fecha de nacimiento es necesaria"
-                  : ""
-              }
+              error={isSubmitted && error.birthDate}
               fullWidth
               margin="normal"
             />
@@ -239,12 +205,7 @@ export default function Registro() {
               label="Correo Electrónico"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              error={error && userName === ""}
-              helperText={
-                error && userName === ""
-                  ? "El correo electrónico es necesario"
-                  : ""
-              }
+              error={isSubmitted && error.userName}
               fullWidth
               margin="normal"
             />
@@ -253,10 +214,7 @@ export default function Registro() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              error={error && password === ""}
-              helperText={
-                error && password === "" ? "La contraseña es necesaria" : ""
-              }
+              error={isSubmitted && error.password}
               fullWidth
               margin="normal"
               InputProps={{
@@ -301,12 +259,7 @@ export default function Registro() {
               type={showPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              error={error && confirmPassword === ""}
-              helperText={
-                error && confirmPassword === ""
-                  ? "La confirmación de la contraseña es necesaria"
-                  : ""
-              }
+              error={isSubmitted && error.confirmPassword}
               fullWidth
               margin="normal"
               InputProps={{

@@ -16,7 +16,7 @@ function App() {
         <Route path="/accounts/:userId" element={""} />
         <Route path="/accounts/balance" element={""} />
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/signUp" element={<Registro/>} />
         <Route path="/signUp/admin" element={""} />
         <Route path="/home" element={""}/>
@@ -24,7 +24,7 @@ function App() {
 
         <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
 
-        <Route path="/loan/simulate" element={""} />
+          <Route path="/loan/simulate" element={""} />
 
         <Route path="/transactions" element={""} />
 
