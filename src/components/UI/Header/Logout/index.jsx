@@ -6,16 +6,17 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {clearUser} from '../../../../Redux/slice/userSlice'
 
 export const Logout = ({ logout, setLogout }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    // Aquí podrías agregar la lógica para cerrar sesión, por ejemplo, limpiando el estado del usuario en redux
-    // y redirigiendo al usuario a la página de login
-    // dispatch(logoutAction()); // Despachar acción de logout si usas redux
+    dispatch(clearUser()); // Limpiar el estado de Redux
     setLogout(false);
-    navigate('/login'); // Redirigir a la página de login
+    navigate('/'); // Redirigir a la página de inicio (o login)
   };
 
   const handleClose = () => {
