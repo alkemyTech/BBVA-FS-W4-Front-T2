@@ -21,11 +21,11 @@ export const userSlice = createSlice({
       state.nombre = nombre;
       state.apellido = apellido;
     },
-    //clearUser: () => initialState, por si quisieramos limpiar el estado
+    clearUser: () => initialState, 
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser ,clearUser} = userSlice.actions;
 export default userSlice.reducer;
 
 //esto deberiamos hacerlo por cada estado global que querramos tener, es decir, por cada estado que vea que debo usar en muchos componentes

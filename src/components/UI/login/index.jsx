@@ -19,10 +19,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
   const dispatch = useDispatch();
-
   const navigate = useNavigate(); // Initialize useNavigate
-
-
   const handleLogin = async (event) => {
     event.preventDefault();
     if (!userName || !password) {
@@ -33,7 +30,6 @@ export default function Login() {
       setErrorMessage("El correo electrónico y la contraseña son necesarios");
       return;
     }
-
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
@@ -42,7 +38,6 @@ export default function Login() {
         },
         body: JSON.stringify({ userName, password }),
       });
-
       if (response.ok) {
         const token = response.headers.get("AUTHORIZATION");
         localStorage.setItem("token", token);
@@ -60,19 +55,15 @@ export default function Login() {
       console.error("Error de red:", error);
     }
   };
-
   const handleUsernameChange = (e) => {
     dispatch(setUser({ ...user, userName: e.target.value }));
   };
-
   const handlePasswordChange = (e) => {
     dispatch(setUser({ ...user, password: e.target.value }));
   };
-
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
   if (!imagesLoaded) {
     return (
       <Box
@@ -88,7 +79,6 @@ export default function Login() {
       </Box>
     );
   }
-
   return (
     <Grid
       container
