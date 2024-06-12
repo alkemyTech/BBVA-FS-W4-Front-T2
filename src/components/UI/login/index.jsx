@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert} from '@mui/material';
 import Visibility from "@mui/icons-material/Visibility";
@@ -8,6 +9,7 @@ import LoadingCat from "../../../assets/components/loadingCat"; // Ajustar si es
 import { useImageLoader } from "../../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../../Redux/slice/userSlice';
 
 export default function Login() {
   const user = useSelector((state) => state.user);
@@ -16,7 +18,6 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
-
   const dispatch = useDispatch();
 
   const navigate = useNavigate(); // Initialize useNavigate
