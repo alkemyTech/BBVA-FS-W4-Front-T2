@@ -1,0 +1,18 @@
+.box-principal {
+    background-color: #182346;
+    color: #ffffff;
+  }
+  
+  #box-secundario {
+    display: flex;
+    flex-direction: row;
+    color: #ffffff;
+  }
+  
+
+  
+  .white-select .MuiInputBase-input,
+  .white-select .MuiInputLabel-root,
+  .white-select .MuiSelect-icon {
+    color: #ffffff;
+  }
