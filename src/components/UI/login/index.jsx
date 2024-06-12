@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState } from "react";
 import {
   Box,
@@ -21,7 +20,7 @@ import gatoOjosCerrados from "../../../assets/gatoOjosCerrados.svg"; // Ajustar 
 import LoadingCat from "../../../assets/components/loadingCat"; // Ajustar si es necesario
 import { useImageLoader } from "../../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../../../Redux/slice/userSlice";
 
 export default function Login() {
