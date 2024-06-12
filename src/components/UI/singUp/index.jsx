@@ -13,6 +13,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Tooltip
 } from "@mui/material";
 import { CheckSharp, ClearSharp } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -40,6 +41,7 @@ export default function Registro() {
   const [isSubmitted, setIsSubmitted] = useState(false); // Nuevo estado
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false); // Estado para el tooltip
   const imagesLoaded = useImageLoader([fondoRegistro, fondoRegistroClosedEyes]);
 
   const requirements = useMemo(
@@ -126,6 +128,14 @@ export default function Registro() {
     setShowPassword(!showPassword);
   };
 
+  const handleFocus = () => {
+    setTooltipOpen(true);
+  };
+
+  const handleBlur = () => {
+    setTooltipOpen(false);
+  };
+
   if (!imagesLoaded) {
     return (
       <Box
@@ -174,9 +184,14 @@ export default function Registro() {
             <Typography variant="h4" component="h1" gutterBottom>
               Registro
             </Typography>
-            {isSubmitted && (error.userName || error.password || error.birthDate || error.lastName || error.confirmPassword) && (
-              <Alert severity="error">{errorMessage}</Alert>
-            )}
+            {isSubmitted &&
+              (error.userName ||
+                error.password ||
+                error.birthDate ||
+                error.lastName ||
+                error.confirmPassword) && (
+                <Alert severity="error">{errorMessage}</Alert>
+              )}
             <TextField
               label="Nombre"
               value={firstName}
@@ -209,50 +224,53 @@ export default function Registro() {
               fullWidth
               margin="normal"
             />
-            <TextField
-              label="Contraseña"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={isSubmitted && error.password}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        "&:focus": { outline: "none" },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <List
-              dense
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              }}
+            <Tooltip
+              title={
+                <List dense>
+                  {requirements.map((req, index) => (
+                    <ListItem key={index}>
+                      {req.regex.test(password) ? (
+                        <CheckSharp color="success" />
+                      ) : (
+                        <ClearSharp color="error" />
+                      )}
+                      <ListItemText primary={req.text} />
+                    </ListItem>
+                  ))}
+                </List>
+              }
+              arrow
+              placement="top"
+              open={tooltipOpen}
             >
-              {requirements.map((req, index) => (
-                <ListItem key={index}>
-                  {req.regex.test(password) ? (
-                    <CheckSharp color="success" />
-                  ) : (
-                    <ClearSharp color="error" />
-                  )}
-                  <ListItemText primary={req.text} />
-                </ListItem>
-              ))}
-            </List>
+              <TextField
+                label="Contraseña"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={isSubmitted && error.password}
+                fullWidth
+                margin="normal"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment>
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                        sx={{
+                          "&:focus": { outline: "none" },
+                        }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Tooltip>
 
             <TextField
               label="Confirmar Contraseña"
@@ -288,8 +306,7 @@ export default function Registro() {
               Registrarse
             </Button>
             <Typography variant="body2" sx={{ marginTop: 2 }}>
-              ¿Ya tienes cuenta?{" "}
-              <Link to="/login">Volver a inicio de sesión</Link>
+              ¿Ya tienes cuenta? <Link to="/login">Volver a inicio de sesión</Link>
             </Typography>
           </Grid>
         </Grid>
