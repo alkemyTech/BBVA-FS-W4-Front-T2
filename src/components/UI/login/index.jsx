@@ -1,6 +1,19 @@
-import * as React from 'react';
-import  { useState } from "react";
-import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert} from '@mui/material';
+import * as React from "react";
+import { useState } from "react";
+import {
+  Box,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  IconButton,
+  InputAdornment,
+  Checkbox,
+  FormControlLabel,
+  Link,
+  Grid,
+  Alert,
+} from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import fondoLogin from "../../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
@@ -8,24 +21,25 @@ import gatoOjosCerrados from "../../../assets/gatoOjosCerrados.svg"; // Ajustar 
 import LoadingCat from "../../../assets/components/loadingCat"; // Ajustar si es necesario
 import { useImageLoader } from "../../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
-import { setUser } from '../../../Redux/slice/userSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../../Redux/slice/userSlice";
 
 export default function Login() {
-  const user = useSelector((state) => state.user);
-  const { userName, password } = user;
+  const [localUserName, setLocalUserName] = useState("");
+  const [localPassword, setLocalPassword] = useState("");
   const [error, setError] = useState({ userName: false, password: false });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (!userName || !password) {
+    if (!localUserName || !localPassword) {
       setError({
-        userName: !userName,
-        password: !password,
+        userName: !localUserName,
+        password: !localPassword,
       });
       setErrorMessage("El correo electrónico y la contraseña son necesarios");
       return;
@@ -36,14 +50,19 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userName, password }),
+        body: JSON.stringify({
+          userName: localUserName,
+          password: localPassword,
+        }),
       });
       if (response.ok) {
+        const data = await response.json();
         const token = response.headers.get("AUTHORIZATION");
         localStorage.setItem("token", token);
         console.log("Inicio de sesión exitoso");
         setError({ userName: false, password: false });
-        navigate("/home"); // Redirect to /home on successful login
+        dispatch(setUser(data));
+        navigate("/home");
       } else {
         setError({ userName: true, password: true });
         setErrorMessage("Usuario o contraseña incorrectos");
@@ -55,15 +74,19 @@ export default function Login() {
       console.error("Error de red:", error);
     }
   };
+
   const handleUsernameChange = (e) => {
-    dispatch(setUser({ ...user, userName: e.target.value }));
+    setLocalUserName(e.target.value);
   };
+
   const handlePasswordChange = (e) => {
-    dispatch(setUser({ ...user, password: e.target.value }));
+    setLocalPassword(e.target.value);
   };
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   if (!imagesLoaded) {
     return (
       <Box
@@ -79,6 +102,7 @@ export default function Login() {
       </Box>
     );
   }
+
   return (
     <Grid
       container
@@ -102,7 +126,9 @@ export default function Login() {
           zIndex: 1,
           flexDirection: "row",
           alignItems: "stretch",
-          backgroundImage: `url(${showPassword ? gatoOjosCerrados : fondoLogin})`,
+          backgroundImage: `url(${
+            showPassword ? gatoOjosCerrados : fondoLogin
+          })`,
           backgroundSize: "cover",
           minHeight: "700px",
         }}
@@ -127,7 +153,7 @@ export default function Login() {
             ) : null}
             <TextField
               label="Correo Electrónico"
-              value={userName}
+              value={localUserName}
               onChange={handleUsernameChange}
               error={error.userName}
               helperText={
@@ -139,7 +165,7 @@ export default function Login() {
             <TextField
               label="Contraseña"
               type={showPassword ? "text" : "password"}
-              value={password}
+              value={localPassword}
               onChange={handlePasswordChange}
               error={error.password}
               helperText={error.password ? "La contraseña es necesaria" : ""}
@@ -162,7 +188,12 @@ export default function Login() {
                 ),
               }}
             />
-            <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 2, mb: 2 }}>
+            <Grid
+              container
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ mt: 2, mb: 2 }}
+            >
               <FormControlLabel
                 control={<Checkbox name="rememberMe" />}
                 label="Recuérdame"
