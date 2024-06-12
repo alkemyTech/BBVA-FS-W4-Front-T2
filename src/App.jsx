@@ -2,23 +2,27 @@
 import { Route, Routes } from "react-router-dom";
 import './App.css';
 import Page from "./components/UI/page";
+import Login from "./components/UI/login";
 import PageNotFound from "./components/UI/page/PageNotFound";
-import Login from './login';
+import Registro from './components/UI/singUp';
+import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
 function App() {
 
   return (
     <Page>
       <Routes>
+        
         <Route path="/accounts" element={""} />
         <Route path="/accounts/:userId" element={""} />
         <Route path="/accounts/balance" element={""} />
 
         <Route path="/login" element={<Login />} />
-        <Route path="/signUp" element={""} />
+        <Route path="/signUp" element={<Registro/>} />
         <Route path="/signUp/admin" element={""} />
+        <Route path="/home" element={""}/>
 
-        <Route path="/fixedTerm" element={""} />
-        <Route path="/fixedTerm/simulate" element={""} />
+
+        <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
 
         <Route path="/loan/simulate" element={""} />
 
