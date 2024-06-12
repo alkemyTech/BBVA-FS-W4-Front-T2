@@ -4,7 +4,6 @@ import { Route, Routes } from "react-router-dom";
 import Page from "./components/UI/page";
 import Login from "./login";
 import PageNotFound from "./components/UI/page/PageNotFound";
-import Registro from './singUp';
 function App() {
 
   return (
@@ -32,11 +31,16 @@ function App() {
           <Route path="/transactions/user/:userId" element={""} />
           <Route path="/transactions/:transactionId" element={""} />
 
-          <Route path="/users" element={""} />
-          <Route path="/detail/:id" element={""} />
-          <Route path="*" element={<PageNotFound to="/404" replace />} />
-        </Routes>
-      </Page>
+
+        <Route path="/transactions/user/:userId" element={""} />
+        <Route path="/transactions/:transactionId" element={""} />
+
+        <Route path="/users" element={""} />
+        <Route path="/detail/:id" element={""} />
+        <Route path="*" element={<PageNotFound to="/404" replace />} />
+      </Routes>
+
+    </Page>
   );
 }
 
