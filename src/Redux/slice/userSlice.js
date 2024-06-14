@@ -3,10 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   id:"",
   userName: "",
-  nombre:"",
-  apellido:"",
+  firstName:"",
+  lastName:"",
   imagePath:"",
-  token: ""
+  birthDate:""
 };
 
 export const userSlice = createSlice({
@@ -14,18 +14,17 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { userName, image, token, nombre, apellido } = action.payload;
+      const { userName, image, firstName, lastName } = action.payload;
       state.userName = userName;
       state.imagePath = image;
-      state.token = token;
-      state.nombre = nombre;
-      state.apellido = apellido;
+      state.firstName = firstName;
+      state.lastName = lastName;
     },
     clearUser: () => initialState, 
   },
 });
 
-export const { setUser ,clearUser} = userSlice.actions;
+export const { setUser, clearUser} = userSlice.actions;
 export default userSlice.reducer;
 
 //esto deberiamos hacerlo por cada estado global que querramos tener, es decir, por cada estado que vea que debo usar en muchos componentes

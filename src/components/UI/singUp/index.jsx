@@ -22,13 +22,14 @@ import fondoRegistro from "../../../assets/fondoLogin.svg";
 import fondoRegistroClosedEyes from "../../../assets/gatoOjosCerrados.svg";
 import LoadingCat from "../../../assets/components/loadingCat";
 import { useImageLoader } from "../../../utils/useImageLoader";
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../../Redux/slice/userSlice';
 
 export default function Registro() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const user = useSelector((state) => state.user);
+  const { userName, firstName, lastName } = user;
+  const [birthDate ,setBirthDate] = useState("");
+  const [password,setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState({
     firstName: false,
@@ -43,6 +44,7 @@ export default function Registro() {
   const [showPassword, setShowPassword] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false); // Estado para el tooltip
   const imagesLoaded = useImageLoader([fondoRegistro, fondoRegistroClosedEyes]);
+  const dispatch = useDispatch();
 
   const requirements = useMemo(
     () => [
@@ -136,6 +138,10 @@ export default function Registro() {
     setTooltipOpen(false);
   };
 
+  const handleChange = (field) => (e) => {
+    dispatch(setUser({ ...user, [field]: e.target.value }));
+  };
+
   if (!imagesLoaded) {
     return (
       <Box
@@ -195,7 +201,7 @@ export default function Registro() {
             <TextField
               label="Nombre"
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              onChange={handleChange('firstName')}
               error={isSubmitted && error.firstName}
               fullWidth
               margin="normal"
@@ -203,7 +209,7 @@ export default function Registro() {
             <TextField
               label="Apellido"
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={handleChange('lastName')}
               error={isSubmitted && error.lastName}
               fullWidth
               margin="normal"
@@ -211,7 +217,7 @@ export default function Registro() {
             <TextField
               type="date"
               value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
+              onChange={(e) =>setBirthDate(e.target.value)}
               error={isSubmitted && error.birthDate}
               fullWidth
               margin="normal"
@@ -219,7 +225,7 @@ export default function Registro() {
             <TextField
               label="Correo Electrónico"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={handleChange('userName')}
               error={isSubmitted && error.userName}
               fullWidth
               margin="normal"
