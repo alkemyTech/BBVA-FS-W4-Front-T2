@@ -13,7 +13,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import { CheckSharp, ClearSharp } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -28,8 +28,9 @@ import { setUser } from '../../../Redux/slice/userSlice';
 export default function Registro() {
   const user = useSelector((state) => state.user);
   const { userName, firstName, lastName } = user;
-  const [birthDate ,setBirthDate] = useState("");
-  const [password,setPassword] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [dni, setDni] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState({
     firstName: false,
@@ -38,11 +39,12 @@ export default function Registro() {
     userName: false,
     password: false,
     confirmPassword: false,
+    dni: false,
   });
-  const [isSubmitted, setIsSubmitted] = useState(false); // Nuevo estado
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [tooltipOpen, setTooltipOpen] = useState(false); // Estado para el tooltip
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   const imagesLoaded = useImageLoader([fondoRegistro, fondoRegistroClosedEyes]);
   const dispatch = useDispatch();
 
@@ -64,13 +66,14 @@ export default function Registro() {
 
   const handleRegistro = async (event) => {
     event.preventDefault();
-    setIsSubmitted(true); // Indicar que se ha enviado el formulario
+    setIsSubmitted(true);
 
     if (
       !firstName ||
       !lastName ||
       !birthDate ||
       !userName ||
+      !dni ||
       !password ||
       !confirmPassword
     ) {
@@ -81,6 +84,7 @@ export default function Registro() {
         lastName: !lastName,
         confirmPassword: !confirmPassword,
         birthDate: !birthDate,
+        dni: !dni,
       });
       setErrorMessage("Todos los campos son necesarios");
       return;
@@ -92,7 +96,7 @@ export default function Registro() {
         confirmPassword: true,
       });
       setErrorMessage("Las contraseñas no coinciden");
-      return; // Prevenir el envío del formulario
+      return;
     }
 
     const [year, month, day] = birthDate.split("-");
@@ -110,6 +114,7 @@ export default function Registro() {
           firstName,
           lastName,
           birthDate: formattedBirthDate,
+          dni,
         }),
       });
 
@@ -195,7 +200,8 @@ export default function Registro() {
                 error.password ||
                 error.birthDate ||
                 error.lastName ||
-                error.confirmPassword) && (
+                error.confirmPassword ||
+                error.dni) && (
                 <Alert severity="error">{errorMessage}</Alert>
               )}
             <TextField
@@ -217,8 +223,16 @@ export default function Registro() {
             <TextField
               type="date"
               value={birthDate}
-              onChange={(e) =>setBirthDate(e.target.value)}
+              onChange={(e) => setBirthDate(e.target.value)}
               error={isSubmitted && error.birthDate}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="DNI"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              error={isSubmitted && error.dni}
               fullWidth
               margin="normal"
             />

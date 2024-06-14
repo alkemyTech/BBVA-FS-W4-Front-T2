@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert} from '@mui/material';
+import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert } from '@mui/material';
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import fondoLogin from "../../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
@@ -13,21 +12,23 @@ import { setUser } from '../../../Redux/slice/userSlice';
 
 export default function Login() {
   const user = useSelector((state) => state.user);
-  const { userName, password } = user;
-  const [error, setError] = useState({ userName: false, password: false });
+  const { userName, password, dni } = user;
+  const [error, setError] = useState({ userName: false, password: false, dni: false });
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (!userName || !password) {
+    if (!userName || !password || !dni) {
       setError({
         userName: !userName,
         password: !password,
+        dni: !dni
       });
-      setErrorMessage("El correo electrónico y la contraseña son necesarios");
+      setErrorMessage("El correo electrónico, la contraseña y el DNI son necesarios");
       return;
     }
     try {
@@ -36,34 +37,42 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userName, password }),
+        body: JSON.stringify({ userName, password, dni }),
       });
       if (response.ok) {
         const token = response.headers.get("AUTHORIZATION");
         localStorage.setItem("token", token);
         console.log("Inicio de sesión exitoso");
-        setError({ userName: false, password: false });
+        setError({ userName: false, password: false, dni: false });
         navigate("/home"); // Redirect to /home on successful login
       } else {
-        setError({ userName: true, password: true });
-        setErrorMessage("Usuario o contraseña incorrectos");
+        setError({ userName: true, password: true, dni: true });
+        setErrorMessage("Usuario, contraseña o DNI incorrectos");
         console.error("Error en el inicio de sesión");
       }
     } catch (error) {
-      setError({ userName: true, password: true });
+      setError({ userName: true, password: true, dni: true });
       setErrorMessage("Error de red: no se pudo conectar con el servidor");
       console.error("Error de red:", error);
     }
   };
+
   const handleUsernameChange = (e) => {
     dispatch(setUser({ ...user, userName: e.target.value }));
   };
+
   const handlePasswordChange = (e) => {
     dispatch(setUser({ ...user, password: e.target.value }));
   };
+
+  const handleDniChange = (e) => {
+    dispatch(setUser({ ...user, dni: e.target.value }));
+  };
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   if (!imagesLoaded) {
     return (
       <Box
@@ -79,6 +88,7 @@ export default function Login() {
       </Box>
     );
   }
+
   return (
     <Grid
       container
@@ -122,7 +132,7 @@ export default function Login() {
             <Typography variant="h4" component="h1" gutterBottom>
               Iniciar Sesión
             </Typography>
-            {error.userName || error.password ? (
+            {error.userName || error.password || error.dni ? (
               <Alert severity="error">{errorMessage}</Alert>
             ) : null}
             <TextField
@@ -130,9 +140,16 @@ export default function Login() {
               value={userName}
               onChange={handleUsernameChange}
               error={error.userName}
-              helperText={
-                error.userName ? "El correo electrónico es necesario" : ""
-              }
+              helperText={error.userName ? "El correo electrónico es necesario" : ""}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="DNI"
+              value={dni}
+              onChange={handleDniChange}
+              error={error.dni}
+              helperText={error.dni ? "El DNI es necesario" : ""}
               fullWidth
               margin="normal"
             />
