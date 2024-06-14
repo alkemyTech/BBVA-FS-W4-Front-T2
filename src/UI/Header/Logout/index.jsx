@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {clearUser} from '../../../../Redux/slice/userSlice'
+import {clearUser} from '../../../Redux/slice/userSlice'
 
 export const Logout = ({ logout, setLogout }) => {
   const navigate = useNavigate();

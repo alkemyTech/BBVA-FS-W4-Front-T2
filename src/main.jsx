@@ -5,7 +5,7 @@ import App from './App.jsx'
 import './index.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import store, {persistor} from './Redux/store.js'
+import store, {persistor} from './Redux/store.jsx'
 import LoadingCat from './assets/components/loadingCat';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -18,6 +18,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </Provider>
   </React.StrictMode>
   </BrowserRouter>,
-  document.getElementById('root')
+  
 
 )

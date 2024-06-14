@@ -1,10 +1,10 @@
 
 import { Route, Routes } from "react-router-dom";
 import './App.css';
-import Page from "./components/UI/page";
-import Login from "./components/UI/login";
-import PageNotFound from "./components/UI/page/PageNotFound";
-import Registro from './components/UI/singUp';
+import Page from "./UI/Page";
+import Login from "./components/login";
+import PageNotFound from "./UI/Page/PageNotFound";
+import Registro from './components/SignUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
 function App() {
 

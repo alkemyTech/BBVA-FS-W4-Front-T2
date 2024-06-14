@@ -17,10 +17,10 @@ import {
 import { CheckSharp, ClearSharp } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import fondoRegistro from "../../../assets/fondoLogin.svg";
-import fondoRegistroClosedEyes from "../../../assets/gatoOjosCerrados.svg";
-import LoadingCat from "../../../assets/components/loadingCat";
-import { useImageLoader } from "../../../utils/useImageLoader";
+import fondoRegistro from "../../assets/fondoLogin.svg";
+import fondoRegistroClosedEyes from "../../assets/gatoOjosCerrados.svg";
+import LoadingCat from "../../assets/components/loadingCat";
+import { useImageLoader } from "../../utils/useImageLoader";
 
 export default function Registro() {
   const [firstName, setFirstName] = useState("");
