@@ -1,18 +1,79 @@
 .box-principal {
-    background-color: #182346;
+    margin-top: 72px;
+    background-color: #212E55;
     color: #ffffff;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    padding-bottom: 110px;
+    border-radius: 10px;
+  }
+
+  .titulo-plazo-fijo{
+    display: flex;
+    justify-content: end;
+    font-size: 32px;
+    margin:0px;
+    padding-right: 40px ;
+  }
+
+  .titulo-secundario{
+    font-size:20px;
+
+  }
+
+  .titulos{
+    display: flex;
+    flex-direction: row;
+    color: #B4B8D7;
+
+  }
+
+  .monto{
+    padding-left:52px;
+    margin-bottom: 0;
   }
   
+  .dias{
+    padding-left:178px;
+    margin-bottom: 0;
+  }
+
+
   #box-secundario {
     display: flex;
     flex-direction: row;
-    color: #ffffff;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .button-simular{
+    background-color: red;
   }
   
 
   
-  .white-select .MuiInputBase-input,
-  .white-select .MuiInputLabel-root,
   .white-select .MuiSelect-icon {
-    color: #ffffff;
+    color: #0D99FF;
+    font-size: 2rem;
   }
+
+  .aviso{
+    margin: 20px;
+  }
+
+
+
+.gray-line-top{
+  max-width: 308px; margin-right:0; height: 0;margin-top: 0;
+}
+
+.gray-line-bottom{
+  width: 126.35px;
+  height: 0px;
+  }
+
+  
+
+
