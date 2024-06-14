@@ -19,9 +19,12 @@ export const accountSlice = createSlice({
         state.currency = currency;
         state.token = token;
       },
-      clearUser: () => initialState, 
+      clearUser: () => initialState,
+      addBalance: (state, action) => {
+        state.balance += action.payload.amount;
+    } 
     },
   });
 
-export const { setAccount ,clearAccount} = accountSlice.actions;
+export const { setAccount ,clearAccount, addBalance} = accountSlice.actions;
 export default accountSlice.reducer;

@@ -5,6 +5,9 @@ import Page from "./components/UI/page";
 import Login from "./components/UI/login";
 import PageNotFound from "./components/UI/page/PageNotFound";
 import Registro from './components/UI/singUp';
+import Deposito from './components/UI/deposit';
+
+
 function App() {
 
   return (
@@ -28,7 +31,7 @@ function App() {
 
           <Route path="/transactions" element={""} />
 
-          <Route path="/transactions/deposit" element={""} />
+          <Route path="/transactions/deposit" element={<Deposito />} />
           <Route path="/transactions/payment" element={""} />
           <Route path="/transactions/expenses" element={"Gastos"} />
 
