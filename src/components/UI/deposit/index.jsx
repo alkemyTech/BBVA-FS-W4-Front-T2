@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addBalance } from "../../../Redux/slice/accountSlice"; // Importar la acción desde el slice
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addBalance, fetchAccounts } from "../../../Redux/slice/accountSlice";
 import {
   Box,
   TextField,
@@ -20,12 +20,21 @@ const currencies = [
 
 const Deposito = () => {
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.user.user.id); // Obtener el id del usuario del estado global
+  const accounts = useSelector((state) => state.account.accounts);
+  const [selectedAccount, setSelectedAccount] = useState("");
   const [amount, setAmount] = useState("");
   const [concept, setConcept] = useState("");
   const [details, setDetails] = useState("");
   const [currency, setCurrency] = useState("ARS");
   const [date, setDate] = useState(new Date());
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchAccounts(userId));
+    }
+  }, [userId, dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,6 +43,7 @@ const Deposito = () => {
       return;
     }
     const balanceDetails = {
+      account: selectedAccount,
       amount: parseFloat(amount),
       concept,
       details,
@@ -42,6 +52,7 @@ const Deposito = () => {
     };
     dispatch(addBalance(balanceDetails));
     setError("");
+    setSelectedAccount("");
     setAmount("");
     setConcept("");
     setDetails("");
@@ -79,6 +90,20 @@ const Deposito = () => {
           </Typography>
         )}
         <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            label="Cuenta"
+            select
+            value={selectedAccount}
+            onChange={(e) => setSelectedAccount(e.target.value)}
+            fullWidth
+            margin="normal"
+          >
+            {accounts.map((account) => (
+              <MenuItem key={account.id} value={account.id}>
+                {account.name}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             label="Monto"
             type="number"
