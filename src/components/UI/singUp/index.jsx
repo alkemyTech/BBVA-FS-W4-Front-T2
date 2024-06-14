@@ -27,7 +27,7 @@ import { setUser } from '../../../Redux/slice/userSlice';
 
 export default function Registro() {
   const user = useSelector((state) => state.user);
-  const { userName, firstName, lastName } = user;
+  const { id, userName, firstName, lastName } = user;
   const [birthDate, setBirthDate] = useState("");
   const [dni, setDni] = useState("");
   const [password, setPassword] = useState("");
@@ -119,8 +119,14 @@ export default function Registro() {
       });
 
       if (response.ok) {
+        const token = response.headers.get("AUTHORIZATION");
+        localStorage.setItem("token", token);
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.id; // Asume que el id del usuario está en el campo "id" del token
+        dispatch(setUser({ id: userId, userName, firstName, lastName }));
         console.log("Registro exitoso");
-        // setsuccefull
+        setError({ userName: false, password: false, firstName:false, lastName:false, birthDate: false ,dni: false });
+        navigate("/home"); // Redirect to /home on successful login
       } else {
         setErrorMessage("Error en el registro");
         console.error("Error en el registro");
@@ -326,7 +332,7 @@ export default function Registro() {
               Registrarse
             </Button>
             <Typography variant="body2" sx={{ marginTop: 2 }}>
-              ¿Ya tienes cuenta? <Link to="/login">Volver a inicio de sesión</Link>
+              ¿Ya tienes cuenta? <Link to="/">Volver a inicio de sesión</Link>
             </Typography>
           </Grid>
         </Grid>
