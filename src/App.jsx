@@ -1,10 +1,11 @@
 
-import './App.css'
 import { Route, Routes } from "react-router-dom";
+import './App.css';
 import Page from "./components/UI/page";
 import Login from "./components/UI/login";
 import PageNotFound from "./components/UI/page/PageNotFound";
 import Registro from './components/UI/singUp';
+import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
 function App() {
 
   return (
@@ -21,20 +22,11 @@ function App() {
         <Route path="/home" element={""}/>
 
 
-          <Route path="/fixedTerm" element={""} />
-          <Route path="/fixedTerm/simulate" element={""} />
+        <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
 
           <Route path="/loan/simulate" element={""} />
 
-          <Route path="/transactions" element={""} />
-
-          <Route path="/transactions/deposit" element={""} />
-          <Route path="/transactions/payment" element={""} />
-          <Route path="/transactions/expenses" element={"Gastos"} />
-
-          <Route path="/transactions/user/:userId" element={""} />
-          <Route path="/transactions/:transactionId" element={""} />
-
+        <Route path="/transactions" element={""} />
 
         <Route path="/transactions/user/:userId" element={""} />
         <Route path="/transactions/:transactionId" element={""} />
