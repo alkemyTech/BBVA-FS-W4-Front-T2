@@ -23,7 +23,7 @@ const Deposito = () => {
   const [amount, setAmount] = useState("");
   const [concept, setConcept] = useState("");
   const [details, setDetails] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("ARS");
   const [date, setDate] = useState(new Date());
   const [error, setError] = useState("");
 
@@ -45,7 +45,7 @@ const Deposito = () => {
     setAmount("");
     setConcept("");
     setDetails("");
-    setCurrency("USD");
+    setCurrency("ARS");
     setDate(new Date());
   };
 
