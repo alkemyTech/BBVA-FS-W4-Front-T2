@@ -9,10 +9,13 @@ import { useImageLoader } from "../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/slice/userSlice';
+import {login} from "../../utils/Auth";
 
 export default function Login() {
   const user = useSelector((state) => state.user);
-  const { userName, password, dni } = user;
+  const { userName} = user;
+  const  [password, setPassword] = useState("");
+  const [dni, setDni] = useState("");
   const [error, setError] = useState({ userName: false, password: false, dni: false });
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,28 +35,15 @@ export default function Login() {
       return;
     }
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userName, password, dni }),
-      });
-      if (response.ok) {
-        const token = response.headers.get("AUTHORIZATION");
-        localStorage.setItem("token", token);
-        console.log("Inicio de sesión exitoso");
-        setError({ userName: false, password: false, dni: false });
-        navigate("/home"); // Redirect to /home on successful login
-      } else {
-        setError({ userName: true, password: true, dni: true });
-        setErrorMessage("Usuario, contraseña o DNI incorrectos");
-        console.error("Error en el inicio de sesión");
-      }
+
+      const data = await login(userName, password, dni);
+      setError({ userName: false, password: false, dni: false });
+      dispatch(setUser(data));
+      navigate("/home");
     } catch (error) {
       setError({ userName: true, password: true, dni: true });
-      setErrorMessage("Error de red: no se pudo conectar con el servidor");
-      console.error("Error de red:", error);
+      setErrorMessage("Usuario, contraseña o DNI incorrectos");
+      console.error("Error en el inicio de sesión", error);
     }
   };
 
@@ -62,11 +52,12 @@ export default function Login() {
   };
 
   const handlePasswordChange = (e) => {
-    dispatch(setUser({ ...user, password: e.target.value }));
+    setPassword(e.target.value);
   };
 
   const handleDniChange = (e) => {
-    dispatch(setUser({ ...user, dni: e.target.value }));
+    setDni(e.target.value);
+
   };
 
   const handleClickShowPassword = () => {

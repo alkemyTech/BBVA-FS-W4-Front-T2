@@ -1,41 +1,37 @@
 
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Router } from "react-router-dom";
 import './App.css';
 import Page from "./UI/Page";
 import Login from "./components/login";
 import PageNotFound from "./UI/Page/PageNotFound";
 import Registro from './components/SignUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
-function App() {
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
+function App() {
   return (
     <Page>
-      <Routes>
-        
-        <Route path="/accounts" element={""} />
-        <Route path="/accounts/:userId" element={""} />
-        <Route path="/accounts/balance" element={""} />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signUp" element={<Registro />} />
+          <Route path="/signUp/admin" element={""} />
 
-        <Route path="/" element={<Login />} />
-        <Route path="/signUp" element={<Registro/>} />
-        <Route path="/signUp/admin" element={""} />
-        <Route path="/home" element={""}/>
+          <Route element={<ProtectedRoutes />}>
+             <Route path="/home" element={""} />
+             
+            <Route path="/accounts" element={<div>Accounts</div>} />
+            <Route path="/accounts/:userId" element={<div>Account Detail</div>} />
+            <Route path="/accounts/balance" element={<div>Balance</div>} />
+            <Route path="/loan/simulate" element={<div>Simulate Loan</div>} />
+            <Route path="/transactions" element={<div>Transactions</div>} />
+            <Route path="/transactions/user/:userId" element={<div>User Transactions</div>} />
+            <Route path="/transactions/:transactionId" element={<div>Transaction Detail</div>} />
+            <Route path="/users" element={<div>Users</div>} />
+            <Route path="/detail/:id" element={<div>Detail</div>} />
+          </Route>
 
-
-        <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
-
-          <Route path="/loan/simulate" element={""} />
-
-        <Route path="/transactions" element={""} />
-
-        <Route path="/transactions/user/:userId" element={""} />
-        <Route path="/transactions/:transactionId" element={""} />
-
-        <Route path="/users" element={""} />
-        <Route path="/detail/:id" element={""} />
-        <Route path="*" element={<PageNotFound to="/404" replace />} />
-      </Routes>
-
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
     </Page>
   );
 }

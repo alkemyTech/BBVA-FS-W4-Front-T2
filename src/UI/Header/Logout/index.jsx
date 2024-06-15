@@ -14,9 +14,10 @@ export const Logout = ({ logout, setLogout }) => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(clearUser()); // Limpiar el estado de Redux
+    dispatch(clearUser()); 
     setLogout(false);
-    navigate('/'); // Redirigir a la página de inicio (o login)
+    localStorage.removeItem('token');
+    navigate('/'); 
   };
 
   const handleClose = () => {
