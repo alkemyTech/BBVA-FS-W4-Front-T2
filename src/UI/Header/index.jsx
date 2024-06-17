@@ -30,7 +30,7 @@ function Header() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [logout, setLogout] = React.useState(false);
   const navigate = useNavigate();
-  const userName = useSelector((state) => state.user.user.userName);
+  const userName = useSelector((state) => state.user.userName);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -52,7 +52,7 @@ function Header() {
     setLogout(true);
   };
   const handlePageChange = (page) => {
-    navigate(page === 'Transferir' ? '/transactions/' : `/${page.toLowerCase().replace(' ', '-')}`);
+    navigate(page === 'Transferir' ? '/transferir/' : `/${page.toLowerCase().replace(' ', '-')}`);
     handleCloseNavMenu();
   };
 

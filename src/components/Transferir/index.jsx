@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Stepper, Step, StepLabel, TextField, Button, Typography, Card, CardContent, CardActions } from '@mui/material';
+import "/src/main.jsx"
 
 const Transferir = () => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -27,16 +28,16 @@ const Transferir = () => {
   };
 
   const handleConfirm = () => {
-    // Lógica para confirmar la transferencia
+
     console.log('Transferencia confirmada:', transferData);
     setActiveStep(steps.length);
   };
 
   return (
-    <Box sx={{ maxWidth: 700, margin: 'auto', mt: 20 }}>
+    <Box sx={{ maxWidth: 700, margin: 'auto', mt: 20, color: (255, 255, 255, 0.87) }}>
      <Card>
      <CardContent>
-      <Typography fontFamily="Roboto" margin={2} variant="h3" gutterBottom>
+      <Typography fontFamily="Roboto" fontSize="50px" margin={2} variant="h3" gutterBottom color="black" >
         Transferir
       </Typography>
       
