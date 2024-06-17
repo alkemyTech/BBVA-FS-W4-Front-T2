@@ -20,7 +20,39 @@ const login = async (userName, password, dni) => {
   if (token && token.startsWith('Bearer ')) {
     token = token.slice(7, token.length);
   }
-  console.log('Token recibido: ', token);
+  localStorage.setItem('token', token);
+  return data;
+};
+
+const register = async (userName, firstName, lastName, birthDate, password, dni) => {
+  const [year, month, day] = birthDate.split("-");
+  const formattedBirthDate = `${day}-${month}-${year}`;
+
+  const response = await fetch("http://localhost:8080/auth/register", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userName,
+      password,
+      firstName,
+      lastName,
+      birthDate: formattedBirthDate,
+      dni,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Error al registrar usuario');
+  }
+
+  const data = await response.json();
+
+  let token = response.headers.get('authorization'); 
+  if (token && token.startsWith('Bearer ')) {
+    token = token.slice(7, token.length);
+  }
   localStorage.setItem('token', token);
   return data;
 };
@@ -59,5 +91,6 @@ const validateToken = async () => {
 
 export {
   login,
+  register,
   validateToken,
 };

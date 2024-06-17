@@ -18,14 +18,19 @@ function App() {
 
           <Route element={<ProtectedRoutes />}>
              <Route path="/home" element={""} />
-             
+
+             <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
+
             <Route path="/accounts" element={<div>Accounts</div>} />
             <Route path="/accounts/:userId" element={<div>Account Detail</div>} />
             <Route path="/accounts/balance" element={<div>Balance</div>} />
+
             <Route path="/loan/simulate" element={<div>Simulate Loan</div>} />
+
             <Route path="/transactions" element={<div>Transactions</div>} />
             <Route path="/transactions/user/:userId" element={<div>User Transactions</div>} />
             <Route path="/transactions/:transactionId" element={<div>Transaction Detail</div>} />
+            
             <Route path="/users" element={<div>Users</div>} />
             <Route path="/detail/:id" element={<div>Detail</div>} />
           </Route>

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  id:"",
+  id:1,
   userName: "",
   firstName:"",
   lastName:"",
@@ -13,7 +13,8 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { userName, image, firstName, lastName } = action.payload;
+      const { id, userName, image, firstName, lastName } = action.payload;
+      state.id = id;
       state.userName = userName;
       state.imagePath = image;
       state.firstName = firstName;

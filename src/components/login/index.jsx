@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert } from '@mui/material';
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import fondoLogin from '../../assets/fondoLogin.svg'; // Asegúrate de que la ruta es correcta
-import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; // Ajustar si es necesario
-import LoadingCat from "../../assets/components/loadingCat"; // Ajustar si es necesario
+import fondoLogin from "../../assets/fondoLogin.svg"; 
+import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; 
+import LoadingCat from "../../assets/components/loadingCat"; 
 import { useImageLoader } from "../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
