@@ -15,17 +15,19 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import fondoLogin from "../../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
-import gatoOjosCerrados from "../../../assets/gatoOjosCerrados.svg"; // Ajustar si es necesario
-import LoadingCat from "../../../assets/components/loadingCat"; // Ajustar si es necesario
-import { useImageLoader } from "../../../utils/useImageLoader";
+import fondoLogin from "../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
+import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; // Ajustar si es necesario
+import LoadingCat from "../../assets/components/loadingCat"; // Ajustar si es necesario
+import { useImageLoader } from "../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../../Redux/slice/userSlice";
+import { setUser } from "../../Redux/slice/userSlice";
+import { login } from "../../utils/Auth";
 
 export default function Login() {
   const [localUserName, setLocalUserName] = useState("");
   const [localPassword, setLocalPassword] = useState("");
+  const [dni, setDni] = useState("");
   const [error, setError] = useState({ userName: false, password: false });
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,43 +37,25 @@ export default function Login() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (!localUserName || !localPassword) {
+    if (!localUserName || !localPassword || !dni) {
       setError({
         userName: !localUserName,
-        password: !localPassword,
+        password: !localPassword ,
+        dni: !dni
       });
-      setErrorMessage("El correo electrónico y la contraseña son necesarios");
+      setErrorMessage("El correo electrónico, la contraseña y el DNI son necesarios");
       return;
     }
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName: localUserName,
-          password: localPassword,
-        }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const token = response.headers.get("AUTHORIZATION");
-        localStorage.setItem("token", token);
-        console.log("Inicio de sesión exitoso");
-        setError({ userName: false, password: false });
+      const data = await login(localUserName, localPassword, dni);
+        setError({ userName: false, password: false, dni:false });
         dispatch(setUser(data));
         navigate("/home");
-      } else {
-        setError({ userName: true, password: true });
-        setErrorMessage("Usuario o contraseña incorrectos");
-        console.error("Error en el inicio de sesión");
+      } catch (error) {
+        setError({ userName: true, password: true, dni: true });
+        setErrorMessage("Usuario, contraseña o DNI incorrectos");
+        console.error("Error en el inicio de sesión", error);
       }
-    } catch (error) {
-      setError({ userName: true, password: true });
-      setErrorMessage("Error de red: no se pudo conectar con el servidor");
-      console.error("Error de red:", error);
-    }
   };
 
   const handleUsernameChange = (e) => {
@@ -80,6 +64,10 @@ export default function Login() {
 
   const handlePasswordChange = (e) => {
     setLocalPassword(e.target.value);
+  };
+
+  const handleDniChange = (e) => {
+    setDni(e.target.value);
   };
 
   const handleClickShowPassword = () => {
@@ -158,6 +146,15 @@ export default function Login() {
               helperText={
                 error.userName ? "El correo electrónico es necesario" : ""
               }
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="DNI"
+              value={dni}
+              onChange={handleDniChange}
+              error={error.dni}
+              helperText={error.dni ? "El DNI es necesario" : ""}
               fullWidth
               margin="normal"
             />
