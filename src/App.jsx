@@ -6,27 +6,29 @@ import Login from "./components/UI/login";
 import PageNotFound from "./components/UI/page/PageNotFound";
 import Registro from './components/UI/singUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
+import Transferir from "./components/Transferir";
+
 function App() {
 
   return (
     <Page>
       <Routes>
-        
+
         <Route path="/accounts" element={""} />
         <Route path="/accounts/:userId" element={""} />
         <Route path="/accounts/balance" element={""} />
 
         <Route path="/" element={<Login />} />
-        <Route path="/signUp" element={<Registro/>} />
+        <Route path="/signUp" element={<Registro />} />
         <Route path="/signUp/admin" element={""} />
-        <Route path="/home" element={""}/>
+        <Route path="/home" element={""} />
 
 
-        <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
+        <Route path="/fixedTerm" element={<PlazoFijoSimulado />} />
 
-          <Route path="/loan/simulate" element={""} />
+        <Route path="/loan/simulate" element={""} />
 
-        <Route path="/transactions" element={""} />
+        <Route path="/transactions" element={<Transferir />} />
 
         <Route path="/transactions/user/:userId" element={""} />
         <Route path="/transactions/:transactionId" element={""} />
