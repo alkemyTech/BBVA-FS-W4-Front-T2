@@ -1,23 +1,35 @@
-import React, { useState } from "react";
-import { Box, Paper, TextField, Button, Typography, IconButton, InputAdornment, Checkbox, FormControlLabel, Link, Grid, Alert } from '@mui/material';
+import { useState } from "react";
+import {
+  Box,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  IconButton,
+  InputAdornment,
+  Checkbox,
+  FormControlLabel,
+  Link,
+  Grid,
+  Alert,
+} from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import fondoLogin from "../../assets/fondoLogin.svg"; 
-import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; 
-import LoadingCat from "../../assets/components/loadingCat"; 
+import fondoLogin from "../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
+import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; // Ajustar si es necesario
+import LoadingCat from "../../assets/components/loadingCat"; // Ajustar si es necesario
 import { useImageLoader } from "../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
-import { setUser } from '../../Redux/slice/userSlice';
-import {login} from "../../utils/Auth";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Redux/slice/userSlice";
+import { login } from "../../utils/Auth";
 
 export default function Login() {
-  const user = useSelector((state) => state.user);
-  const { userName} = user;
-  const  [password, setPassword] = useState("");
+  const [localUserName, setLocalUserName] = useState("");
+  const [localPassword, setLocalPassword] = useState("");
   const [dni, setDni] = useState("");
-  const [error, setError] = useState({ userName: false, password: false, dni: false });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState({ userName: false, password: false });
+  const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
   const dispatch = useDispatch();
@@ -25,39 +37,37 @@ export default function Login() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (!userName || !password || !dni) {
+    if (!localUserName || !localPassword || !dni) {
       setError({
-        userName: !userName,
-        password: !password,
+        userName: !localUserName,
+        password: !localPassword ,
         dni: !dni
       });
       setErrorMessage("El correo electrónico, la contraseña y el DNI son necesarios");
       return;
     }
     try {
-
-      const data = await login(userName, password, dni);
-      setError({ userName: false, password: false, dni: false });
-      dispatch(setUser(data));
-      navigate("/home");
-    } catch (error) {
-      setError({ userName: true, password: true, dni: true });
-      setErrorMessage("Usuario, contraseña o DNI incorrectos");
-      console.error("Error en el inicio de sesión", error);
-    }
+      const data = await login(localUserName, localPassword, dni);
+        setError({ userName: false, password: false, dni:false });
+        dispatch(setUser(data));
+        navigate("/home");
+      } catch (error) {
+        setError({ userName: true, password: true, dni: true });
+        setErrorMessage("Usuario, contraseña o DNI incorrectos");
+        console.error("Error en el inicio de sesión", error);
+      }
   };
 
   const handleUsernameChange = (e) => {
-    dispatch(setUser({ ...user, userName: e.target.value }));
+    setLocalUserName(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    setLocalPassword(e.target.value);
   };
 
   const handleDniChange = (e) => {
     setDni(e.target.value);
-
   };
 
   const handleClickShowPassword = () => {
@@ -103,7 +113,9 @@ export default function Login() {
           zIndex: 1,
           flexDirection: "row",
           alignItems: "stretch",
-          backgroundImage: 'url(${showPassword ? gatoOjosCerrados : fondoLogin})',
+          backgroundImage: `url(${
+            showPassword ? gatoOjosCerrados : fondoLogin
+          })`,
           backgroundSize: "cover",
           minHeight: "700px",
         }}
@@ -123,15 +135,17 @@ export default function Login() {
             <Typography variant="h4" component="h1" gutterBottom>
               Iniciar Sesión
             </Typography>
-            {error.userName || error.password || error.dni ? (
+            {error.userName || error.password ? (
               <Alert severity="error">{errorMessage}</Alert>
             ) : null}
             <TextField
               label="Correo Electrónico"
-              value={userName}
+              value={localUserName}
               onChange={handleUsernameChange}
               error={error.userName}
-              helperText={error.userName ? "El correo electrónico es necesario" : ""}
+              helperText={
+                error.userName ? "El correo electrónico es necesario" : ""
+              }
               fullWidth
               margin="normal"
             />
@@ -147,7 +161,7 @@ export default function Login() {
             <TextField
               label="Contraseña"
               type={showPassword ? "text" : "password"}
-              value={password}
+              value={localPassword}
               onChange={handlePasswordChange}
               error={error.password}
               helperText={error.password ? "La contraseña es necesaria" : ""}
@@ -170,7 +184,12 @@ export default function Login() {
                 ),
               }}
             />
-            <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 2, mb: 2 }}>
+            <Grid
+              container
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ mt: 2, mb: 2 }}
+            >
               <FormControlLabel
                 control={<Checkbox name="rememberMe" />}
                 label="Recuérdame"
