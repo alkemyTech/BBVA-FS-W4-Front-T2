@@ -6,6 +6,7 @@ import Login from "./components/login";
 import PageNotFound from "./UI/Page/PageNotFound";
 import Registro from './components/SignUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
+import Gastos from "./components/Gastos";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
              <Route path="/home" element={""} />
 
              <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
+
+             <Route path="/pagos" element={<Gastos/>} />
 
             <Route path="/accounts" element={<div>Accounts</div>} />
             <Route path="/accounts/:userId" element={<div>Account Detail</div>} />

@@ -22,6 +22,7 @@ const pages = [
   "Mis Transacciones",
   "Inversiones",
   "Balance",
+  "Pagos"
 ];
 const settings = ["Mi Perfil", "Datos de cuenta", "Cerrar Sesion"];
 
