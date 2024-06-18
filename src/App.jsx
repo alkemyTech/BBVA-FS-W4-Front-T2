@@ -6,6 +6,7 @@ import Login from "./components/UI/login";
 import PageNotFound from "./components/UI/page/PageNotFound";
 import Registro from './components/UI/singUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
+import Home from "./components/Home";
 function App() {
 
   return (
@@ -19,7 +20,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signUp" element={<Registro/>} />
         <Route path="/signUp/admin" element={""} />
-        <Route path="/home" element={""}/>
+        <Route path="/home" element={<Home/>}/>
 
 
         <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
