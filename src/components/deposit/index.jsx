@@ -13,7 +13,6 @@ const Deposito = () => {
   const [date, setDate] = useState(new Date());
   const [error, setError] = useState("");
   const token = localStorage.getItem('token');
-  const currency = selectedAccount.currency;
 
   useEffect(() => {
     if (userId) {
@@ -21,46 +20,73 @@ const Deposito = () => {
     }
   }, [userId, dispatch]);
 
-  const handleSubmit = (e) => {
+  const updateTokenForAccount = async (accountId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/select/${accountId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      let newToken = response.headers.get('authorization'); 
+      if (newToken && newToken.startsWith('Bearer ')) {
+        newToken = newToken.slice(7, newToken.length);
+      }
+      localStorage.setItem('token', newToken); // Actualizar el token en el almacenamiento local
+      return newToken;
+    } catch (error) {
+      console.error('Error al actualizar el token:', error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (amount <= 0) {
       setError("El monto debe ser mayor que cero");
       return;
     }
 
-    const transactionDetails = {
-      destino: selectedAccount,
-      amount: parseFloat(amount),
-      currency: currency,
-      description: details,
-    };
+    try {
+      const newToken = await updateTokenForAccount(selectedAccount);
 
-    // Llamar a addBalance en el frontend
-    dispatch(addBalance(transactionDetails));
+      const transactionDetails = {
+        destino: selectedAccount,
+        amount: parseFloat(amount),
+        currency: "ARS",
+        description: details,
+      };
 
-    // Llamar al backend
-    fetch('http://localhost:8080/transactions/deposit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-       'authorization': `Bearer ${token}`, // Asegúrate de obtener y añadir el token correctamente
-      },
-      body: JSON.stringify(transactionDetails),
-    })
-    .then(response => response.json())
-    .then(data => {
+      // Llamar a addBalance en el frontend
+      dispatch(addBalance(transactionDetails));
+
+      // Llamar al backend
+      const response = await fetch('http://localhost:8080/transactions/deposit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${newToken}`, // Usar el nuevo token actualizado
+        },
+        body: JSON.stringify(transactionDetails),
+      });
+
+      const data = await response.json();
       // Manejo de la respuesta del backend
       console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
 
-    setError("");
-    setSelectedAccount("");
-    setAmount("");
-    setDetails("");
-    setDate(new Date());
+      setError("");
+      setSelectedAccount("");
+      setAmount("");
+      setDetails("");
+      setDate(new Date());
+    } catch (error) {
+      console.error('Error:', error);
+      setError("Error al procesar la transacción");
+    }
   };
 
   return (
@@ -102,7 +128,7 @@ const Deposito = () => {
             margin="normal"
           >
             {accounts.map((account) => (
-              <MenuItem key={account.id} value={account.cbu}>
+              <MenuItem key={account.id} value={account.id}>
                 {account.cbu} - {account.currency}
               </MenuItem>
             ))}

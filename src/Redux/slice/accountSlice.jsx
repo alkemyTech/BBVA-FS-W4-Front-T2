@@ -18,6 +18,7 @@ const initialState = {
   accounts: [],
   status: 'idle',
   error: null,
+  id: null,
   balance: 0,
   account_type: '',
   currency: '',
@@ -29,7 +30,8 @@ const accountSlice = createSlice({
   initialState,
   reducers: {
     setAccount: (state, action) => {
-      const { balance, account_type, currency, cbu } = action.payload;
+      const { id,balance, account_type, currency, cbu } = action.payload;
+      state.id = id;
       state.balance = balance;
       state.account_type = account_type;
       state.currency = currency;

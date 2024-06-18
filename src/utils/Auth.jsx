@@ -49,11 +49,11 @@ const register = async (userName, firstName, lastName, birthDate, password, dni)
 
   const data = await response.json();
 
-  let token = response.headers.get('authorization'); 
-  if (token && token.startsWith('Bearer ')) {
-    token = token.slice(7, token.length);
+  let newToken = response.headers.get('authorization'); 
+  if (newToken && newToken.startsWith('Bearer ')) {
+    newToken = newToken.slice(7, newToken.length);
   }
-  localStorage.setItem('token', token);
+  localStorage.setItem('token', newToken);
   return data;
 };
 
