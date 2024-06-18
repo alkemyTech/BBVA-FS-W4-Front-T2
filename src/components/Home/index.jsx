@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Card,
-  CardContent,
   Grid,
   Paper,
   Table,
@@ -12,7 +11,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import axios from "axios";
+import CatLoader from "../../assets/components/CatLoader/catLoader";
+import "./home.css";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import MovingIcon from "@mui/icons-material/Moving";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -20,29 +23,41 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = "tu_token_de_autorizacion";
+    const token = localStorage.getItem("token");
 
-    // Configurar axios con el token de autorización
-    const axiosInstance = axios.create({
-      baseURL: "http://localhost:8080",
+    // Configurar fetch con el token de autorización
+    fetch("http://localhost:8080/accounts/balance", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
-
-    axiosInstance.get("/accounts/balance")
-      .then(response => {
-        setData(response.data);
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setError(error);
         setLoading(false);
       });
   }, []);
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+  };
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+  };
+
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return <CatLoader />;
   }
 
   if (error) {
@@ -55,52 +70,86 @@ export default function Home() {
 
   return (
     <>
-      <Grid container spacing={3} style={{ marginTop: "20px" }}>
+      <Grid container spacing={3} style={{ marginTop: "5vh" }}>
         <Grid item xs={12} md={4}>
-          <Card style={{ backgroundColor: "#f5f5f5" }}>
-            <CardContent>
-              <Typography variant="h5">Account ARS</Typography>
-              <Typography>{data.accountArs}</Typography>
-            </CardContent>
+          <Card className="card">
+            <Grid
+              item
+              sx={12}
+              className="status-card-inner status-card-bg-blue"
+            >
+              <Grid item sx={6}>
+                <Typography variant="h4">Cuenta ARS</Typography>
+                <Typography variant="h5">{formatCurrency(data.accountArs)}</Typography>
+              </Grid>
+              <Grid item sx={6}>
+                <AccountBalanceWalletIcon
+                  sx={{ fontSize: "80px", opacity: "0.5" }}
+                />
+              </Grid>
+            </Grid>
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card style={{ backgroundColor: "#e0f7fa" }}>
-            <CardContent>
-              <Typography variant="h5">Account USD</Typography>
-              <Typography>{data.accountUsd}</Typography>
-            </CardContent>
+          <Card className="card">
+            <Grid
+              item
+              sx={12}
+              className="status-card-inner status-card-bg-green"
+            >
+              <Grid item sx={6}>
+                <Typography variant="h4">Cuenta USD</Typography>
+                <Typography variant="h5">{formatCurrency(data.accountUsd)}</Typography>
+              </Grid>
+              <Grid item sx={6}>
+                <AttachMoneyIcon sx={{ fontSize: "80px", opacity: "0.5" }} />
+              </Grid>
+            </Grid>
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card style={{ backgroundColor: "#ffecb3" }}>
-            <CardContent>
-              <Typography variant="h5">Total Fixed Term Deposits</Typography>
-              <Typography>{data.totalFixedTermDeposits}</Typography>
-            </CardContent>
+          <Card className="card">
+            <Grid
+              item
+              sx={12}
+              className="status-card-inner status-card-bg-read"
+            >
+              <Grid item sx={6}>
+                <Typography variant="h4">Cuenta Plazos Fijos</Typography>
+                <Typography variant="h5">
+                  {formatCurrency(data.totalFixedTermDeposits)}
+                </Typography>
+              </Grid>
+              <Grid item sx={6}>
+                <MovingIcon sx={{ fontSize: "80px", opacity: "0.5" }} />
+              </Grid>
+            </Grid>
           </Card>
         </Grid>
       </Grid>
 
-      {/* Segunda parte: Tabla */}
-      <TableContainer component={Paper} style={{ marginTop: "40px" }}>
-        <Table>
+      <TableContainer
+        component={Paper}
+        style={{ marginTop: "10vh" }}
+        className="table-container"
+      >
+        <Table className="table">
           <TableHead>
             <TableRow>
-              <TableCell>Transaction Date</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Currency</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Origin Account CBU</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell>Tipo de Transccion</TableCell>
+              <TableCell>Moneda</TableCell>
+              <TableCell>Monto</TableCell>
+              <TableCell>CBU Destino</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.accountTransactions.map(transaction => (
+            {data.accountTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
-                <TableCell>{transaction.transactionDate}</TableCell>
+                <TableCell>{formatDate(transaction.transactionDate)}</TableCell>
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{transaction.currency}</TableCell>
-                <TableCell>{transaction.amount}</TableCell>
+                <TableCell>{formatCurrency(transaction.amount)}</TableCell>
                 <TableCell>{transaction.originAccountCBU}</TableCell>
               </TableRow>
             ))}
