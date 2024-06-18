@@ -7,6 +7,7 @@ import PageNotFound from "./UI/Page/PageNotFound";
 import Registro from './components/SignUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
+import Deposito from "./components/deposit"
 
 function App() {
   return (

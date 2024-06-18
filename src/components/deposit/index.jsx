@@ -1,34 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addBalance, fetchAccounts } from "../../../Redux/slice/accountSlice";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  MenuItem,
-  Paper,
-  Grid,
-} from "@mui/material";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-
-const currencies = [
-  { value: "ARS", label: "ARS" },
-  { value: "USD", label: "USD" },
-];
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Grid, Paper, Typography, Box, TextField, MenuItem, Button } from '@mui/material';
+import { fetchAccounts, addBalance } from "../../Redux/slice/accountSlice"; // Importa tus acciones
 
 const Deposito = () => {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.user.id); // Obtener el id del usuario del estado global
+  const userId = useSelector((state) => state.user.id); // Obtener el id del usuario del estado global
   const accounts = useSelector((state) => state.account.accounts);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [amount, setAmount] = useState("");
-  const [concept, setConcept] = useState("");
   const [details, setDetails] = useState("");
-  const [currency, setCurrency] = useState("ARS");
   const [date, setDate] = useState(new Date());
   const [error, setError] = useState("");
+  const token = localStorage.getItem('token');
+  const currency = selectedAccount.currency;
 
   useEffect(() => {
     if (userId) {
@@ -42,21 +27,39 @@ const Deposito = () => {
       setError("El monto debe ser mayor que cero");
       return;
     }
-    const balanceDetails = {
-      account: selectedAccount,
+
+    const transactionDetails = {
+      destino: selectedAccount,
       amount: parseFloat(amount),
-      concept,
-      details,
-      currency,
-      date: date.toISOString(),
+      currency: currency,
+      description: details,
     };
-    dispatch(addBalance(balanceDetails));
+
+    // Llamar a addBalance en el frontend
+    dispatch(addBalance(transactionDetails));
+
+    // Llamar al backend
+    fetch('http://localhost:8080/transactions/deposit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+       'authorization': `Bearer ${token}`, // Asegúrate de obtener y añadir el token correctamente
+      },
+      body: JSON.stringify(transactionDetails),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Manejo de la respuesta del backend
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
     setError("");
     setSelectedAccount("");
     setAmount("");
-    setConcept("");
     setDetails("");
-    setCurrency("ARS");
     setDate(new Date());
   };
 
@@ -99,23 +102,15 @@ const Deposito = () => {
             margin="normal"
           >
             {accounts.map((account) => (
-              <MenuItem key={account.id} value={account.id}>
-                {account.name}
+              <MenuItem key={account.id} value={account.cbu}>
+                {account.cbu} - {account.currency}
               </MenuItem>
             ))}
           </TextField>
           <TextField
             label="Monto"
-            type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Concepto"
-            value={concept}
-            onChange={(e) => setConcept(e.target.value)}
             fullWidth
             margin="normal"
           />
@@ -126,26 +121,7 @@ const Deposito = () => {
             fullWidth
             margin="normal"
           />
-          <TextField
-            label="Moneda"
-            select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            fullWidth
-            margin="normal"
-          >
-            {currencies.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <DatePicker
-            selected={date}
-            onChange={(newDate) => setDate(newDate)}
-            dateFormat="dd/MM/yyyy"
-            customInput={<TextField label="Fecha" fullWidth margin="normal" />}
-          />
+
           <Button variant="contained" type="submit" fullWidth>
             Cargar Saldo
           </Button>

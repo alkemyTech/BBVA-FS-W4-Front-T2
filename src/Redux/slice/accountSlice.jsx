@@ -5,7 +5,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchAccounts = createAsyncThunk(
   "accounts/fetchAccounts",
   async (userId) => {
-    const response = await fetch(`http://localhost:8080/accounts/${userId}`);
+    const response = await fetch(`http://localhost:8080/accounts/myAccounts/${userId}`);
     if (!response.ok) {
       throw new Error('Error al obtener las cuentas');
     }
@@ -21,6 +21,7 @@ const initialState = {
   balance: 0,
   account_type: '',
   currency: '',
+  cbu:'',
 };
 
 const accountSlice = createSlice({
@@ -28,10 +29,11 @@ const accountSlice = createSlice({
   initialState,
   reducers: {
     setAccount: (state, action) => {
-      const { balance, account_type, currency } = action.payload;
+      const { balance, account_type, currency, cbu } = action.payload;
       state.balance = balance;
       state.account_type = account_type;
       state.currency = currency;
+      state.cbu = cbu;
     },
     clearAccount: () => initialState,
     addBalance: (state, action) => {
