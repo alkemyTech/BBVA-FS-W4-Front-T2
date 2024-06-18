@@ -7,16 +7,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {clearUser} from '../../../../Redux/slice/userSlice'
+import {clearUser} from '../../../Redux/slice/userSlice'
 
 export const Logout = ({ logout, setLogout }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(clearUser()); // Limpiar el estado de Redux
+    dispatch(clearUser()); 
     setLogout(false);
-    navigate('/'); // Redirigir a la página de inicio (o login)
+    localStorage.removeItem('token');
+    navigate('/'); 
   };
 
   const handleClose = () => {

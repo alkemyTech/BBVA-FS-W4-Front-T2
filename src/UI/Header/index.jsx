@@ -30,7 +30,7 @@ function Header() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [logout, setLogout] = React.useState(false);
   const navigate = useNavigate();
-  const userName = useSelector((state) => state.user.user.userName);
+  const userName = useSelector((state) => state.user.userName);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -50,6 +50,10 @@ function Header() {
 
   const handleClickLogout = () => {
     setLogout(true);
+  };
+  const handlePageChange = (page) => {
+    navigate(page === 'Transferir' ? '/transferir/' : `/${page.toLowerCase().replace(' ', '-')}`);
+    handleCloseNavMenu();
   };
 
   return (
@@ -88,10 +92,10 @@ function Header() {
               pages.map((page) => (
                 <Button
                   key={page}
-                  component={NavLink}
-                  to={`/${page.toLowerCase()}`}
+                  onClick={() => handlePageChange(page)}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
+
                   {page}
                 </Button>
               ))}

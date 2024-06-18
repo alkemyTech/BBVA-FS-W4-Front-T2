@@ -13,20 +13,25 @@ import {
   List,
   ListItem,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import { CheckSharp, ClearSharp } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import fondoRegistro from "../../../assets/fondoLogin.svg";
-import fondoRegistroClosedEyes from "../../../assets/gatoOjosCerrados.svg";
-import LoadingCat from "../../../assets/components/loadingCat";
-import { useImageLoader } from "../../../utils/useImageLoader";
+import fondoRegistro from "../../assets/fondoLogin.svg";
+import fondoRegistroClosedEyes from "../../assets/gatoOjosCerrados.svg";
+import LoadingCat from "../../assets/components/loadingCat";
+import { useImageLoader } from "../../utils/useImageLoader";
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../Redux/slice/userSlice';
+import {register} from "../../utils/Auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Registro() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const user = useSelector((state) => state.user);
+  const { id, userName, firstName, lastName } = user;
   const [birthDate, setBirthDate] = useState("");
-  const [userName, setUserName] = useState("");
+  const [dni, setDni] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState({
@@ -36,11 +41,15 @@ export default function Registro() {
     userName: false,
     password: false,
     confirmPassword: false,
+    dni: false,
   });
-  const [isSubmitted, setIsSubmitted] = useState(false); // Nuevo estado
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   const imagesLoaded = useImageLoader([fondoRegistro, fondoRegistroClosedEyes]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const requirements = useMemo(
     () => [
@@ -60,13 +69,14 @@ export default function Registro() {
 
   const handleRegistro = async (event) => {
     event.preventDefault();
-    setIsSubmitted(true); // Indicar que se ha enviado el formulario
+    setIsSubmitted(true);
 
     if (
       !firstName ||
       !lastName ||
       !birthDate ||
       !userName ||
+      !dni ||
       !password ||
       !confirmPassword
     ) {
@@ -77,6 +87,7 @@ export default function Registro() {
         lastName: !lastName,
         confirmPassword: !confirmPassword,
         birthDate: !birthDate,
+        dni: !dni,
       });
       setErrorMessage("Todos los campos son necesarios");
       return;
@@ -88,42 +99,48 @@ export default function Registro() {
         confirmPassword: true,
       });
       setErrorMessage("Las contraseñas no coinciden");
-      return; // Prevenir el envío del formulario
+      return;
     }
 
-    const [year, month, day] = birthDate.split("-");
-    const formattedBirthDate = `${day}-${month}-${year}`;
 
     try {
-      const response = await fetch("http://localhost:8080/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName,
-          password,
-          firstName,
-          lastName,
-          birthDate: formattedBirthDate,
-        }),
-      });
-
-      if (response.ok) {
-        console.log("Registro exitoso");
-        // setsuccefull
-      } else {
-        setErrorMessage("Error en el registro");
-        console.error("Error en el registro");
-      }
+      const data = await register(userName, firstName, lastName, birthDate, password, dni);
+      setError({ userName: false, password: false, dni: false, firstName: false, lastName: false, birthDate: false });
+      dispatch(setUser(data));
+      console.log("Registro exitoso");
+      navigate("/home");
     } catch (error) {
-      setErrorMessage("Error de red: no se pudo conectar con el servidor");
-      console.error("Error de red:", error);
+      if (error.response) {
+        // Error de respuesta del servidor
+        setError({ userName: true, password: true, dni: true, firstName: true, lastName: true, birthDate: true });
+        setErrorMessage("Usuario, contraseña o DNI incorrectos");
+        console.error("Error en el inicio de sesión", error);
+      } else if (error.request) {
+        // Error de red
+        setErrorMessage("Error de red: no se pudo conectar con el servidor");
+        console.error("Error de red:", error);
+      } else {
+        // Otro tipo de error
+        setErrorMessage("Ocurrió un error inesperado");
+        console.error("Error inesperado:", error);
+      }
     }
-  };
+    };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleFocus = () => {
+    setTooltipOpen(true);
+  };
+
+  const handleBlur = () => {
+    setTooltipOpen(false);
+  };
+
+  const handleChange = (field) => (e) => {
+    dispatch(setUser({ ...user, [field]: e.target.value }));
   };
 
   if (!imagesLoaded) {
@@ -174,13 +191,19 @@ export default function Registro() {
             <Typography variant="h4" component="h1" gutterBottom>
               Registro
             </Typography>
-            {isSubmitted && (error.userName || error.password || error.birthDate || error.lastName || error.confirmPassword) && (
-              <Alert severity="error">{errorMessage}</Alert>
-            )}
+            {isSubmitted &&
+              (error.userName ||
+                error.password ||
+                error.birthDate ||
+                error.lastName ||
+                error.confirmPassword ||
+                error.dni) && (
+                <Alert severity="error">{errorMessage}</Alert>
+              )}
             <TextField
               label="Nombre"
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              onChange={handleChange('firstName')}
               error={isSubmitted && error.firstName}
               fullWidth
               margin="normal"
@@ -188,7 +211,7 @@ export default function Registro() {
             <TextField
               label="Apellido"
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={handleChange('lastName')}
               error={isSubmitted && error.lastName}
               fullWidth
               margin="normal"
@@ -202,57 +225,68 @@ export default function Registro() {
               margin="normal"
             />
             <TextField
-              label="Correo Electrónico"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              error={isSubmitted && error.userName}
+              label="DNI"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              error={isSubmitted && error.dni}
               fullWidth
               margin="normal"
             />
             <TextField
-              label="Contraseña"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={isSubmitted && error.password}
+              label="Correo Electrónico"
+              value={userName}
+              onChange={handleChange('userName')}
+              error={isSubmitted && error.userName}
               fullWidth
               margin="normal"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        "&:focus": { outline: "none" },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
-
-            <List
-              dense
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              }}
+            <Tooltip
+              title={
+                <List dense>
+                  {requirements.map((req, index) => (
+                    <ListItem key={index}>
+                      {req.regex.test(password) ? (
+                        <CheckSharp color="success" />
+                      ) : (
+                        <ClearSharp color="error" />
+                      )}
+                      <ListItemText primary={req.text} />
+                    </ListItem>
+                  ))}
+                </List>
+              }
+              arrow
+              placement="top"
+              open={tooltipOpen}
             >
-              {requirements.map((req, index) => (
-                <ListItem key={index}>
-                  {req.regex.test(password) ? (
-                    <CheckSharp color="success" />
-                  ) : (
-                    <ClearSharp color="error" />
-                  )}
-                  <ListItemText primary={req.text} />
-                </ListItem>
-              ))}
-            </List>
+              <TextField
+                label="Contraseña"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={isSubmitted && error.password}
+                fullWidth
+                margin="normal"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment>
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                        sx={{
+                          "&:focus": { outline: "none" },
+                        }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Tooltip>
 
             <TextField
               label="Confirmar Contraseña"
@@ -288,8 +322,7 @@ export default function Registro() {
               Registrarse
             </Button>
             <Typography variant="body2" sx={{ marginTop: 2 }}>
-              ¿Ya tienes cuenta?{" "}
-              <Link to="/login">Volver a inicio de sesión</Link>
+              ¿Ya tienes cuenta? <Link to="/">Volver a inicio de sesión</Link>
             </Typography>
           </Grid>
         </Grid>
