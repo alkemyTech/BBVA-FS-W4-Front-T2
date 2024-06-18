@@ -51,6 +51,10 @@ function Header() {
   const handleClickLogout = () => {
     setLogout(true);
   };
+  const handlePageChange = (page) => {
+    navigate(page === 'Transferir' ? '/transferir/' : `/${page.toLowerCase().replace(' ', '-')}`);
+    handleCloseNavMenu();
+  };
 
   return (
     <AppBar
@@ -88,10 +92,10 @@ function Header() {
               pages.map((page) => (
                 <Button
                   key={page}
-                  component={NavLink}
-                  to={`/${page.toLowerCase()}`}
+                  onClick={() => handlePageChange(page)}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
+
                   {page}
                 </Button>
               ))}
