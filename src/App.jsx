@@ -8,6 +8,7 @@ import Registro from './components/SignUp';
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
 import Transferir from "./components/Transferir";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
+import DatosUser from "./components/Datos";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
 
              <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
              <Route path="/Transferir" element={<Transferir/>} />
+             <Route path="/MisDatos" element={<DatosUser/>} />
 
             <Route path="/accounts" element={<div>Accounts</div>} />
             <Route path="/accounts/:userId" element={<div>Account Detail</div>} />
