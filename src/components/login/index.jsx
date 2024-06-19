@@ -43,7 +43,7 @@ export default function Login() {
         password: !localPassword ,
         dni: !dni
       });
-      setErrorMessage("El correo electrónico, la contraseña y el DNI son necesarios");
+      setErrorMessage("Por favor, complete todo los campos");
       return;
     }
     try {
@@ -82,7 +82,6 @@ export default function Login() {
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
-          backgroundColor: "#182346",
         }}
       >
         <LoadingCat />
@@ -94,7 +93,6 @@ export default function Login() {
     <Grid
       container
       sx={{
-        height: "100vh",
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -103,7 +101,6 @@ export default function Login() {
         sx={{
           width: "1170px",
           display: "flex",
-          background: "#fff",
           margin: "auto",
           boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",
           borderRadius: "10px",
@@ -142,9 +139,6 @@ export default function Login() {
               value={localUserName}
               onChange={handleUsernameChange}
               error={error.userName}
-              helperText={
-                error.userName ? "El correo electrónico es necesario" : ""
-              }
               fullWidth
               margin="normal"
             />
@@ -153,7 +147,6 @@ export default function Login() {
               value={dni}
               onChange={handleDniChange}
               error={error.dni}
-              helperText={error.dni ? "El DNI es necesario" : ""}
               fullWidth
               margin="normal"
             />
@@ -163,7 +156,6 @@ export default function Login() {
               value={localPassword}
               onChange={handlePasswordChange}
               error={error.password}
-              helperText={error.password ? "La contraseña es necesaria" : ""}
               fullWidth
               margin="dense"
               InputProps={{

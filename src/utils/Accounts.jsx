@@ -12,9 +12,9 @@ export const fetchAccounts = async (userId) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        return data; // Assuming the API returns an object with an `accounts` array
+        return data; 
     } catch (error) {
         console.error('Error fetching accounts:', error);
-        return []; // Return an empty array on error
+        return []; 
     }
 };
