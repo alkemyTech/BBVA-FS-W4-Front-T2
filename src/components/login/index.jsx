@@ -94,7 +94,6 @@ export default function Login() {
     <Grid
       container
       sx={{
-        height: "100vh",
         alignItems: "center",
         justifyContent: "center",
       }}
