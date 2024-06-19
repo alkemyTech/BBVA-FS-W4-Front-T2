@@ -10,8 +10,9 @@ import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
 import Gastos from "./components/Gastos";
 import Transferir from "./components/Transferir";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
-import Deposito from "./components/deposit"
 import DatosUser from "./components/Datos";
+import Deposito from "./components/deposit"
+
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
 
             <Route path="/transactions" element={<div>Transactions</div>} />
             <Route path="/depositar" element={<Deposito/>} />
+
             <Route path="/transactions/user/:userId" element={<div>User Transactions</div>} />
             <Route path="/transactions/:transactionId" element={<div>Transaction Detail</div>} />
             

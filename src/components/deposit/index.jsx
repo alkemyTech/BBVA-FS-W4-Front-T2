@@ -57,7 +57,7 @@ const Deposito = () => {
       const transactionDetails = {
         destino: selectedAccount,
         amount: parseFloat(amount),
-        currency: "ARS",
+        currency: selectedAccount.currency,
         description: details,
       };
 
@@ -75,8 +75,13 @@ const Deposito = () => {
       });
 
       const data = await response.json();
-      // Manejo de la respuesta del backend
       console.log(data);
+
+      let updatedToken = response.headers.get('authorization');
+    if (updatedToken && updatedToken.startsWith('Bearer ')) {
+      updatedToken = updatedToken.slice(7); // Remover 'Bearer ' del token
+      localStorage.setItem('token', updatedToken); // Actualizar el token en el almacenamiento local
+    }
 
       setError("");
       setSelectedAccount("");
@@ -93,8 +98,7 @@ const Deposito = () => {
     <Grid
       container
       sx={{
-        height: "100vh",
-        backgroundColor: "#182346",
+        height: "80vh",
         alignItems: "center",
         justifyContent: "center",
       }}
