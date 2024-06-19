@@ -1,12 +1,13 @@
 .box-principal {
     margin-top: 72px;
-    background-color: #212E55;
-    color: #ffffff;
+    background-color: #B3BEF5;
+    color: #1565C0;
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
-    padding-bottom: 110px;
+    padding-bottom: 55px;
     border-radius: 10px;
+    
   }
 
   .titulo-plazo-fijo{
@@ -25,7 +26,7 @@
   .titulos{
     display: flex;
     flex-direction: row;
-    color: #B4B8D7;
+    color: #1565C0;
 
   }
 
@@ -67,13 +68,19 @@
 
 .gray-line-top{
   max-width: 308px; margin-right:0; height: 0;margin-top: 0;
+  border-color: #1565C0;
 }
 
 .gray-line-bottom{
   width: 126.35px;
   height: 0px;
+  border-color: #1565C0;
   }
 
   
 
 
+  .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+    padding-right: 32px;
+    color: #1565C0;
+}
