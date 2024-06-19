@@ -21,8 +21,9 @@ const Deposito = () => {
   }, [userId, dispatch]);
 
   const updateTokenForAccount = async (accountId) => {
+  
     try {
-      const response = await fetch(`http://localhost:8080/select/${accountId}`, {
+      const response = await fetch(`http://localhost:8080/accounts/select/${accountId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -31,7 +32,6 @@ const Deposito = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
       let newToken = response.headers.get('authorization'); 
       if (newToken && newToken.startsWith('Bearer ')) {
         newToken = newToken.slice(7, newToken.length);
