@@ -99,7 +99,6 @@ const Deposito = () => {
       container
       sx={{
         height: "100vh",
-        backgroundColor: "#182346",
         alignItems: "center",
         justifyContent: "center",
       }}
