@@ -17,11 +17,13 @@ import logo from "/src/assets/logo.svg";
 import { Logout } from "./Logout";
 
 const pages = [
+  "Home",
   "Transferir",
   "Depositar",
   "Mis Transacciones",
   "Inversiones",
   "Balance",
+  "Pagos"
 ];
 const settings = ["Mi Perfil", "Datos de cuenta", "Cerrar Sesion"];
 
@@ -77,7 +79,6 @@ return (
           variant="h6"
           noWrap
           component="a"
-          href="#app-bar-with-responsive-menu"
           sx={{
             mr: 2,
             display: { xs: "none", md: "flex" },
