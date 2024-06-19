@@ -4,7 +4,8 @@ export default function Page(props) {
     return (
     <>
         <Header/>
-        <main style={{minHeight:"89vh"}}>{props.children}</main>
+        <div style={{height:"10vh"}}></div>
+        <main style={{minHeight:"87.5vh"}}>{props.children}</main>
         <Footer/>
     </>
     );
