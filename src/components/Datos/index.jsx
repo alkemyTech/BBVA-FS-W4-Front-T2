@@ -42,7 +42,7 @@ const DatosUser = () => {
     };
 
     return (
-        <Box sx={{ maxWidth: 700, margin: 'auto', mt: 20 }}>
+        <Box sx={{ maxWidth: 700, margin: 'auto', mt: 20 , paddingTop: 0, paddingBottom: 0, marginTop: 5, marginBottom: 10}}>
             <Card>
                 <CardContent>
                     <Typography margin={2} variant="h4" gutterBottom>
