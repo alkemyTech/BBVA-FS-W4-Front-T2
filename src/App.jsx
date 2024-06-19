@@ -33,7 +33,7 @@ function App() {
             <Route path="/loan/simulate" element={<div>Simulate Loan</div>} />
 
             <Route path="/transactions" element={<div>Transactions</div>} />
-            <Route path="transactions/deposit" element={<Deposito/>} />
+            <Route path="depositar" element={<Deposito/>} />
             <Route path="/transactions/user/:userId" element={<div>User Transactions</div>} />
             <Route path="/transactions/:transactionId" element={<div>Transaction Detail</div>} />
             
