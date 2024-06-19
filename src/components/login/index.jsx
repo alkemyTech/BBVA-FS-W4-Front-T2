@@ -82,7 +82,6 @@ export default function Login() {
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
-          backgroundColor: "#182346",
         }}
       >
         <LoadingCat />
@@ -95,7 +94,6 @@ export default function Login() {
       container
       sx={{
         height: "100vh",
-        backgroundColor: "#182346",
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -104,7 +102,6 @@ export default function Login() {
         sx={{
           width: "1170px",
           display: "flex",
-          background: "#fff",
           margin: "auto",
           boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",
           borderRadius: "10px",

@@ -1,0 +1,44 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: #fff;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    padding-left: 16px; /* Ajusta el padding izquierdo según tu preferencia */
+    padding-right: 16px;
+    font-family: Arial, sans-serif;  /* Ajusta el padding derecho según tu preferencia */
+  }
+  
+  .footer a {
+    color: #fff; /* Color de los enlaces */
+    text-decoration: none; /* Quitar subrayado de los enlaces */
+  }
+  
+  .footer a:hover {
+    text-decoration: underline; /* Subrayado al pasar el mouse sobre los enlaces */
+  }
+  
+  .footer .social-icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .footer .contact-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .footer .contact-info .contact-item {
+    margin-right: 16px; /* Espacio entre ícono y texto de contacto */
+  }
+  
+  .footer .copyright {
+    text-align: center;
+  }
+  
