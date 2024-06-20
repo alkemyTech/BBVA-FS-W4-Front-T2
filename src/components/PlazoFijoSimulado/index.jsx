@@ -10,10 +10,23 @@ import Select from "@mui/material/Select";
 import { useState } from "react";
 import "./fixedTerm.css";
 
+import dayjs from "dayjs";
+import "dayjs/locale/de";
+import "dayjs/locale/en-gb";
+import "dayjs/locale/zh-cn";
+import Stack from "@mui/material/Stack";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateField } from "@mui/x-date-pickers/DateField";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+const locales = ["en", "en-gb", "zh-cn", "de"];
+
 export default function PlazoFijoSimulado() {
   const [dias, setDias] = useState(30);
   const [monto, setMonto] = useState("");
   const [error, setError] = useState(false);
+  const [locale, setLocale] = useState("en-gb");
 
   const handleChangeDias = (event) => {
     setDias(event.target.value);
@@ -30,7 +43,7 @@ export default function PlazoFijoSimulado() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!monto || monto<500) {
+    if (!monto || monto < 500) {
       setError(true);
       return;
     }
@@ -63,6 +76,28 @@ export default function PlazoFijoSimulado() {
 
   return (
     <section className="box-principal">
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
+        <Stack spacing={3} sx={{ width: 300 }}>
+          <ToggleButtonGroup
+            value={locale}
+            exclusive
+            fullWidth
+            onChange={(event, newLocale) => {
+              if (newLocale != null) {
+                setLocale(newLocale);
+              }
+            }}
+          >
+            {locales.map((localeItem) => (
+              <ToggleButton key={localeItem} value={localeItem}>
+                {localeItem}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <DateField defaultValue={dayjs()} />
+        </Stack>
+      </LocalizationProvider>
+
       <p className="titulo-plazo-fijo" fontSize="48">
         Simulá tu plazo fijo
       </p>
@@ -73,7 +108,13 @@ export default function PlazoFijoSimulado() {
         <p className="titulo-secundario dias">Días a invertir</p>
       </article>
 
-      <Box component="form" noValidate autoComplete="off" id="box-secundario" onSubmit={handleSubmit}>
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        id="box-secundario"
+        onSubmit={handleSubmit}
+      >
         <div>
           <TextField
             required
@@ -106,7 +147,11 @@ export default function PlazoFijoSimulado() {
             value={monto}
             onChange={handleChangeMonto}
             error={error}
-            helperText={error ? "El monto ingresado tiene que ser mayor o igual a 500" : ""}
+            helperText={
+              error
+                ? "El monto ingresado tiene que ser mayor o igual a 500"
+                : ""
+            }
           />
         </div>
 

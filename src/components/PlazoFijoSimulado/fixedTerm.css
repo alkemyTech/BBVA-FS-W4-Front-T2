@@ -1,21 +1,18 @@
 .box-principal {
-    margin-top: 72px;
     background-color: #B3BEF5;
     color: #1565C0;
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
-    padding-bottom: 55px;
+    padding: 55px;
+    padding-left:80px ;
     border-radius: 10px;
-    
   }
 
   .titulo-plazo-fijo{
     display: flex;
     justify-content: end;
     font-size: 32px;
-    margin:0px;
-    padding-right: 40px ;
   }
 
   .titulo-secundario{
@@ -69,12 +66,15 @@
 .gray-line-top{
   max-width: 308px; margin-right:0; height: 0;margin-top: 0;
   border-color: #1565C0;
+  margin-bottom: 80px;
+  display: flex;
 }
 
 .gray-line-bottom{
   width: 126.35px;
   height: 0px;
   border-color: #1565C0;
+
   }
 
   
