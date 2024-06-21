@@ -22,7 +22,7 @@
 }
 
 .custom-textfield, .custom-formcontrol {
-    grid-column: span 1; /* Predeterminado: ocupar una columna */
+    grid-column: span 1;
 }
 
 .custom-textfield.description {

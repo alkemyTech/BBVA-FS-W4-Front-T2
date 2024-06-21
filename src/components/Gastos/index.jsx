@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Tooltip, InputAdornment } from '@mui/material';
+import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography, InputAdornment } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import InfoIcon from '@mui/icons-material/Info';
 import './gastos.css';
 import { useSelector } from 'react-redux';
 import { fetchAccounts } from '../../utils/Accounts';
+import { useNavigate } from 'react-router-dom';
 
 export default function Gastos() {
   const [accounts, setAccounts] = useState([]);
@@ -24,6 +24,7 @@ export default function Gastos() {
     message: '',
     icon: null
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getAccounts = async () => {
@@ -105,13 +106,13 @@ export default function Gastos() {
 
         if (text) {
           const data = JSON.parse(text); // Parse the text as JSON
-          const message = `
-          Fecha del Pago: ${data.fechaPago}
-          Moneda: ${data.currency}
-          CBU Destino: ${data.destino}
-          Monto: $ ${data.amount}
-          Descripción: ${data.description || 'N/A'}
-          `;
+          const message =
+          ` Información de la transacción
+          Fecha del pago: ${data.fechaPago} 
+          Moneda: ${data.currency} 
+          CBU destino: ${data.destino} 
+          Monto: $${data.amount} 
+          Descripción: ${data.description}`;
 
           handleDialogOpen('Pago Exitoso', message, <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         } else {
@@ -150,6 +151,7 @@ export default function Gastos() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    navigate('/home'); 
   };
 
   return (
@@ -209,10 +211,10 @@ export default function Gastos() {
           onChange={handleChange}
           margin="normal"
           className="custom-textfield description"
-          multiline  // Permite múltiples líneas
-          rows={1}  // Número inicial de filas
+          multiline={true}
+          maxRows={2}
           inputProps={{
-            maxLength: 100  // Limitar la cantidad máxima de caracteres
+            maxLength: 100  
           }}
           
         />
@@ -222,18 +224,51 @@ export default function Gastos() {
       </Box>
 
       {/* Dialog para mostrar la confirmación o el error */}
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>{dialogContent.icon}</DialogTitle>
-        <DialogContent>
-          <Typography variant="h6">{dialogContent.title}</Typography>
-          <Typography component="pre">{dialogContent.message}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
+    <Dialog
+      open={dialogOpen}
+      onClose={handleDialogClose}
+      PaperProps={{
+        style: {
+          padding: '20px',
+          borderRadius: '15px',
+          backgroundColor: '#f5f5f5',
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #ccc'
+        }
+      }}
+    />
+      <Dialog
+      open={dialogOpen}
+      onClose={handleDialogClose}
+      PaperProps={{
+        style: {
+          padding: '10px',
+          borderRadius: '15px',
+          backgroundColor: '#f5f5f5',
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #ccc'
+        }
+      }}
+    >
+      <DialogTitle>
+        <Box display="flex" alignItems="center">
+          {dialogContent.icon}
+          <Typography variant="h6" component="span" style={{ fontWeight: 'bold', marginLeft: 8, fontSize: '1.5rem' }}>
+            {dialogContent.title}
+          </Typography>
+        </Box>
+      </DialogTitle>
+      <DialogContent>
+        <Typography style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap', textAlign: 'left', fontSize: '1.3rem' }}>
+          {dialogContent.message}
+        </Typography>
+      </DialogContent>
+      <DialogActions style={{ justifyContent: 'right' }}>
+        <Button onClick={handleDialogClose} color="primary" style={{ fontSize: '1.2rem' }}>
+          Cerrar
+        </Button>
+      </DialogActions>
+    </Dialog>
     </section>
   );
 }
