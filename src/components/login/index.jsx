@@ -90,58 +90,43 @@ export default function Login() {
   }
 
   return (
-    <Grid
-      container
-      sx={{
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Paper
-        sx={{
-          width: "1170px",
-          display: "flex",
-          margin: "auto",
-          boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",
-          borderRadius: "10px",
-          overflow: "hidden",
-          position: "relative",
-          zIndex: 1,
-          flexDirection: "row",
-          alignItems: "stretch",
-          backgroundImage: `url(${
-            showPassword ? gatoOjosCerrados : fondoLogin
-          })`,
+      <Grid 
+        container 
+        sx={{ 
+          width: "940px", 
+          boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",  
+          borderRadius: "10px",  
+          backgroundImage: `url(${ showPassword ? gatoOjosCerrados : 
+          fondoLogin})`,
           backgroundSize: "cover",
-          minHeight: "700px",
+          minHeight: "275px",
+          
         }}
       >
-        <Grid container sx={{ flex: 1 }}>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              padding: 3,
-            }}
-          >
-            <Typography variant="h4" component="h1" gutterBottom>
+          <Grid item xs={6} sx={{ p: 4.5, mt:9}}>
+            <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Typography variant="h4" component="h1" gutterBottom color={"primary"}>
               Iniciar Sesión
-            </Typography>
-            {error.userName || error.password ? (
-              <Alert severity="error">{errorMessage}</Alert>
-            ) : null}
-            <TextField
-              label="Correo Electrónico"
-              value={localUserName}
-              onChange={handleUsernameChange}
-              error={error.userName}
-              fullWidth
-              margin="normal"
-            />
+              </Typography>
+            </Grid>
+            {error.userName || 
+              (error.password && <Alert severity="error">{errorMessage}</Alert>
+            )}
+            <Grid item xs={12}>
+              <TextField
+                label="Correo Electrónico"
+                value={localUserName}
+                onChange={handleUsernameChange}
+                error={error.userName}
+                helperText={
+                 error.userName ? "El correo electrónico es necesario":""
+               }
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
             <TextField
               label="DNI"
               value={dni}
@@ -150,62 +135,61 @@ export default function Login() {
               fullWidth
               margin="normal"
             />
-            <TextField
-              label="Contraseña"
-              type={showPassword ? "text" : "password"}
-              value={localPassword}
-              onChange={handlePasswordChange}
-              error={error.password}
-              fullWidth
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Contraseña"
+                type={showPassword ? "text" : "password"}
+                value={localPassword}
+                onChange={handlePasswordChange}
+                error={error.password}
+                fullWidth
+                margin="dense"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment>
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                        sx={{
                         "&:focus": { outline: "none" },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Grid
-              container
-              justifyContent="space-between"
-              alignItems="center"
-              sx={{ mt: 2, mb: 2 }}
-            >
-              <FormControlLabel
+                        }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                     </IconButton>
+                    </InputAdornment>
+                  ),
+               }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel 
+                
                 control={<Checkbox name="rememberMe" />}
                 label="Recuérdame"
+                sx={{color: "black"}}
               />
-              <Link href="/" underline="hover">
-                ¿Olvidaste tu contraseña?
-              </Link>
+              
             </Grid>
-            <Button
-              variant="contained"
-              type="submit"
-              fullWidth
-              onClick={handleLogin}
-            >
+            <Grid item xs={12}>
+            <Button variant="contained" type="submit" fullWidth onClick={handleLogin}>
               Iniciar Sesión
             </Button>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              ¿Aún no tienes cuenta?{" "}
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="space-between" sx={{ mt: 1 }}>
+              <Typography variant="body2">
+                ¿Aún no tienes cuenta?
+              </Typography>
               <Link href="/signUp" underline="hover">
                 Regístrate aquí
               </Link>
-            </Typography>
+            </Box>
+            </Grid>
           </Grid>
         </Grid>
-      </Paper>
-    </Grid>
+        <Grid item xs={4}/>
+    </Grid> 
   );
 }
