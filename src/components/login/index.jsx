@@ -93,13 +93,13 @@ export default function Login() {
       <Grid 
         container 
         sx={{ 
-          width: "940px", 
+          width: "980px", 
           boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",  
           borderRadius: "10px",  
           backgroundImage: `url(${ showPassword ? gatoOjosCerrados : 
           fondoLogin})`,
           backgroundSize: "cover",
-          minHeight: "275px",
+          minHeight: "300px",
           
         }}
       >
