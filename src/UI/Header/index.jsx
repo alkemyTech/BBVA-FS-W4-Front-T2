@@ -25,7 +25,7 @@ const pages = [
   "Balance",
   "Pagos"
 ];
-const settings = ["Mi Perfil", "Datos de cuenta", "Cerrar Sesion"];
+const settings = ["Mis datos", "Cerrar Sesion"];
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -132,14 +132,20 @@ return (
               {settings.map((setting) => (
                 <MenuItem
                   key={setting}
-                  onClick={
-                    setting === "Cerrar Sesion"
-                      ? handleClickLogout
-                      : handleCloseUserMenu
-                  }
+                  onClick={() => {
+                    if (setting === "Cerrar Sesion") {
+                      handleClickLogout();
+                    } else if (setting === "Mis datos") {
+                      navigate("/MisDatos");
+                      handleCloseUserMenu();
+                    } else {
+                      handleCloseUserMenu();
+                    }
+                  }}
                 >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
+              
               ))}
             </Menu>
           </Box>

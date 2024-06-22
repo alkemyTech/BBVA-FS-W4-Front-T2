@@ -28,7 +28,7 @@ function Pie() {
         </a>
         <a href="tel:+123456789" className="contact-item">
           <PhoneIcon sx={{ verticalAlign: 'middle', mr: 1, fontSize: '18px' }} />
-          <span>+123 456 789</span>
+          <span>+54 9 1137753743</span>
         </a>
       </div>
       <div className="copyright">
