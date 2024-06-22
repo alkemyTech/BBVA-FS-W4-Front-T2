@@ -1,0 +1,49 @@
+.box-principal {
+    background-color: #ffffff;
+    color: #103551;
+    font-family: "Roboto", sans-serif;
+    padding: 20px;
+    width: 700px;
+    /* Aumentar el ancho del contenedor principal */
+    border-radius: 10px;
+    position: relative;
+    margin: auto;
+    max-width: 700;
+    margin-top: 5;
+    margin-bottom: 20;
+    padding-top: 0;
+    padding-bottom: 20;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Define tres columnas iguales */
+    gap: 20px; /* Espacio entre los elementos */
+
+
+}
+
+.titulo{
+    grid-column: span 2; /* Ocupa las tres columnas disponibles */
+    font-size: 32px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.columnauno{
+    grid-column: 1 / span 1; /* Ocupa una columna, comenzando en la primera columna */
+}
+.columnados{
+    grid-column: 2 / span 1; /* Ocupa una columna, comenzando en la segunda columna */
+}
+.button {
+
+    grid-column: 2 / span 1;
+    /* Ocupa una columna, comenzando en la segunda columna */
+    background-color: #ffffff;
+    border: 3px solid #46A044;
+    color: #46A044;
+    height: 50px;
+    width: 400px;
+    align-self: center;
+    justify-self: center;
+    /* Centrar horizontalmente el botón */
+
+}
