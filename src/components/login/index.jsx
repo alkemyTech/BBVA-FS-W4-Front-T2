@@ -17,12 +17,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import fondoLogin from "../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
 import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; // Ajustar si es necesario
-import LoadingCat from "../../assets/components/loadingCat"; // Ajustar si es necesario
 import { useImageLoader } from "../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/slice/userSlice";
 import { login } from "../../utils/Auth";
+import CatLoader from "../../UI/CatLoader/catLoader";
 
 export default function Login() {
   const [localUserName, setLocalUserName] = useState("");
@@ -81,10 +81,9 @@ export default function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "100vh",
         }}
       >
-        <LoadingCat />
+        <CatLoader />
       </Box>
     );
   }
@@ -102,6 +101,8 @@ export default function Login() {
           minHeight: "300px",
           
         }}
+        component="form"
+        onSubmit={handleLogin}
       >
           <Grid item xs={6} sx={{ p: 4.5, mt:9}}>
             <Grid container spacing={1}>
@@ -173,7 +174,7 @@ export default function Login() {
               
             </Grid>
             <Grid item xs={12}>
-            <Button variant="contained" type="submit" fullWidth onClick={handleLogin}>
+            <Button variant="contained" type="submit" fullWidth >
               Iniciar Sesión
             </Button>
           </Grid>
