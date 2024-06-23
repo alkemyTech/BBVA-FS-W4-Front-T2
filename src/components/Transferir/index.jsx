@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Stepper, Step, StepLabel, TextField, Button, Typography, Card, CardContent, CardActions } from '@mui/material';
+import { Box, Stepper, Step, StepLabel, TextField, Button, Typography, Card, CardContent, CardActions, InputAdornment } from '@mui/material';
 import "/src/main.jsx"
+
 
 const Transferir = () => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -19,12 +20,29 @@ const Transferir = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleCBUChange = (e) => {
-    setTransferData({ ...transferData, cbu: e.target.value });
-  };
 
   const handleAmountChange = (e) => {
-    setTransferData({ ...transferData, amount: e.target.value });
+    let value = e.target.value;
+
+    // Eliminar cualquier caracter que no sea dígito o punto
+    value = value.replace(/[^\d.]/g, '');
+  
+    // Dividir el valor en parte entera y decimal
+    const parts = value.split('.');
+    let formattedValue = '';
+  
+    // Formatear la parte entera con comas
+    if (parts.length > 0) {
+      formattedValue = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+  
+    // Agregar el punto decimal y la parte decimal si existe
+    if (parts.length > 1) {
+      formattedValue += `.${parts[1].slice(0, 2)}`; // Limitar la parte decimal a dos lugares
+    }
+  
+    // Actualizar el estado con el valor formateado
+    setTransferData({ ...transferData, amount: formattedValue });
   };
 
   const handleConfirm = () => {
@@ -32,15 +50,28 @@ const Transferir = () => {
     console.log('Transferencia confirmada:', transferData);
     setActiveStep(steps.length);
   };
+  const handleCBUChange = (e) => {
+    const value = e.target.value;
+    if (/^\d{0,25}$/.test(value)) {
+      setTransferData({ ...transferData, cbu: value });
+    }
+  };
+  const handleReset = () => {
+    setTransferData({
+      cbu: '',
+      amount: '',
+    });
+    setActiveStep(0);
+  };
 
   return (
-    <Box sx={{ maxWidth: 700, margin: 'auto', mt: 20, color: (255, 255, 255, 0.87) }}>
-     <Card>
-     <CardContent>
-      <Typography fontFamily="Roboto" fontSize="50px" margin={2} variant="h3" gutterBottom color="black" >
-        Transferir
-      </Typography>
-      
+    <Box sx={{ display: 'grid', placeItems: 'center', }}>
+      <Card sx={{ width: '160%', maxWidth: '800px', p: 2, justifyContent: 'center', alignItems: 'center', }} >
+        <CardContent>
+          <Typography fontFamily="Roboto" fontSize="50px" margin={3} variant="h4" gutterBottom color="black" >
+            Transferir
+          </Typography>
+
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => (
               <Step key={index}>
@@ -48,7 +79,7 @@ const Transferir = () => {
               </Step>
             ))}
           </Stepper>
-          <Box sx={{ mt: 6 }}>
+          <Box sx={{ mt: 8, fontSize: 10, }}>
             {activeStep === 0 && (
               <Box>
                 <TextField
@@ -57,6 +88,7 @@ const Transferir = () => {
                   fullWidth
                   value={transferData.cbu}
                   onChange={handleCBUChange}
+                  inputProps={{ maxLength: 25 }}
                 />
                 <Box sx={{ mt: 2 }}>
                   <Button variant="contained" color="primary" onClick={handleNext} disabled={!transferData.cbu}>
@@ -73,6 +105,10 @@ const Transferir = () => {
                   fullWidth
                   value={transferData.amount}
                   onChange={handleAmountChange}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                  }}
+                  inputProps={{ maxLength: 20 }}
                 />
                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
                   <Button variant="contained" onClick={handleBack}>
@@ -106,7 +142,7 @@ const Transferir = () => {
                 <Typography variant="h5" gutterBottom>
                   ¡Transferencia Exitosa!
                 </Typography>
-                <Button variant="contained" color="primary" onClick={() => setActiveStep(0)}>
+                <Button variant="contained" color="primary" onClick={handleReset}>
                   Realizar otra transferencia
                 </Button>
               </Box>
