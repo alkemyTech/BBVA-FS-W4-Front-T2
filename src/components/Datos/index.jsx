@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/material';
+import { Box, TextField, Button, Typography, Card, CardContent, Grid } from '@mui/material';
 import { setUser } from '../../Redux/slice/userSlice';
 import './datos.css';
 
@@ -140,3 +140,4 @@ const DatosUser = () => {
 };
 
 export default DatosUser;
+
