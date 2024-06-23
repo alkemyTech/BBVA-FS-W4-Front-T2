@@ -14,8 +14,11 @@ const DatosUser = () => {
         DNI: '',
         edad: '',
         email: '',
-        phone: '',
+        password: '',
     });
+    const [isEditing, setIsEditing] = useState(false);
+
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -23,7 +26,7 @@ const DatosUser = () => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.userName,
-                phone: user.phone,
+                password: user.password,
                 DNI: user.DNI,
                 edad: user.edad,
             });
@@ -37,9 +40,22 @@ const DatosUser = () => {
         });
     };
 
+
     const handleSave = () => {
-        dispatch(setUser(userData));
-        console.log('Datos actualizados:', userData);
+        const updatedUserData = { ...userData, password };
+        dispatch(setUser(updatedUserData));
+        console.log('Datos actualizados:', updatedUserData);
+    };
+
+    const handleEditClick = () => {
+        if (isEditing) {
+            handleSave();
+        }
+        setIsEditing(!isEditing);
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
     };
 
     return (
@@ -55,7 +71,7 @@ const DatosUser = () => {
                     name="firstName"
                     value={userData.firstName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
 
@@ -87,7 +103,7 @@ const DatosUser = () => {
                     name="lastName"
                     value={userData.lastName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
                 <TextField
@@ -101,16 +117,22 @@ const DatosUser = () => {
                 />
 
                 <TextField
-                    label="Teléfono"
+                    label="Contraseña"
                     variant="outlined"
-                    name="phone"
-                    value={userData.phone}
-                    onChange={handleChange}
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    disabled={!isEditing}
                     fullWidth
                 />
+                <Button onClick={handleEditClick} variant="contained">
+                    {isEditing ? 'Guardar' : 'Editar'}
+                </Button>
+
             </Box>
 
-            
+
         </Box>
 
 
