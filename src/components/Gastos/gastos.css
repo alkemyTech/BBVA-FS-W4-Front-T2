@@ -1,0 +1,74 @@
+.box-principal-gastos {
+    background-color: #ffffff;
+    color: #103551;
+    font-family: "Roboto", sans-serif;
+    padding: 20px;
+    width: 1200px; /* Aumentar el ancho del contenedor principal */
+    border-radius: 10px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.titulo-gastos {
+    font-size: 32px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.box-gastos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Define tres columnas iguales */
+    gap: 18px; /* Espacio entre los elementos */
+}
+
+.custom-textfield, .custom-formcontrol {
+    grid-column: span 1;
+}
+
+.custom-textfield.description {
+    grid-column: span 3; /* Ocupa las tres columnas disponibles */
+}
+
+.button-registrar {
+    grid-column: 2 / span 1; /* Ocupa una columna, comenzando en la segunda columna */
+    background-color: #ffffff;
+    border: 3px solid #46A044;
+    color: #46A044;
+    height: 50px;
+    width:400px;
+    align-self: center;
+    justify-self: center; /* Centrar horizontalmente el botón */
+}
+
+.custom-textfield .MuiInputLabel-root,
+.custom-formcontrol .MuiInputLabel-root {
+    color: #162368!important; /* Color blanco para las etiquetas */
+}
+
+.custom-textfield .MuiInputBase-root {
+    background-color: transparent; /* Fondo azul oscuro para TextField */
+}
+
+.custom-textfield .MuiInputBase-root input {
+    color: #162368 !important; /* Texto blanco dentro de TextField */
+}
+
+.custom-textfield .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #162368; /* Borde transparente */
+}
+
+.custom-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #162368; /* Borde azul cuando está enfocado */
+}
+
+.custom-formcontrol .MuiInputBase-root {
+    background-color: transparent; /* Fondo azul claro para Select */
+}
+
+.custom-formcontrol .MuiInputBase-root input {
+    color: #162368 !important; /* Texto blanco dentro de Select */
+}
+
+.custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #162368; /* Borde transparente */
+}

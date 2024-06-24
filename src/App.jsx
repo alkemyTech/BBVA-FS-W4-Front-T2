@@ -1,49 +1,54 @@
 
-import './App.css'
-import { Route, Routes } from "react-router-dom";
-import Page from "./components/UI/page";
-import Login from "./components/UI/login";
-import PageNotFound from "./components/UI/page/PageNotFound";
-import Registro from './components/UI/singUp';
-function App() {
+import { Route, Routes, Router } from "react-router-dom";
+import './App.css';
+import Page from "./UI/Page";
+import Login from "./components/login";
+import Home from "./components/Home";
+import PageNotFound from "./UI/Page/PageNotFound";
+import Registro from './components/SignUp';
+import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
+import Gastos from "./components/Gastos";
+import Transferir from "./components/Transferir";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
+import DatosUser from "./components/Datos";
+import Deposito from "./components/deposit"
 
+
+function App() {
   return (
     <Page>
-      <Routes>
-        
-        <Route path="/accounts" element={""} />
-        <Route path="/accounts/:userId" element={""} />
-        <Route path="/accounts/balance" element={""} />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signUp" element={<Registro />} />
+          <Route path="/signUp/admin" element={""} />
 
-        <Route path="/" element={<Login />} />
-        <Route path="/signUp" element={<Registro/>} />
-        <Route path="/signUp/admin" element={""} />
-        <Route path="/home" element={""}/>
+          <Route element={<ProtectedRoutes />}>
+             <Route path="/home" element={<Home/>} />
 
+             <Route path="/fixedTerm" element={<PlazoFijoSimulado/>} />
+             <Route path="/Transferir" element={<Transferir/>} />
+             <Route path="/MisDatos" element={<DatosUser/>} />
 
-          <Route path="/fixedTerm" element={""} />
-          <Route path="/fixedTerm/simulate" element={""} />
+             <Route path="/pagos" element={<Gastos/>} />
 
-          <Route path="/loan/simulate" element={""} />
+            <Route path="/accounts" element={<div>Accounts</div>} />
+            <Route path="/accounts/:userId" element={<div>Account Detail</div>} />
+            <Route path="/accounts/balance" element={<div>Balance</div>} />
 
-          <Route path="/transactions" element={""} />
+            <Route path="/loan/simulate" element={<div>Simulate Loan</div>} />
 
-          <Route path="/transactions/deposit" element={""} />
-          <Route path="/transactions/payment" element={""} />
-          <Route path="/transactions/expenses" element={"Gastos"} />
+            <Route path="/transactions" element={<div>Transactions</div>} />
+            <Route path="/depositar" element={<Deposito/>} />
 
-          <Route path="/transactions/user/:userId" element={""} />
-          <Route path="/transactions/:transactionId" element={""} />
+            <Route path="/transactions/user/:userId" element={<div>User Transactions</div>} />
+            <Route path="/transactions/:transactionId" element={<div>Transaction Detail</div>} />
+            
+            <Route path="/users" element={<div>Users</div>} />
+            <Route path="/detail/:id" element={<div>Detail</div>} />
+          </Route>
 
-
-        <Route path="/transactions/user/:userId" element={""} />
-        <Route path="/transactions/:transactionId" element={""} />
-
-        <Route path="/users" element={""} />
-        <Route path="/detail/:id" element={""} />
-        <Route path="*" element={<PageNotFound to="/404" replace />} />
-      </Routes>
-
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
     </Page>
   );
 }
