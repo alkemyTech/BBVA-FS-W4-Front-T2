@@ -13,14 +13,19 @@ import {
 } from "@mui/material";
 import "./home.css";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { useDispatch, useSelector } from 'react-redux';
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
 import CatLoader from "../../UI/CatLoader/catLoader";
+import { fetchAccounts} from "../../Redux/slice/accountSlice";
 
 export default function Home() {
   const [data, setData] = useState(null);
+  const userId = useSelector((state) => state.user.id);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -46,6 +51,12 @@ export default function Home() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchAccounts(userId));
+    }
+  }, [userId, dispatch]);
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
