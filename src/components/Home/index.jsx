@@ -11,11 +11,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import CatLoader from "../../assets/components/CatLoader/catLoader";
 import "./home.css";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
+import CatLoader from "../../UI/CatLoader/catLoader";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -70,7 +70,7 @@ export default function Home() {
 
   return (
     <>
-      <Grid container spacing={3} style={{ marginTop: "5vh" }}>
+      <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card className="card">
             <Grid

@@ -10,6 +10,9 @@ const ProtectedRoutes = () => {
       try {
         await validateToken();
       } catch (error) {
+        dispatch(clearUser()); 
+        setLogout(false);
+        localStorage.removeItem('token');
         navigate("/");
       }
     };
