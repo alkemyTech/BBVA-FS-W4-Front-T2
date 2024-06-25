@@ -1,4 +1,4 @@
-.box-principal-gastos {
+.box-principal-deposito {
     background-color: #ffffff;
     color: #103551;
     font-family: "Roboto", sans-serif;
@@ -9,13 +9,13 @@
     margin: 0 auto;
 }
 
-.titulo-gastos {
+.titulo-deposito {
     font-size: 32px;
     margin-bottom: 5px;
     text-align: center;
 }
 
-.box-gastos {
+.box-deposito {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
     gap: 18px; 
@@ -72,22 +72,70 @@
 .custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
     border-color: #162368; /* Borde transparente */
 }
-
-.button-registrar {
-    grid-column: 2 / span 1;
-    background-color: #ffffff;
-    border: 3px solid #46A044;
-    color: #46A044;
-    height: 50px;
-    width: 400px;
-    align-self: center;
-    justify-self: center;
-    position: relative;
-    overflow: hidden;
+.box-deposito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .button-loading {
-    pointer-events: none; /* Disable button interactions while loading */
+  .input-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px; /* Add space between the fields */
+  }
+  
+  .custom-formcontrol, .custom-textfield {
+    flex: 1;
+    width: 100%;
+  }
+  
+  .description {
+    width: 100%;
+  }
+  
+  .titulo-deposito {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .button-registrar {
+    margin-top: 20px;
+  }
+
+  .box-deposito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .input-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px; /* Add space between the fields */
+  }
+  
+  .custom-formcontrol, .custom-textfield {
+    flex: 1;
+    width: 100%;
+  }
+  
+  .description {
+    width: 100%;
+  }
+  
+  .titulo-deposito {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .button-registrar {
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
   }
   
   .button-loading::after {
@@ -95,15 +143,15 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
     width: 100%;
-    background: rgba(70, 160, 68, 0.5);
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
     animation: fillButton 2s infinite;
   }
   
   @keyframes fillButton {
     0% {
-      width: 0;
+      width: 0%;
     }
     100% {
       width: 100%;
