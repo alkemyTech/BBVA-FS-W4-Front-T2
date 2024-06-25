@@ -3,7 +3,7 @@
   flex: 1 1 auto;
   border-radius: 10% !important;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow:  3px 10px  8px  rgba(0, 0, 0, 0.3); /* Sombra suave */
 }
 
 .status-card-inner {

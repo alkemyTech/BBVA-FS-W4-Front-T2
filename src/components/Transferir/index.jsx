@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Stepper,
@@ -18,7 +19,7 @@ const Transferir = () => {
   const [transferData, setTransferData] = useState({
     cbu: "",
     amount: "",
-    accountInfo: null, // Para almacenar la información de la cuenta
+    accountInfo: null,
   });
   const [contactList, setContactList] = useState([]);
   const [selectedContact, setSelectedContact] = useState("");
@@ -30,6 +31,10 @@ const Transferir = () => {
     { id: 2, name: "Maria Gomez", cbu: "9876543210987654321098" },
     // Add more contacts as needed
   ];
+
+  // Redux selector to access account information
+  const account = useSelector((state) => state.account);
+  const arsAccount = account.accounts.find((acc) => acc.currency === "ARS");
 
   useEffect(() => {
     // Fetch user's contact list from API if needed
@@ -61,7 +66,7 @@ const Transferir = () => {
             const data = await response.json();
             // Assuming the API returns account information
             console.log("Account Info:", data);
-            setTransferData({ ...transferData, accountInfo: data }); // Guardar la información de la cuenta
+            setTransferData({ ...transferData, accountInfo: data }); // Save account information
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
           } else {
             console.error(
@@ -77,6 +82,15 @@ const Transferir = () => {
       } else {
         console.error("CBU length is incorrect.");
         // Handle error scenario if needed
+      }
+    } else if (activeStep === 2) {
+      // Validate amount against ARS account balance
+      const amount = parseFloat(transferData.amount.replace(",", ""));
+      if (amount <= arsAccount.balance) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      } else {
+        console.error("El monto ingresado supera el saldo disponible.");
+        // Handle error scenario if needed (e.g., show error message)
       }
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -106,20 +120,51 @@ const Transferir = () => {
     setTransferData({ ...transferData, amount: formattedValue });
   };
 
+  const updateTokenForAccount = async (accountId) => {
+    try {
+      const token = localStorage.getItem('token'); // Get current token from localStorage
+
+      const response = await fetch(`http://localhost:8080/accounts/select/${accountId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      let newToken = response.headers.get('authorization');
+      if (newToken && newToken.startsWith('Bearer ')) {
+        newToken = newToken.slice(7); // Remove 'Bearer ' prefix
+      }
+
+      localStorage.setItem('token', newToken); // Save new token to localStorage
+      return newToken;
+    } catch (error) {
+      console.error('Error updating token:', error);
+      throw error;
+    }
+  };
+
   const handleConfirm = async () => {
     try {
+      const accountId = arsAccount.id; // Get ARS account ID
+      const newToken = await updateTokenForAccount(accountId); // Get new encrypted token
+
       const payload = {
         destino: transferData.cbu,
-        amount: parseFloat(transferData.amount.replace(",", "")), // Parsear el monto a float
-        currency: "ARS", // Moneda siempre en ARS
-        description: "transferencia test", // Descripción opcional
+        amount: parseFloat(transferData.amount.replace(",", "")), // Parse amount to float
+        currency: "ARS", // Currency always in ARS
+        description: "transferencia test", // Optional description
       };
 
-      console.log(transferData)
       const response = await fetch("http://localhost:8080/transactions/sendArs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${newToken}`, // Pass new encrypted token as Authorization
         },
         body: JSON.stringify(payload),
       });
@@ -232,9 +277,8 @@ const Transferir = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleNext}
-                    disabled={!transferData.cbu}
                   >
-                    Continuar
+                    Siguiente
                   </Button>
                 </Box>
               </Box>
@@ -252,7 +296,6 @@ const Transferir = () => {
                       <InputAdornment position="start">$</InputAdornment>
                     ),
                   }}
-                  inputProps={{ maxLength: 20 }}
                 />
                 <Box
                   sx={{
@@ -268,49 +311,23 @@ const Transferir = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleNext}
-                    disabled={!transferData.amount}
                   >
-                    Continuar
+                    Siguiente
                   </Button>
                 </Box>
               </Box>
             )}
             {!showContactos && activeStep === 3 && (
-              <Box sx={{ textAlign: "center" }}>
-                <Box
-                  sx={{
-                    textAlign: "left",
-                    maxWidth: "300px",
-                    margin: "0 auto",
-                  }}
-                >
-                  <Typography variant="body1">
-                    <b>CBU: </b>
-                    {transferData.cbu}
-                  </Typography>
-                  <Typography variant="body1">
-                    <b>Monto: </b> ${transferData.amount}
-                  </Typography>
-                  {transferData.accountInfo && (
-                    <Box>
-                      <Typography variant="body1">
-                        <b> Nombre: </b> {transferData.accountInfo.firstName}{" "}
-                        {transferData.accountInfo.lastName}
-                      </Typography>
-                      <Typography variant="body1">
-                        <b>Alias: </b> {transferData.accountInfo.alias}
-                      </Typography>
-                      <Typography variant="body1">
-                        <b>Tipo de cuenta: </b>
-                        {transferData.accountInfo.accountType}
-                      </Typography>
-                      <Typography variant="body1">
-                        <b> DNI: </b>
-                        {transferData.accountInfo.dni}
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
+              <Box>
+                <Typography variant="h6" gutterBottom>
+                  Confirmar Transferencia
+                </Typography>
+                <Typography gutterBottom>
+                  Destinatario: {selectedContact.name} ({transferData.cbu})
+                </Typography>
+                <Typography gutterBottom>
+                  Monto: ${transferData.amount}
+                </Typography>
                 <Box
                   sx={{
                     mt: 2,
@@ -331,16 +348,15 @@ const Transferir = () => {
                 </Box>
               </Box>
             )}
-            {!showContactos && activeStep === 4 && (
+            {activeStep === 4 && (
               <Box>
-                <Typography variant="h5" gutterBottom>
-                  ¡Transferencia Exitosa!
+                <Typography variant="h6" gutterBottom>
+                  Transferencia Exitosa
                 </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleReset}
-                >
+                <Typography gutterBottom>
+                  ¡La transferencia ha sido realizada con éxito!
+                </Typography>
+                <Button variant="contained" color="primary" onClick={handleReset}>
                   Realizar otra transferencia
                 </Button>
               </Box>

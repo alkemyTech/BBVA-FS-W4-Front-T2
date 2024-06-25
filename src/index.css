@@ -19,5 +19,34 @@ body {
   justify-content: center; 
   align-items: center; 
   margin: 0; /* Asegura que no haya márgenes predeterminados */
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+
+}
+
+/* Para navegadores WebKit (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* Fondo transparente */
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(30, 144, 255, 0.9); /* Azul más oscuro con menos transparencia */
+    border-radius: 10px; /* Bordes redondeados */
+    border: 2px solid transparent; /* Espacio entre el thumb y el track */
+    background-clip: content-box; /* Clip para el fondo */
+}
+
+::-webkit-scrollbar-button {
+    display: none !important; 
+}
+
+/* Para navegadores Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 144, 255, 0.9) rgba(0, 0, 0, 0.1); 
 }
 
