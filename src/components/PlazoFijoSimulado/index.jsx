@@ -25,10 +25,22 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function PlazoFijoSimulado() {
-  const [open, setOpen] = useState(false);
 
+export default function PlazoFijoSimulado() {
+  function obtenerNombreDelMes(numeroMes) {
+    const nombresMeses = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
   
+    if (numeroMes < 1 || numeroMes > 12) {
+      return "Número de mes inválido";
+    }
+  
+    return nombresMeses[numeroMes - 1];
+  }
+
+  const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -72,16 +84,14 @@ export default function PlazoFijoSimulado() {
     setDias(event.target.value);
   };
 
-
   const transformaFecha = (fecha) => {
+    const { $M } = fecha;
+    const dia = fecha.date();
+    const mes = ($M + 1).toString();
+    const año = fecha.year();
 
-      const {$M,} = fecha;
-      const dia = fecha.date();
-      const mes = ($M+1).toString();
-      const año = fecha.year();
-  
-      return año+"-"+mes+"-"+dia;
-  }
+    return año + "-" + mes + "-" + dia;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -96,7 +106,7 @@ export default function PlazoFijoSimulado() {
 
     //Transforma fecha final
 
-    const fechaFinalCal = fechaInicial.add(dias, 'day');
+    const fechaFinalCal = fechaInicial.add(dias, "day");
     const fechaFinal = transformaFecha(fechaFinalCal);
     console.log(fechaPrincipio);
     console.log(fechaFinal);
@@ -108,8 +118,9 @@ export default function PlazoFijoSimulado() {
       fechaPrincipio,
       fechaFinal,
     };
-    console.log("Form data submitted:", formData);
     setOpen(true);
+
+    return formData;
   };
 
   const CustomButton = styled(Button)({
@@ -153,7 +164,7 @@ export default function PlazoFijoSimulado() {
         id="box-secundario"
         onSubmit={handleSubmit}
       >
-{/*Moneda*/}
+        {/*Moneda*/}
 
         <div>
           <FormControl
@@ -184,7 +195,7 @@ export default function PlazoFijoSimulado() {
             </Select>
           </FormControl>
         </div>
-{/* Cuenta de la plata */}
+        {/* Cuenta de la plata */}
         <div>
           <FormControl
             sx={{
@@ -208,13 +219,14 @@ export default function PlazoFijoSimulado() {
             }}
             className="white-select"
           >
+            {/* ESTA INFORMACION TIENE QUE SER DINAMICA */}
             <Select value={cuenta} onChange={handleCuenta}>
               <MenuItem value={cuenta}>Caja ahorro</MenuItem>
             </Select>
           </FormControl>
         </div>
 
-{/* Monto a invertir   */}
+        {/* Monto a invertir   */}
         <div>
           <TextField
             required
@@ -260,30 +272,33 @@ export default function PlazoFijoSimulado() {
           dateAdapter={AdapterDayjs}
           adapterLocale={"en-gb"}
         >
-          <Stack spacing={3} 
-          sx={{ width: 220,
-          m: 1,
-          minWidth: 80,
-          minHeight: 48,
-          "& .MuiInputBase-root": {
-            backgroundColor: "#DBF0FF",
-          },
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "transparent",
-            },
-            "&:hover fieldset": {
-              borderColor: "transparent",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "#0D99FF",
-            },
-          },
-
-          }}>
-            <DatePicker  minDate={dayjs()} 
-             value={fechaInicial}
-             onChange={(fechaInicial) => setFechaInicial(fechaInicial)}
+          <Stack
+            spacing={3}
+            sx={{
+              width: 220,
+              m: 1,
+              minWidth: 80,
+              minHeight: 48,
+              "& .MuiInputBase-root": {
+                backgroundColor: "#DBF0FF",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0D99FF",
+                },
+              },
+            }}
+          >
+            <DatePicker
+              minDate={dayjs()}
+              value={fechaInicial}
+              onChange={(fechaInicial) => setFechaInicial(fechaInicial)}
             />
           </Stack>
         </LocalizationProvider>
@@ -291,8 +306,8 @@ export default function PlazoFijoSimulado() {
         {/* Días a invertir */}
         <div>
           <TextField
-           value={dias}
-           onChange={handleChangeDias}
+            value={dias}
+            onChange={handleChangeDias}
             sx={{
               m: 1,
               minWidth: 216,
@@ -318,33 +333,41 @@ export default function PlazoFijoSimulado() {
 
         {/* Boton simular */}
         <div>
-        <CustomButton variant="outlined" onClick={handleSubmit}>
-        Simular <StyledArrowRightIcon />
-        </CustomButton>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Simular Plazo Fijo"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Contenido del plazo fijo
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
-            <Button onClick={handleClose} autoFocus>
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
-        </div>
+          <CustomButton variant="outlined" onClick={handleSubmit}>
+            Simular <StyledArrowRightIcon />
+          </CustomButton>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
 
-        
+            <DialogTitle id="alert-dialog-title">
+              {"Resumen del Plazo Fijo"}
+            </DialogTitle>
+
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <p>Capital Invertido: {monto}</p>
+                <p>Intereses Ganados: {}</p>
+                <p>Taza de Interes: </p>
+                <p>{dias} dias</p>
+
+                {/* datoDinamico */}
+
+                <p>{fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month()+1)} - {"XXXXX"} de {"XXXXX"}</p>
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+
+              <CustomButton onClick={handleClose}>Cancelar</CustomButton>
+
+              <CustomButton onClick={handleClose} autoFocus>Crear              </CustomButton>
+            </DialogActions>
+          </Dialog>
+        </div>
       </Box>
       <p className="aviso">
         Si la fecha de vencimiento cae un dia no hábil, la misma se pasará{" "}
