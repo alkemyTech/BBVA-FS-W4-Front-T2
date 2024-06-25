@@ -33,12 +33,6 @@ const Deposito = () => {
     variant: "filled"
   };
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchAccounts(userId));
-    }
-  }, [userId, dispatch]);
-
   const updateTokenForAccount = async (accountId) => {
     try {
       const response = await fetch(`http://localhost:8080/accounts/select/${accountId}`, {
