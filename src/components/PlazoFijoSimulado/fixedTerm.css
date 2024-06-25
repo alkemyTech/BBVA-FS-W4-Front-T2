@@ -1,94 +1,93 @@
-.box-principal {
-    background-color: #B3BEF5;
-    color: #1565C0;
-    font-family: "Roboto", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    padding: 55px;
-    padding-left:80px;
-    border-radius: 10px;
-  }
+.box-principal-ft {
+  background-color: #f8f8f8;
+  color: #1565c0;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  padding: 20px;
+  border-radius: 10px;
+}
 
-  .titulo-plazo-fijo{
-    display: flex;
-    justify-content: end;
-    font-size: 32px;
-  }
+.titulo-plazo-fijo {
+  display: flex;
+  justify-content: center;
+  font-size: 32px;
+}
 
-  
-
-  .titulo-secundario{
-    font-size:20px;
-
-  }
-
-  .titulos{
-    display: flex;
-    flex-direction: row;
-    color: #1565C0;
-    justify-content: space-around;
-  }
-
-  .monto{
-    padding-left:52px;
-    margin-bottom: 0;
-    
-  }
-  
-  .final{
-    padding-left:150px;
-    margin-bottom: 0;
-  }
-
-  .inicial{
-    padding-left:100px;
-    margin-bottom: 0;
-  }
-
-
-  #box-secundario {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .button-simular{
-    background-color: red;
-  }
-  
-
-  
-  .white-select .MuiSelect-icon {
-    color: #0D99FF;
-    font-size: 2rem;
-  }
-
-  .aviso{
-    margin: 20px;
-  }
-
-
-
-.gray-line-top{
-  max-width: 308px; margin-right:0; height: 0;margin-top: 0;
-  border-color: #1565C0;
-  margin-bottom: 80px;
+.gray-line-top {
+  max-width: 308px;
+  height: 0;
+  margin-top: 0;
+  border-color: #1565c0;
+  margin-bottom: 50px;
   display: flex;
 }
 
-.gray-line-bottom{
+
+.titulos {
+  font-size: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  color: #1565c0;
+  justify-content: space-around;
+  
+}
+
+.titulo-secundario{
+  width: 216px;
+}
+.moneda{
+  text-align: start;
+  margin-left: 30px;
+}
+
+.cuenta{
+  text-align: start;
+}
+
+.montoInvertir{
+  text-align: start;
+}
+
+.fechaInicio{
+  text-align: start;
+}
+
+.diasInvertir{
+  text-align: start;
+}
+
+
+#box-secundario {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#box-secundario > :last-child {
+  margin-top: 40px; 
+}
+
+
+.white-select .MuiSelect-icon {
+  color: #0d99ff;
+  font-size: 2rem;
+}
+
+.aviso {
+  margin: 20px;
+}
+
+.gray-line-bottom {
   width: 126.35px;
   height: 0px;
-  border-color: #1565C0;
+  border-color: #1565c0;
+}
 
-  }
-
-  
-
-
-  .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-    padding-right: 32px;
-    color: #1565C0;
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding-right: 32px;
+  color: #1565c0;
 }

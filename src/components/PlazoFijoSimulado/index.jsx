@@ -25,7 +25,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-
 export default function PlazoFijoSimulado() {
   function obtenerNombreDelMes(numeroMes) {
     const nombresMeses = [
@@ -51,7 +50,7 @@ export default function PlazoFijoSimulado() {
   //Cuenta Origen
   const [cuenta, setCuenta] = useState("Caja Ahorro");
   // monto ingresado por la persona
-  const [monto, setMonto] = useState(0);
+  const [monto, setMonto] = useState("");
   //Fecha inicio
   const [fechaInicial, setFechaInicial] = useState(dayjs());
   // dias a invertir
@@ -68,10 +67,10 @@ export default function PlazoFijoSimulado() {
   };
 
   const handleChangeMonto = (event) => {
-    const value = event.target.value;
-    const regex = /^(?!0)\d*$/;
+    const value = event.target.value.replace(/\./g, ""); // Remove dots for validation
+    const regex = /^(?!0\d)\d*$/;
     if (regex.test(value)) {
-      setMonto(value);
+      setMonto(Number(value).toLocaleString("de-DE")); // Format value with dots
       setError(false);
     }
   };
@@ -95,7 +94,8 @@ export default function PlazoFijoSimulado() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!monto || monto < 500) {
+    const montoNumber = parseInt(monto.replace(/\./g, ""), 10); // Convert formatted string to number
+    if (!montoNumber || montoNumber < 500) {
       setError(true);
       return;
     }
@@ -114,12 +114,13 @@ export default function PlazoFijoSimulado() {
     const formData = {
       moneda,
       cuenta,
-      monto,
+      monto: montoNumber, // Send the number without formatting
       fechaPrincipio,
       fechaFinal,
     };
     setOpen(true);
 
+    console.log(formData);
     return formData;
   };
 
@@ -127,7 +128,7 @@ export default function PlazoFijoSimulado() {
     backgroundColor: "#1565C0",
     color: "white",
     width: 216,
-    height: 48,
+    height: 56,
     "&:hover": {
       backgroundColor: "#1565C0",
       border: "3px solid #46A044",
@@ -143,18 +144,18 @@ export default function PlazoFijoSimulado() {
   `;
 
   return (
-    <section className="box-principal">
+    <section className="box-principal-ft">
       <p className="titulo-plazo-fijo" fontSize="48">
         Simulá tu plazo fijo
       </p>
       <hr className="gray-line-top"></hr>
 
       <article className="titulos">
-        <p className="titulo-secundario ">Moneda</p>
-        <p className="titulo-secundario">Cuenta</p>
-        <p className="titulo-secundario">Monto a invertir</p>
-        <p className="titulo-secundario">Fecha Inicio Plazo Fijo</p>
-        <p className="titulo-secundario">Días a invertir</p>
+        <p className="titulo-secundario moneda">Moneda</p>
+        <p className="titulo-secundario cuenta">Cuenta</p>
+        <p className="titulo-secundario montoInvertir">Monto a invertir</p>
+        <p className="titulo-secundario fechaInicio">Fecha Inicio Plazo Fijo</p>
+        <p className="titulo-secundario diasInvertir">Días a invertir</p>
       </article>
 
       <Box
@@ -235,7 +236,7 @@ export default function PlazoFijoSimulado() {
             sx={{
               width: 216,
               height: 48,
-              margin: 0,
+              marginBottom:1,
               "& .MuiInputBase-root": {
                 backgroundColor: "#DBF0FF",
               },
@@ -275,7 +276,7 @@ export default function PlazoFijoSimulado() {
           <Stack
             spacing={3}
             sx={{
-              width: 220,
+              width: 216,
               m: 1,
               minWidth: 80,
               minHeight: 48,
@@ -363,7 +364,7 @@ export default function PlazoFijoSimulado() {
             <DialogActions>
 
               <CustomButton onClick={handleClose}>Cancelar</CustomButton>
-
+            {/* Aca se tiene que verificar si hay dinero suficiente, en caso de que no mostrar mensaje*/}
               <CustomButton onClick={handleClose} autoFocus>Crear              </CustomButton>
             </DialogActions>
           </Dialog>
