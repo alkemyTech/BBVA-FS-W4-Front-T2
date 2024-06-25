@@ -28,9 +28,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 export default function PlazoFijoSimulado() {
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  
 
   const handleClose = () => {
     setOpen(false);
@@ -89,6 +87,7 @@ export default function PlazoFijoSimulado() {
       dias,
     };
     console.log("Form data submitted:", formData);
+    setOpen(true);
   };
 
   const CustomButton = styled(Button)({
@@ -294,14 +293,9 @@ export default function PlazoFijoSimulado() {
 
         {/* Boton simular */}
         <div>
-          <CustomButton type="submit">
-            Simular <StyledArrowRightIcon />
-          </CustomButton>
-        </div>
-
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Open alert dialog
-        </Button>
+        <CustomButton variant="outlined" onClick={handleSubmit}>
+        Simular <StyledArrowRightIcon />
+        </CustomButton>
         <Dialog
           open={open}
           onClose={handleClose}
@@ -324,6 +318,9 @@ export default function PlazoFijoSimulado() {
             </Button>
           </DialogActions>
         </Dialog>
+        </div>
+
+        
       </Box>
       <p className="aviso">
         Si la fecha de vencimiento cae un dia no hábil, la misma se pasará{" "}
