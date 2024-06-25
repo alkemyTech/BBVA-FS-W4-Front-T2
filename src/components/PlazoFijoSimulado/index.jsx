@@ -72,6 +72,17 @@ export default function PlazoFijoSimulado() {
     setDias(event.target.value);
   };
 
+
+  const transformaFecha = (fecha) => {
+
+      const {$M,} = fecha;
+      const dia = fecha.date();
+      const mes = ($M+1).toString();
+      const año = fecha.year();
+  
+      return año+"-"+mes+"-"+dia;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!monto || monto < 500) {
@@ -79,12 +90,23 @@ export default function PlazoFijoSimulado() {
       return;
     }
 
+    //Transforma fecha inicial
+
+    const fechaPrincipio = transformaFecha(fechaInicial);
+
+    //Transforma fecha final
+
+    const fechaFinalCal = fechaInicial.add(dias, 'day');
+    const fechaFinal = transformaFecha(fechaFinalCal);
+    console.log(fechaPrincipio);
+    console.log(fechaFinal);
+
     const formData = {
       moneda,
       cuenta,
       monto,
-      fechaInicial,
-      dias,
+      fechaPrincipio,
+      fechaFinal,
     };
     console.log("Form data submitted:", formData);
     setOpen(true);
@@ -238,27 +260,30 @@ export default function PlazoFijoSimulado() {
           dateAdapter={AdapterDayjs}
           adapterLocale={"en-gb"}
         >
-          <Stack spacing={3} sx={{ width: 300 }}>
-            <DatePicker defaultValue={fechaInicial} minDate={dayjs()} 
-             sx={{
-              m: 1,
-              minWidth: 80,
-              minHeight: 48,
-              "& .MuiInputBase-root": {
-                backgroundColor: "#DBF0FF",
-              },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "transparent",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#0D99FF",
-                },
-              },
-            }}
+          <Stack spacing={3} 
+          sx={{ width: 220,
+          m: 1,
+          minWidth: 80,
+          minHeight: 48,
+          "& .MuiInputBase-root": {
+            backgroundColor: "#DBF0FF",
+          },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "transparent",
+            },
+            "&:hover fieldset": {
+              borderColor: "transparent",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#0D99FF",
+            },
+          },
+
+          }}>
+            <DatePicker  minDate={dayjs()} 
+             value={fechaInicial}
+             onChange={(fechaInicial) => setFechaInicial(fechaInicial)}
             />
           </Stack>
         </LocalizationProvider>
@@ -303,12 +328,11 @@ export default function PlazoFijoSimulado() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Use Google's location service?"}
+            {"Simular Plazo Fijo"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Let Google help apps determine location. This means sending
-              anonymous location data to Google, even when no apps are running.
+              Contenido del plazo fijo
             </DialogContentText>
           </DialogContent>
           <DialogActions>
