@@ -82,7 +82,7 @@ return (
           sx={{
             mr: 2,
             display: { xs: "none", md: "flex" },
-            fontFamily: "karla",
+            fontFamily:  'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',/* Fuente más moderna */
             fontWeight: 700,
             letterSpacing: ".3rem",
             color: "inherit",
@@ -91,9 +91,7 @@ return (
         >
           WildCat
         </Typography>
-        <Button onClick={() => navigate("/")} sx={{ color: "white" }}>
           <img src={logo} alt="Logo" style={{ maxHeight: "50px" }} />
-        </Button>
         <Box sx={{ flexGrow: 1, display: { md: "flex" } }}>
           {userName &&
             pages.map((page) => (
