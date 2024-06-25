@@ -20,7 +20,7 @@ const pages = [
   "Home",
   "Transferir",
   "Depositar",
-  "Mis Transacciones",
+  "Transacciones",
   "Inversiones",
   "Balance",
   "Pagos"

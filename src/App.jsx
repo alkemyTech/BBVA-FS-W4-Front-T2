@@ -12,6 +12,7 @@ import Transferir from "./components/Transferir";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import DatosUser from "./components/Datos";
 import Deposito from "./components/deposit"
+import Movimientos from "./components/Movimientos";
 
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
 
             <Route path="/loan/simulate" element={<div>Simulate Loan</div>} />
 
-            <Route path="/transactions" element={<div>Transactions</div>} />
+            <Route path="/Transacciones" element={<Movimientos/>} />
             <Route path="/depositar" element={<Deposito/>} />
 
             <Route path="/transactions/user/:userId" element={<div>User Transactions</div>} />
