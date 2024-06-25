@@ -57,13 +57,12 @@ const Movimientos = () => {
       </Typography>
       {transactions.length === 0 ? (
         <Paper>
-          <Typography>No hay transacciones para mostrar.</Typography>
+          <Typography variant='h3'>No hay transacciones para mostrar.</Typography>
         </Paper>
       ) : (
-        <Paper>
-          <List>
+          <List sx={{overflow:"auto", minHeight:350, maxHeight:350, width:600, borderRadius:"40px",bgcolor:"background.paper"}}>
             {transactions.map((transaction, index) => (
-              <React.Fragment key={index}>
+              <div key={index}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     {getIcon(transaction.tipoDeTransaccion)}
@@ -99,10 +98,9 @@ const Movimientos = () => {
                   />
                 </ListItem>
                 {index < transactions.length - 1 && <Divider variant="inset" component="li" />}
-              </React.Fragment>
+              </div>
             ))}
           </List>
-        </Paper>
       )}
     </Box>
   );
