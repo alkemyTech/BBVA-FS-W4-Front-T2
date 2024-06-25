@@ -7,7 +7,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./fixedTerm.css";
 
 import dayjs from "dayjs";
@@ -15,21 +15,46 @@ import "dayjs/locale/de";
 import "dayjs/locale/en-gb";
 import "dayjs/locale/zh-cn";
 import Stack from "@mui/material/Stack";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateField } from "@mui/x-date-pickers/DateField";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-const locales = ["en", "en-gb", "zh-cn", "de"];
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function PlazoFijoSimulado() {
-  const [dias, setDias] = useState(30);
-  const [monto, setMonto] = useState("");
-  const [error, setError] = useState(false);
-  const [locale, setLocale] = useState("en-gb");
+  const [open, setOpen] = useState(false);
 
-  const handleChangeDias = (event) => {
-    setDias(event.target.value);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  //Moneda elejida
+  const [moneda, setMoneda] = useState("Pesos");
+  //Cuenta Origen
+  const [cuenta, setCuenta] = useState("Caja Ahorro");
+  // monto ingresado por la persona
+  const [monto, setMonto] = useState(0);
+  //Fecha inicio
+  const [fechaInicial, setFechaInicial] = useState(dayjs());
+  // dias a invertir
+  const [dias, setDias] = useState(30);
+  //Mensaje error menor a 500
+  const [error, setError] = useState(false);
+
+  const handleMoneda = (event) => {
+    setMoneda(event.target.value);
+  };
+
+  const handleCuenta = (event) => {
+    setCuenta(event.target.value);
   };
 
   const handleChangeMonto = (event) => {
@@ -41,6 +66,14 @@ export default function PlazoFijoSimulado() {
     }
   };
 
+  const handleFechaInicial = (event) => {
+    setFechaInicial(event.target.value);
+  };
+
+  const handleChangeDias = (event) => {
+    setDias(event.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!monto || monto < 500) {
@@ -49,7 +82,10 @@ export default function PlazoFijoSimulado() {
     }
 
     const formData = {
+      moneda,
+      cuenta,
       monto,
+      fechaInicial,
       dias,
     };
     console.log("Form data submitted:", formData);
@@ -76,36 +112,17 @@ export default function PlazoFijoSimulado() {
 
   return (
     <section className="box-principal">
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
-        <Stack spacing={3} sx={{ width: 300 }}>
-          <ToggleButtonGroup
-            value={locale}
-            exclusive
-            fullWidth
-            onChange={(event, newLocale) => {
-              if (newLocale != null) {
-                setLocale(newLocale);
-              }
-            }}
-          >
-            {locales.map((localeItem) => (
-              <ToggleButton key={localeItem} value={localeItem}>
-                {localeItem}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-          <DateField defaultValue={dayjs()} />
-        </Stack>
-      </LocalizationProvider>
-
       <p className="titulo-plazo-fijo" fontSize="48">
         Simulá tu plazo fijo
       </p>
       <hr className="gray-line-top"></hr>
 
       <article className="titulos">
-        <p className="titulo-secundario monto">Monto a invertir</p>
-        <p className="titulo-secundario dias">Días a invertir</p>
+        <p className="titulo-secundario ">Moneda</p>
+        <p className="titulo-secundario">Cuenta</p>
+        <p className="titulo-secundario">Monto a invertir</p>
+        <p className="titulo-secundario">Fecha Inicio Plazo Fijo</p>
+        <p className="titulo-secundario">Días a invertir</p>
       </article>
 
       <Box
@@ -115,6 +132,68 @@ export default function PlazoFijoSimulado() {
         id="box-secundario"
         onSubmit={handleSubmit}
       >
+{/*Moneda*/}
+
+        <div>
+          <FormControl
+            sx={{
+              m: 1,
+              minWidth: 216,
+              minHeight: 48,
+              "& .MuiInputBase-root": {
+                backgroundColor: "#DBF0FF",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0D99FF",
+                },
+              },
+            }}
+            className="white-select"
+          >
+            {/* ESTA INFORMACION TIENE QUE SER DINAMICA */}
+            <Select value={moneda} onChange={handleMoneda}>
+              <MenuItem value={moneda}>Pesos</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+{/* Cuenta de la plata */}
+        <div>
+          <FormControl
+            sx={{
+              m: 1,
+              minWidth: 216,
+              minHeight: 48,
+              "& .MuiInputBase-root": {
+                backgroundColor: "#DBF0FF",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0D99FF",
+                },
+              },
+            }}
+            className="white-select"
+          >
+            <Select value={cuenta} onChange={handleCuenta}>
+              <MenuItem value={cuenta}>Caja ahorro</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+
+{/* Monto a invertir   */}
         <div>
           <TextField
             required
@@ -155,8 +234,41 @@ export default function PlazoFijoSimulado() {
           />
         </div>
 
+        {/* Calendario de Fecha de inicio */}
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+          adapterLocale={"en-gb"}
+        >
+          <Stack spacing={3} sx={{ width: 300 }}>
+            <DatePicker defaultValue={fechaInicial} minDate={dayjs()} 
+             sx={{
+              m: 1,
+              minWidth: 80,
+              minHeight: 48,
+              "& .MuiInputBase-root": {
+                backgroundColor: "#DBF0FF",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0D99FF",
+                },
+              },
+            }}
+            />
+          </Stack>
+        </LocalizationProvider>
+
+        {/* Días a invertir */}
         <div>
-          <FormControl
+          <TextField
+           value={dias}
+           onChange={handleChangeDias}
             sx={{
               m: 1,
               minWidth: 216,
@@ -177,21 +289,41 @@ export default function PlazoFijoSimulado() {
               },
             }}
             className="white-select"
-          >
-            <Select value={dias} onChange={handleChangeDias}>
-              <MenuItem value={30}>30 días</MenuItem>
-              <MenuItem value={60}>60 días</MenuItem>
-              <MenuItem value={90}>90 días</MenuItem>
-              <MenuItem value={180}>180 días</MenuItem>
-            </Select>
-          </FormControl>
+          ></TextField>
         </div>
 
+        {/* Boton simular */}
         <div>
           <CustomButton type="submit">
             Simular <StyledArrowRightIcon />
           </CustomButton>
         </div>
+
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Open alert dialog
+        </Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Use Google's location service?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Let Google help apps determine location. This means sending
+              anonymous location data to Google, even when no apps are running.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Disagree</Button>
+            <Button onClick={handleClose} autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
       <p className="aviso">
         Si la fecha de vencimiento cae un dia no hábil, la misma se pasará{" "}

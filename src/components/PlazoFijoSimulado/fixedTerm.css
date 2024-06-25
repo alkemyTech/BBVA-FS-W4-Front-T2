@@ -5,7 +5,7 @@
     font-weight: 400;
     font-style: normal;
     padding: 55px;
-    padding-left:80px ;
+    padding-left:80px;
     border-radius: 10px;
   }
 
@@ -14,6 +14,8 @@
     justify-content: end;
     font-size: 32px;
   }
+
+  
 
   .titulo-secundario{
     font-size:20px;
@@ -24,16 +26,22 @@
     display: flex;
     flex-direction: row;
     color: #1565C0;
-
+    justify-content: space-around;
   }
 
   .monto{
     padding-left:52px;
     margin-bottom: 0;
+    
   }
   
-  .dias{
-    padding-left:178px;
+  .final{
+    padding-left:150px;
+    margin-bottom: 0;
+  }
+
+  .inicial{
+    padding-left:100px;
     margin-bottom: 0;
   }
 
