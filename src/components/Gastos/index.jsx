@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography, InputAdornment } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import './gastos.css';
 import { useSelector } from 'react-redux';
-import { fetchAccounts } from '../../utils/Accounts';
 import { useNavigate } from 'react-router-dom';
-
+import { NumericFormat } from 'react-number-format';
 export default function Gastos() {
-  const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [form, setForm] = useState({
     destino: '',
@@ -18,6 +16,7 @@ export default function Gastos() {
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const userId = useSelector((state) => state.user.id);
+  const accounts = useSelector((state) => state.account.accounts);
   const token = localStorage.getItem('token');
   const [dialogContent, setDialogContent] = useState({
     title: '',
@@ -26,37 +25,9 @@ export default function Gastos() {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getAccounts = async () => {
-      if (userId) {
-        try {
-          const fetchedAccounts = await fetchAccounts(userId);
-          setAccounts(fetchedAccounts);
-        } catch (error) {
-          console.error('Failed to fetch accounts:', error);
-          setAccounts([]); // Ensure accounts is set to an array on error
-        }
-      }
-    };
-
-    getAccounts();
-  }, [userId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    // Validar que solo se ingresen números en el campo "amount"
-    if (name === 'amount' && !/^\d*$/.test(value)) {
-      return; // Si no es un número, no actualizamos el estado
-    }
-
-    setForm({
-      ...form,
-      [name]: name === 'description' ? value.slice(0, 100) : value  // Limitar description a 100 caracteres
-    });
-  };
 
 
+  
   const updateTokenForAccount = async (accountId) => {
     try {
       const response = await fetch(`http://localhost:8080/accounts/select/${accountId}`, {
@@ -80,8 +51,21 @@ export default function Gastos() {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'amount' && !/^\d*$/.test(value)) {
+      return; 
+    }
+
+    setForm({
+      ...form,
+      [name]: name === 'description' ? value.slice(0, 100) : value  
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const cleanedAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
 
     try {
       const newToken = await updateTokenForAccount(selectedAccount);
@@ -95,7 +79,7 @@ export default function Gastos() {
         body: JSON.stringify(form)
       });
 
-      const text = await response.text(); // Get the response text
+      const text = await response.text();
 
       if (response.ok) {
         let newToken = response.headers.get('authorization');
@@ -105,26 +89,21 @@ export default function Gastos() {
         localStorage.setItem('token', newToken);
 
         if (text) {
-          const data = JSON.parse(text); // Parse the text as JSON
+          const data = JSON.parse(text);
           const message =
           ` Información de la transacción
           Fecha del pago: ${data.fechaPago} 
           Moneda: ${data.currency} 
           CBU destino: ${data.destino} 
-          Monto: $${data.amount} 
+          Monto: $${cleanedAmount} 
           Descripción: ${data.description}`;
 
           handleDialogOpen('Pago Exitoso', message, <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         } else {
           handleDialogOpen('Pago Exitoso', 'El pago se ha registrado correctamente, pero no se recibió respuesta del servidor.', <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         }
-      } else {
-        const data = text ? JSON.parse(text) : { message: 'Error desconocido' }; // Parse the text as JSON if not empty
-        handleDialogOpen('Error en la Transacción', data.message, <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       }
     } catch (error) {
-      // Handle general errors
-      console.error('Error al registrar el pago:', error);
       handleDialogOpen('Error', 'Ha ocurrido un error al intentar registrar el pago.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
     }
   };
@@ -136,7 +115,7 @@ export default function Gastos() {
       setSelectedAccount(accountId);
       setForm(prevForm => ({
         ...prevForm,
-        currency: selected.currency // Actualizar la moneda del formulario
+        currency: selected.currency 
       }));
     }
   };
@@ -153,6 +132,7 @@ export default function Gastos() {
     setDialogOpen(false);
     navigate('/home'); 
   };
+
 
   return (
     <section className="box-principal-gastos">
@@ -186,24 +166,23 @@ export default function Gastos() {
             </MenuItem>
           ))}
         </TextField>
-        <TextField
-          required
-          name="amount"
+        <NumericFormat
           label="Monto"
-          type="text" // Mantenemos type="text"
-          value={form.amount}
-          className="custom-textfield"
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-          }}
-          inputProps={{
-            maxLength: 20,
-          }}
-        />
+            value={form.amount}
+            onChange={handleChange}
+            customInput={TextField}
+            className="custom-textfield"
+            decimalSeparator=","
+            thousandSeparator="."
+            prefix={'$'}
+            fullWidth
+            margin="normal"
+            inputProps={{
+              maxLength: 15
+            }}
+          
+          />
+        
          <TextField
           name="description"
           label="Descripción"

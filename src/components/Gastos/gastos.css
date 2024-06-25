@@ -17,8 +17,8 @@
 
 .box-gastos {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Define tres columnas iguales */
-    gap: 18px; /* Espacio entre los elementos */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 18px; 
 }
 
 .custom-textfield, .custom-formcontrol {
@@ -26,27 +26,27 @@
 }
 
 .custom-textfield.description {
-    grid-column: span 3; /* Ocupa las tres columnas disponibles */
+    grid-column: span 3; 
 }
 
 .button-registrar {
-    grid-column: 2 / span 1; /* Ocupa una columna, comenzando en la segunda columna */
+    grid-column: 2 / span 1; 
     background-color: #ffffff;
     border: 3px solid #46A044;
     color: #46A044;
     height: 50px;
     width:400px;
     align-self: center;
-    justify-self: center; /* Centrar horizontalmente el botón */
+    justify-self: center; 
 }
 
 .custom-textfield .MuiInputLabel-root,
 .custom-formcontrol .MuiInputLabel-root {
-    color: #162368!important; /* Color blanco para las etiquetas */
+    color: #162368!important; 
 }
 
 .custom-textfield .MuiInputBase-root {
-    background-color: transparent; /* Fondo azul oscuro para TextField */
+    background-color: transparent; 
 }
 
 .custom-textfield .MuiInputBase-root input {
