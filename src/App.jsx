@@ -26,7 +26,7 @@ function App() {
         <Route element={<ProtectedRoutes />}>
           <Route path="/home" element={<Home />} />
 
-          <Route path="/fixedTerm" element={<PlazoFijoSimulado />} />
+          <Route path="/inversiones" element={<PlazoFijoSimulado />} />
           <Route path="/Transferir" element={<Transferir />} />
           <Route path="/MisDatos" element={<DatosUser />} />
 
