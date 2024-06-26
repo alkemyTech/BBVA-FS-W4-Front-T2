@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Paper, Typography, Box, TextField, MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { fetchAccounts, addBalance } from "../../Redux/slice/accountSlice";
@@ -6,12 +6,14 @@ import { NumericFormat } from 'react-number-format';
 import { useNavigate } from 'react-router-dom';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import fondoCargarSaldo from '../../assets/fondoCargarSaldo.svg'
+import fondoCargarSaldo from '../../assets/fondoCargarSaldo.svg';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import './deposit.css';
 
 const Deposito = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const userId = useSelector((state) => state.user.id);
   const accounts = useSelector((state) => state.account.accounts);
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -83,7 +85,10 @@ const Deposito = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al procesar la transacción');
+      }
 
       let updatedToken = response.headers.get('authorization');
       if (updatedToken && updatedToken.startsWith('Bearer ')) {
@@ -98,10 +103,16 @@ const Deposito = () => {
       setDate(new Date());
 
       handleDialogOpen('Depósito Exitoso', 'El depósito se ha registrado correctamente.', <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
+      localStorage.setItem('snackbarMessage', 'Depósito realizado con éxito');
+      localStorage.setItem('snackbarVariant', 'success');
+      navigate('/home');
     } catch (error) {
       console.error('Error:', error);
       setError("Error al procesar la transacción");
-      handleDialogOpen('Error en la Transacción', 'Error al procesar la transacción', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
+      handleDialogOpen('Error en la Transacción', error.message || 'Error al procesar la transacción', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
+      localStorage.setItem('snackbarMessage', 'No se pudo realizar la operación');
+      localStorage.setItem('snackbarVariant', 'error');
+      navigate('/home');
     } finally {
       setIsProcessing(false);
     }
@@ -130,11 +141,11 @@ const Deposito = () => {
         justifyContent: "center",
       }}
     >
-      <Paper className="box-principal-deposito"  style={{
-          backgroundImage: `url(${fondoCargarSaldo})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}>
+      <Paper className="box-principal-deposito" style={{
+        backgroundImage: `url(${fondoCargarSaldo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}>
         <>
           <p className="titulo-deposito">Carga de Saldo</p>
           {error && (
@@ -229,4 +240,10 @@ const Deposito = () => {
   );
 };
 
-export default Deposito;
+export default function IntegrationNotistack() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <Deposito />
+    </SnackbarProvider>
+  );
+}
