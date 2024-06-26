@@ -93,7 +93,7 @@ const Movimientos = () => {
           boxShadow: 3,
           height: 400,
           marginTop: 9,
-          backgroundColor: "#fff", 
+          backgroundColor: "#f8f8f8", 
         }}
       >
         <Typography variant="h5" gutterBottom>
@@ -185,7 +185,7 @@ const Movimientos = () => {
               maxHeight: 450,
               width: 950,
               borderRadius: "10px",
-              bgcolor: "background.paper",
+              backgroundColor: "#f8f8f8",
               boxShadow: 3,
             }}
           >
@@ -198,17 +198,19 @@ const Movimientos = () => {
                     display: "flex",
                     flexDirection: "column",
                     cursor: "pointer",
+                    backgroundColor: "#f8f8f8",
                   }}
                   onClick={() =>
                     setExpandedIndex(expandedIndex === index ? null : index)
                   }
                 >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ display: "flex", alignItems: "center"}}>
                     <CardActions
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        
                       }}
                     >
                       {getIcon(transaction.tipoDeTransaccion)}
@@ -220,6 +222,7 @@ const Movimientos = () => {
                           justifyContent: "center",
                           textAlign: "center",
                           width: "100%",
+                          backgroundColor: "#f8f8f8"
                         }}
                       >
                         <Typography
@@ -299,7 +302,7 @@ const Movimientos = () => {
                 color: "#fff", 
               },
               "& .Mui-selected": {
-                backgroundColor: "#87CEFA", 
+                backgroundColor: "#1565c0", 
                 color: "#000", 
               },
             }}

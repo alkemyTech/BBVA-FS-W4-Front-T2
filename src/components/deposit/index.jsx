@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Paper, Typography, Box, TextField, MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment } from '@mui/material';
+import { Grid, Paper, Typography, Box, TextField, MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { fetchAccounts, addBalance } from "../../Redux/slice/accountSlice";
 import { NumericFormat } from 'react-number-format';
 import { useNavigate } from 'react-router-dom';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import fondoCargarSaldo from '../../assets/fondoCargarSaldo.svg'
+import './deposit.css';
 
 const Deposito = () => {
   const dispatch = useDispatch();
@@ -23,15 +25,8 @@ const Deposito = () => {
     message: '',
     icon: null
   });
+  const [isProcessing, setIsProcessing] = useState(false);
   const token = localStorage.getItem('token');
-
-  const materialUITextFieldProps = {
-    id: "filled-multiline-flexible",
-    label: "Monto",
-    multiline: true,
-    maxRows: 4,
-    variant: "filled"
-  };
 
   const updateTokenForAccount = async (accountId) => {
     try {
@@ -63,6 +58,8 @@ const Deposito = () => {
       setError("El monto debe ser mayor que cero");
       return;
     }
+
+    setIsProcessing(true);
 
     try {
       const newToken = await updateTokenForAccount(selectedAccount);
@@ -105,6 +102,8 @@ const Deposito = () => {
       console.error('Error:', error);
       setError("Error al procesar la transacción");
       handleDialogOpen('Error en la Transacción', 'Error al procesar la transacción', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -131,70 +130,70 @@ const Deposito = () => {
         justifyContent: "center",
       }}
     >
-      <Paper
-        sx={{
-          width: "600px",
-          padding: "20px",
-          background: "#fff",
-          boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",
-          borderRadius: "10px",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Carga de Saldo
-        </Typography>
-        {error && (
-          <Typography color="error" gutterBottom>
-            {error}
-          </Typography>
-        )}
-        <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            label="Cuenta"
-            select
-            value={selectedAccount}
-            onChange={(e) => setSelectedAccount(e.target.value)}
-            fullWidth
-            margin="normal"
-          >
-            {accounts.map((account) => (
-              <MenuItem key={account.id} value={account.id}>
-                {account.cbu} - {account.currency}
-              </MenuItem>
-            ))}
-          </TextField>
-          <NumericFormat
-            label="Monto"
-            value={amount}
-            onValueChange={(values) => setAmount(values.value)}
-            customInput={TextField}
-            decimalSeparator=","
-            thousandSeparator="."
-            prefix={'$'}
-            {...materialUITextFieldProps}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Detalle del Movimiento"
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            variant="contained"
-            type="submit"
-            fullWidth
-          >
-            Cargar Saldo
-          </Button>
-        </Box>
+      <Paper className="box-principal-deposito"  style={{
+          backgroundImage: `url(${fondoCargarSaldo})`,
+          backgroundColor: '#f8f8f8',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+        <>
+          <p className="titulo-deposito">Carga de Saldo</p>
+          {error && (
+            <Typography color="error" gutterBottom>
+              {error}
+            </Typography>
+          )}
+          <Box component="form" onSubmit={handleSubmit} className="box-deposito">
+            <Box className="input-container">
+              <TextField
+                className="custom-formcontrol"
+                label="Cuenta"
+                select
+                value={selectedAccount}
+                onChange={(e) => setSelectedAccount(e.target.value)}
+                fullWidth
+                margin="normal"
+              >
+                {accounts.map((account) => (
+                  <MenuItem key={account.id} value={account.id}>
+                    {account.cbu} - {account.currency}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <NumericFormat
+                className="custom-textfield"
+                label="Monto"
+                value={amount}
+                onValueChange={(values) => setAmount(values.value)}
+                customInput={TextField}
+                decimalSeparator=","
+                thousandSeparator="."
+                prefix={'$'}
+                fullWidth
+                margin="normal"
+              />
+            </Box>
+            <TextField
+              className="custom-textfield description"
+              label="Detalle del Movimiento"
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              className={`button-registrar ${isProcessing ? 'button-loading' : ''}`}
+              variant="contained"
+              type="submit"
+              fullWidth
+              disabled={isProcessing}
+            >
+              {isProcessing ? 'Procesando...' : 'Cargar Saldo'}
+            </Button>
+          </Box>
+        </>
       </Paper>
 
-      {/* Dialog para mostrar la confirmación o el error */}
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
