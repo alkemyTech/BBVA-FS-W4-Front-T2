@@ -1,6 +1,3 @@
-export default function Gastos() {
-  const [accounts, setAccounts] = useState([]);
-
 import React, { useState } from 'react';
 import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -12,7 +9,6 @@ import './gastos.css';
 import fondoGastos from '../../assets/fondoGastos.svg'
 
 export default function Gastos() {
-
   const [selectedAccount, setSelectedAccount] = useState("");
   const [form, setForm] = useState({
     destino: '',
@@ -57,13 +53,21 @@ export default function Gastos() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'amount' && !/^\d*$/.test(value)) {
+    if (name === 'amount') {
       return;
     }
 
     setForm({
       ...form,
       [name]: name === 'description' ? value.slice(0, 100) : value
+    });
+  };
+
+  const handleAmountChange = (values) => {
+    const { formattedValue, value } = values;
+    setForm({
+      ...form,
+      amount: value
     });
   };
 
@@ -75,15 +79,6 @@ export default function Gastos() {
 
     try {
       const newToken = await updateTokenForAccount(selectedAccount);
-      
-      const response = await fetch(`http://localhost:8080/transactions/payment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${newToken}`
-        },
-        body: JSON.stringify(form)
-      });
 
       const response = await fetch(`http://localhost:8080/transactions/payment`, {
         method: 'POST',
@@ -91,7 +86,7 @@ export default function Gastos() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${newToken}`
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify({ ...form, amount: cleanedAmount })
       });
 
       const text = await response.text();
@@ -105,20 +100,21 @@ export default function Gastos() {
 
         if (text) {
           const data = JSON.parse(text);
-          const message = `
-            Información de la transacción:
-            Fecha del pago: ${data.fechaPago}
-            Moneda: ${data.currency}
-            CBU destino: ${data.destino}
-            Monto: $${cleanedAmount}
-            Descripción: ${data.description}
-          `;
+          const message =
+            `Información de la transacción
+            Fecha del pago: ${data.fechaPago} 
+            Moneda: ${data.currency} 
+            CBU destino: ${data.destino} 
+            Monto: $${cleanedAmount} 
+            Descripción: ${data.description}`;
+
           handleDialogOpen('Pago Exitoso', message, <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         } else {
           handleDialogOpen('Pago Exitoso', 'El pago se ha registrado correctamente, pero no se recibió respuesta del servidor.', <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         }
+      } else if (response.status === 500) {
+        handleDialogOpen('Error', 'Error del servidor. Por favor, inténtelo de nuevo más tarde.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       } else {
-
         handleDialogOpen('Error', 'Ha ocurrido un error al intentar registrar el pago.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       }
     } catch (error) {
@@ -139,18 +135,6 @@ export default function Gastos() {
       }));
     }
   };
-
-  const handleChangeAccount = (e) => {
-    const accountId = e.target.value;
-    const selected = accounts.find(account => account.id === accountId);
-    if (selected) {
-      setSelectedAccount(accountId);
-      setForm(prevForm => ({
-        ...prevForm,
-        currency: selected.currency // Actualizar la moneda del formulario
-      }));
-    }
-  };
   const handleDialogOpen = (title, message, icon) => {
     setDialogContent({
       title,
@@ -162,9 +146,7 @@ export default function Gastos() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-
     navigate('/home');
-
   };
 
   return (
@@ -206,8 +188,7 @@ export default function Gastos() {
         <NumericFormat
           label="Monto"
           value={form.amount}
-          className="custom-textfield"
-          onChange={handleChange}
+          onValueChange={handleAmountChange}
           customInput={TextField}
           className="custom-textfield"
           decimalSeparator=","
@@ -231,7 +212,6 @@ export default function Gastos() {
           inputProps={{
             maxLength: 100
           }}
-          
         />
         <Button
           variant="contained"
@@ -244,7 +224,6 @@ export default function Gastos() {
         </Button>
       </Box>
 
-      {/* Dialog para mostrar la confirmación o el error */}
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
