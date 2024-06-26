@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/material';
 import { setUser } from '../../Redux/slice/userSlice';
+import { fetchBirthDate } from '../../utils/Auth';
 import './datos.css';
 
 
@@ -13,9 +14,9 @@ const DatosUser = () => {
         firstName: '',
         lastName: '',
         DNI: '',
-        birthDate: '',
         email: '',
         password: '',
+        birthDate: '',
     });
     const [isEditing, setIsEditing] = useState(false);
 
@@ -33,6 +34,25 @@ const DatosUser = () => {
             });
         }
     }, [user]);
+
+    useEffect(() => {
+        const fetchUserBirthDate = async () => {
+            try {
+                const birthDate = await fetchBirthDate(user.id); // Llama a fetchBirthDate con user.id
+                setUserData(prevUserData => ({
+                    ...prevUserData,
+                    birthDate: birthDate, // Actualiza la fecha de nacimiento en el estado local
+                }));
+            } catch (error) {
+                console.error('Error al obtener la fecha de nacimiento:', error);
+                // Maneja el error adecuadamente en tu aplicación
+            }
+        };
+
+        if (user.id) {
+            fetchUserBirthDate();
+        }
+    }, [user.id]); // Ejecuta cada vez que cambia user.id
 
     const handleChange = (e) => {
         setUserData({
@@ -111,7 +131,7 @@ const DatosUser = () => {
                     label="Fecha de Nacimiento"
                     variant="outlined"
                     name="birthDate"
-                    value={userData.edad}
+                    value={userData.birthDate}
                     onChange={handleChange}
                     disabled
                     fullWidth
