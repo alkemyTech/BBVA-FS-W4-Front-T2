@@ -6,6 +6,8 @@ const initialState = {
   firstName:"",
   lastName:"",
   imagePath:"",
+  dni: "", 
+
 };
 
 export const userSlice = createSlice({
@@ -13,13 +15,16 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { id, userName, image, firstName, lastName } = action.payload;
+      const { id, userName, image, firstName, lastName, dni } = action.payload;
       state.id = id;
       state.userName = userName;
       state.imagePath = image;
       state.firstName = firstName;
       state.lastName = lastName;
+      state.dni = dni;
+      
     },
+    
     clearUser: () => initialState, 
   },
 });

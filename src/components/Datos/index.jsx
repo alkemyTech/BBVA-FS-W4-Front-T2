@@ -4,6 +4,7 @@ import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/mate
 import { setUser } from '../../Redux/slice/userSlice';
 import './datos.css';
 
+
 const DatosUser = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
@@ -12,10 +13,13 @@ const DatosUser = () => {
         firstName: '',
         lastName: '',
         DNI: '',
-        edad: '',
+        birthDate: '',
         email: '',
-        phone: '',
+        password: '',
     });
+    const [isEditing, setIsEditing] = useState(false);
+
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -23,9 +27,9 @@ const DatosUser = () => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.userName,
-                phone: user.phone,
-                DNI: user.DNI,
-                edad: user.edad,
+                password: user.password,
+                DNI: user.dni,
+                birthDate: user.birthDate,
             });
         }
     }, [user]);
@@ -37,9 +41,22 @@ const DatosUser = () => {
         });
     };
 
+
     const handleSave = () => {
-        dispatch(setUser(userData));
-        console.log('Datos actualizados:', userData);
+        const updatedUserData = { ...userData, password };
+        dispatch(setUser(updatedUserData));
+        console.log('Datos actualizados:', updatedUserData);
+    };
+    
+    const handleEditClick = () => {
+        if (isEditing) {
+            handleSave();
+        }
+        setIsEditing(!isEditing);
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
     };
 
     return (
@@ -55,7 +72,7 @@ const DatosUser = () => {
                     name="firstName"
                     value={userData.firstName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
 
@@ -87,13 +104,13 @@ const DatosUser = () => {
                     name="lastName"
                     value={userData.lastName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
                 <TextField
-                    label="Edad"
+                    label="Fecha de Nacimiento"
                     variant="outlined"
-                    name="edad"
+                    name="birthDate"
                     value={userData.edad}
                     onChange={handleChange}
                     disabled
@@ -101,13 +118,19 @@ const DatosUser = () => {
                 />
 
                 <TextField
-                    label="Teléfono"
+                    label="Contraseña"
                     variant="outlined"
-                    name="phone"
-                    value={userData.phone}
+                    name="password"
+                    type="password"
+                    value={userData.password}
                     onChange={handleChange}
+                    disabled={!isEditing}
                     fullWidth
                 />
+               <Button onClick={handleEditClick} variant="contained">
+                    {isEditing ? 'Guardar' : 'Editar'}
+                </Button>
+
             </Box>
 
             
