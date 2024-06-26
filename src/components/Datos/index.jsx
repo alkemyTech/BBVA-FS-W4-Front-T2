@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/material';
 import { setUser } from '../../Redux/slice/userSlice';
-import { fetchBirthDate } from '../../utils/Auth';
+import { fetchBirthDate, updateUser } from '../../utils/Auth';
 import './datos.css';
 
 
@@ -62,10 +62,18 @@ const DatosUser = () => {
     };
 
 
-    const handleSave = () => {
-        const updatedUserData = { ...userData, password };
-        dispatch(setUser(updatedUserData));
-        console.log('Datos actualizados:', updatedUserData);
+    const handleSave = async () => {
+        try {
+            const updatedUserData = { ...userData };
+            delete updatedUserData.email; // Elimina el campo de email para no enviarlo accidentalmente
+            const updatedUser = await updateUser(user.id, updatedUserData);
+            dispatch(setUser(updatedUser));
+            console.log('Datos actualizados:', updatedUser);
+            setIsEditing(false); // Finaliza el modo de edición después de guardar
+        } catch (error) {
+            console.error('Error al guardar los datos:', error);
+            // Maneja el error adecuadamente en tu aplicación
+        }
     };
     
     const handleEditClick = () => {

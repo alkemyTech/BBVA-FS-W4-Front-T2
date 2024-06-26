@@ -110,6 +110,30 @@ const fetchBirthDate = async (userId) => {
     throw error;
   }
 };
+const updateUser = async (userId, userData) => {
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(`Error ${response.status}: ${errorMessage}`);
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    throw error;
+  }
+};
+
 
 
 
@@ -117,6 +141,7 @@ export {
   login,
   register,
   validateToken,
-  fetchBirthDate
+  fetchBirthDate,
+  updateUser,
 
 };
