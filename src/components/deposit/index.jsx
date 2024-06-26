@@ -6,6 +6,7 @@ import { NumericFormat } from 'react-number-format';
 import { useNavigate } from 'react-router-dom';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import fondoCargarSaldo from '../../assets/fondoCargarSaldo.svg'
 import './deposit.css';
 
 const Deposito = () => {
@@ -129,7 +130,11 @@ const Deposito = () => {
         justifyContent: "center",
       }}
     >
-      <Paper className="box-principal-deposito">
+      <Paper className="box-principal-deposito"  style={{
+          backgroundImage: `url(${fondoCargarSaldo})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
         <>
           <p className="titulo-deposito">Carga de Saldo</p>
           {error && (

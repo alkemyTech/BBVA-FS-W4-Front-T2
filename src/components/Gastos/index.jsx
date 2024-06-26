@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 import './gastos.css';
+import fondoGastos from '../../assets/fondoGastos.svg'
 
 export default function Gastos() {
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -140,7 +141,11 @@ export default function Gastos() {
   };
 
   return (
-    <section className="box-principal-gastos">
+    <section className="box-principal-gastos" style={{
+      backgroundImage: `url(${fondoGastos})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
       <p className="titulo-gastos">Registrar Pago</p>
       <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off" className="box-gastos">
         <TextField

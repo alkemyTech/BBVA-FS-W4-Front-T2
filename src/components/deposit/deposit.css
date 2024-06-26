@@ -1,7 +1,8 @@
+
 .box-principal-deposito {
-    background-color: #ffffff;
+    background-image: url('./assets/fondoCargarSaldo.svg'); 
     color: #103551;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
     width: 1200px; /* Aumentar el ancho del contenedor principal */
     border-radius: 10px;
@@ -128,8 +129,8 @@
   
   .titulo-deposito {
     text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-bottom: 5px;
   }
   
   .button-registrar {
