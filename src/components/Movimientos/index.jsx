@@ -16,12 +16,16 @@ import {
   Paper,
   Pagination,
 } from "@mui/material";
-
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
 } from "@mui/icons-material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import CatLoader from "../../UI/CatLoader/catLoader";
+import "dayjs/locale/es";
+import { esES } from "@mui/x-date-pickers/locales";
 
 const Movimientos = () => {
   const dispatch = useDispatch();
@@ -30,8 +34,8 @@ const Movimientos = () => {
   );
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [filters, setFilters] = useState({
-    fromDate: "",
-    toDate: "",
+    fromDate: null,
+    toDate: null,
     transactionType: "",
     currency: "",
   });
@@ -59,15 +63,21 @@ const Movimientos = () => {
     return type === "PAYMENT" ? `- ${formattedAmount}` : `+ ${formattedAmount}`;
   };
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (name, value) => {
     setFilters({
       ...filters,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
   const handleApplyFilters = () => {
-    dispatch(fetchTransactions({ page: 0, ...filters }));
+    dispatch(fetchTransactions({
+      page: 0,
+      fromDate: filters.fromDate ? filters.fromDate.format("YYYY-MM-DD") : "",
+      toDate: filters.toDate ? filters.toDate.format("YYYY-MM-DD") : "",
+      transactionType: filters.transactionType,
+      currency: filters.currency,
+    }));
   };
 
   const handlePageChange = (event, value) => {
@@ -84,7 +94,6 @@ const Movimientos = () => {
 
   return (
     <Box sx={{ display: "flex", gap: 1 }}>
-      
       <Paper
         sx={{
           padding: 3,
@@ -93,44 +102,50 @@ const Movimientos = () => {
           boxShadow: 3,
           height: 400,
           marginTop: 9,
-          backgroundColor: "#f8f8f8", 
+          backgroundColor: "#f8f8f8",
         }}
       >
         <Typography variant="h5" gutterBottom>
           Filtros
         </Typography>
         <Grid container spacing={2.5}>
-          
-          <Grid item xs={12}>
-            <TextField
-              label="Desde"
-              type="date"
-              name="fromDate"
-              value={filters.fromDate}
-              onChange={handleFilterChange}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Hasta"
-              type="date"
-              name="toDate"
-              value={filters.toDate}
-              onChange={handleFilterChange}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-            />
-          </Grid>
-          
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="es"
+            localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
+          >
+            <Grid item xs={12}>
+              <DatePicker
+                label="Desde"
+                value={filters.fromDate}
+                onChange={(newValue) => handleFilterChange("fromDate", newValue)}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+                format="DD/MM/YYYY"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <DatePicker
+                label="Hasta"
+                value={filters.toDate}
+                onChange={(newValue) => {
+                  if (newValue && newValue.isBefore(filters.fromDate)) {
+                    alert("La fecha Hasta no puede ser anterior a la fecha Desde.");
+                  } else {
+                    handleFilterChange("toDate", newValue);
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+                format="DD/MM/YYYY"
+                minDate={filters.fromDate}
+              />
+            </Grid>
+          </LocalizationProvider>
           <Grid item xs={12}>
             <TextField
               label="Tipo"
               name="transactionType"
               value={filters.transactionType}
-              onChange={handleFilterChange}
+              onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
               select
               fullWidth
             >
@@ -145,7 +160,7 @@ const Movimientos = () => {
               label="Moneda"
               name="currency"
               value={filters.currency}
-              onChange={handleFilterChange}
+              onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
               select
               fullWidth
               sx={{ marginBottom: 2 }}
@@ -155,7 +170,6 @@ const Movimientos = () => {
               <MenuItem value="ARS">ARS</MenuItem>
             </TextField>
           </Grid>
-          
           <Grid item xs={12}>
             <Button
               variant="contained"
@@ -168,7 +182,6 @@ const Movimientos = () => {
           </Grid>
         </Grid>
       </Paper>
-
       <Box sx={{ padding: 2, textAlign: "right" }}>
         <Typography variant="h4" gutterBottom>
           Transacciones
@@ -204,13 +217,12 @@ const Movimientos = () => {
                     setExpandedIndex(expandedIndex === index ? null : index)
                   }
                 >
-                  <Box sx={{ display: "flex", alignItems: "center"}}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
                     <CardActions
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        
                       }}
                     >
                       {getIcon(transaction.tipoDeTransaccion)}
@@ -222,7 +234,7 @@ const Movimientos = () => {
                           justifyContent: "center",
                           textAlign: "center",
                           width: "100%",
-                          backgroundColor: "#f8f8f8"
+                          backgroundColor: "#f8f8f8",
                         }}
                       >
                         <Typography
@@ -291,7 +303,6 @@ const Movimientos = () => {
             </List>
           </Box>
         )}
-        
         <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
           <Pagination
             count={totalPages}
@@ -299,11 +310,11 @@ const Movimientos = () => {
             onChange={handlePageChange}
             sx={{
               "& .MuiPaginationItem-root": {
-                color: "#fff", 
+                color: "#fff",
               },
               "& .Mui-selected": {
-                backgroundColor: "#1565c0", 
-                color: "#000", 
+                backgroundColor: "#1565c0",
+                color: "#000",
               },
             }}
           />
