@@ -60,7 +60,6 @@ const register = async (userName, firstName, lastName, birthDate, password, dni)
 
 const validateToken = async () => {
   const token = localStorage.getItem('token');
-  console.log(localStorage.getItem('token'))
   if (!token) {
     throw new Error('Token no encontrado');
   }
