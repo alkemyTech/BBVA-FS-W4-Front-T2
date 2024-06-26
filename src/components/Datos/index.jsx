@@ -62,18 +62,10 @@ const DatosUser = () => {
     };
 
 
-    const handleSave = async () => {
-        try {
-            const updatedUserData = { ...userData };
-            delete updatedUserData.email; // Elimina el campo de email para no enviarlo accidentalmente
-            const updatedUser = await updateUser(user.id, updatedUserData);
-            dispatch(setUser(updatedUser));
-            console.log('Datos actualizados:', updatedUser);
-            setIsEditing(false); // Finaliza el modo de edición después de guardar
-        } catch (error) {
-            console.error('Error al guardar los datos:', error);
-            // Maneja el error adecuadamente en tu aplicación
-        }
+    const handleSave = () => {
+        const updatedUserData = { ...userData, password };
+        dispatch(setUser(updatedUserData));
+        console.log('Datos actualizados:', updatedUserData);
     };
     
     const handleEditClick = () => {
@@ -100,7 +92,7 @@ const DatosUser = () => {
                     name="firstName"
                     value={userData.firstName}
                     onChange={handleChange}
-                    disabled={!isEditing}
+                    disabled
                     fullWidth
                 />
 
@@ -115,7 +107,7 @@ const DatosUser = () => {
                 />
 
                 <TextField
-                    label=""
+                    label="Username / Correo"
                     variant="outlined"
                     name="email"
                     value={userData.email}
@@ -132,7 +124,7 @@ const DatosUser = () => {
                     name="lastName"
                     value={userData.lastName}
                     onChange={handleChange}
-                    disabled={!isEditing}
+                    disabled
                     fullWidth
                 />
                 <TextField
