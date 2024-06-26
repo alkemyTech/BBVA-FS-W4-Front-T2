@@ -125,23 +125,16 @@ export default function Registro() {
       navigate("/home");
     } catch (error) {
       if (error.response) {
-        // Error de respuesta del servidor
-        setError({
-          userName: true,
-          password: true,
-          dni: true,
-          firstName: true,
-          lastName: true,
-          birthDate: true,
-        });
+        
+        setError({ userName: true, password: true, dni: true, firstName: true, lastName: true, birthDate: true });
         setErrorMessage("Usuario, contraseña o DNI incorrectos");
         console.error("Error en el inicio de sesión", error);
       } else if (error.request) {
-        // Error de red
+        
         setErrorMessage("Error de red: no se pudo conectar con el servidor");
         console.error("Error de red:", error);
       } else {
-        // Otro tipo de error
+        
         setErrorMessage("Ocurrió un error inesperado");
         console.error("Error inesperado:", error);
       }

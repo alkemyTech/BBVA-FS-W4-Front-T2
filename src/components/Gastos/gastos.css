@@ -1,6 +1,6 @@
 .box-principal-gastos {
-    background-color: #ffffff;
-    color: #103551;
+    background-color:#f8f8f8;
+    color: #1565c0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
     width: 1200px; /* Aumentar el ancho del contenedor principal */
@@ -13,6 +13,7 @@
     font-size: 32px;
     margin-bottom: 5px;
     text-align: center;
+    color: #1565c0;
 }
 
 .box-gastos {
@@ -30,70 +31,53 @@
 }
 
 .button-registrar {
-    grid-column: 2 / span 1; 
+    grid-column: 1 / span 3; 
     background-color: #ffffff;
     border: 3px solid #46A044;
-    color: #46A044;
     height: 50px;
-    width:400px;
+    width:100%;
     align-self: center;
     justify-self: center; 
 }
-.button-registrar {
-    margin-top: 20px;
-  }
 
 .custom-textfield .MuiInputLabel-root,
 .custom-formcontrol .MuiInputLabel-root {
-    color: #162368!important; 
-}
 
-.custom-textfield .MuiInputBase-root {
-    background-color: transparent; 
 }
 
 .custom-textfield .MuiInputBase-root input {
-    color: #162368 !important; /* Texto blanco dentro de TextField */
+    color: #1565c0 !important; 
 }
 
 .custom-textfield .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #162368; /* Borde transparente */
+    border-color: #1565c0; 
 }
 
 .custom-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #162368; /* Borde azul cuando está enfocado */
+    border-color: #1565c0; 
 }
 
 .custom-formcontrol .MuiInputBase-root {
-    background-color: transparent; /* Fondo azul claro para Select */
+    background-color: transparent; 
 }
 
 .custom-formcontrol .MuiInputBase-root input {
-    color: #162368 !important; /* Texto blanco dentro de Select */
+    color: #1565c0 !important; /* Texto blanco dentro de Select */
 }
 
 .custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #162368; /* Borde transparente */
+
+    border-color: #1565c0; /* Borde transparente */
+
 }
 
-.button-registrar {
-    grid-column: 2 / span 1;
-    background-color: #ffffff;
-    border: 3px solid #46A044;
-    color: #46A044;
-    height: 50px;
-    width: 400px;
-    align-self: center;
-    justify-self: center;
-    position: relative;
-    overflow: hidden;
+.custom-textfield:hover .MuiInputBase-input {
+    color: #1565c0 !important; /* Color del texto al pasar el mouse */
   }
-
-  .button-registrar {
-    margin-top: 20px;
-    position: relative;
-    overflow: hidden;
+  .custom-textfield .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1565c1; /* Color del borde al pasar el mouse */
   }
+  
   
   .button-loading {
     pointer-events: none; /* Disable button interactions while loading */
@@ -118,3 +102,4 @@
       width: 100%;
     }
   }
+
