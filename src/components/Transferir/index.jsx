@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Box, Stepper, Step, StepLabel, Typography, Card, CardContent } from "@mui/material";
+import {
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  Card,
+  CardContent,
+} from "@mui/material";
 import Contactos from "../Contactos";
 import SeleccionarDestinatario from "./SeleccionarDestinatario";
 import IngresarCBU from "./IngresarCBU";
@@ -123,7 +131,7 @@ const Transferir = () => {
       if (newToken && newToken.startsWith("Bearer ")) {
         newToken = newToken.slice(7);
       }
- 
+
       localStorage.setItem("token", newToken);
       return newToken;
     } catch (error) {
@@ -187,16 +195,15 @@ const Transferir = () => {
     <Box sx={{ display: "grid", placeItems: "center" }}>
       <Card
         sx={{
-          width: "100%",
-          maxWidth: "600px",
+          width: "1200px",
           p: 2,
           justifyContent: "center",
           alignItems: "center",
-          color:"#1565c0"
+          color: "#1565c0",
         }}
       >
         <CardContent>
-          <Typography variant="h4" gutterBottom >
+          <Typography variant="h4" gutterBottom>
             {showContactos ? "Seleccionar Contacto" : stepTitles[activeStep]}
           </Typography>
           {!showContactos && (
@@ -206,7 +213,7 @@ const Transferir = () => {
             >
               {stepTitles.map((title, index) => (
                 <Step key={index}>
-                  <StepLabel sx={{color:"#1565c0"}} >{title}</StepLabel>
+                  <StepLabel sx={{ color: "#1565c0" }}>{title}</StepLabel>
                 </Step>
               ))}
             </Stepper>
@@ -252,11 +259,8 @@ const Transferir = () => {
               />
             )}
             {activeStep === 4 && (
-              <TransferenciaExitosa
-                handleReset={handleReset}
-              />
+              <TransferenciaExitosa handleReset={handleReset} />
             )}
-            
           </Box>
         </CardContent>
       </Card>

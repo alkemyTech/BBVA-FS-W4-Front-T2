@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material';
 
 const SeleccionarDestinatario = ({ handleNewTransfer, setShowContactos }) => {
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
       <Button
         variant="contained"
         color="primary"
