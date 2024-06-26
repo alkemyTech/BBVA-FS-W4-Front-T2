@@ -53,13 +53,21 @@ export default function Gastos() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'amount' && !/^\d*$/.test(value)) {
+    if (name === 'amount') {
       return;
     }
 
     setForm({
       ...form,
       [name]: name === 'description' ? value.slice(0, 100) : value
+    });
+  };
+
+  const handleAmountChange = (values) => {
+    const { formattedValue, value } = values;
+    setForm({
+      ...form,
+      amount: value
     });
   };
 
@@ -78,7 +86,7 @@ export default function Gastos() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${newToken}`
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify({ ...form, amount: cleanedAmount })
       });
 
       const text = await response.text();
@@ -92,18 +100,20 @@ export default function Gastos() {
 
         if (text) {
           const data = JSON.parse(text);
-          const message = `
-            Información de la transacción:
-            Fecha del pago: ${data.fechaPago}
-            Moneda: ${data.currency}
-            CBU destino: ${data.destino}
-            Monto: $${cleanedAmount}
-            Descripción: ${data.description}
-          `;
+          const message =
+            `Información de la transacción
+            Fecha del pago: ${data.fechaPago} 
+            Moneda: ${data.currency} 
+            CBU destino: ${data.destino} 
+            Monto: $${cleanedAmount} 
+            Descripción: ${data.description}`;
+
           handleDialogOpen('Pago Exitoso', message, <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         } else {
           handleDialogOpen('Pago Exitoso', 'El pago se ha registrado correctamente, pero no se recibió respuesta del servidor.', <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         }
+      } else if (response.status === 500) {
+        handleDialogOpen('Error', 'Error del servidor. Por favor, inténtelo de nuevo más tarde.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       } else {
         handleDialogOpen('Error', 'Ha ocurrido un error al intentar registrar el pago.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       }
@@ -125,7 +135,6 @@ export default function Gastos() {
       }));
     }
   };
-
   const handleDialogOpen = (title, message, icon) => {
     setDialogContent({
       title,
@@ -179,7 +188,7 @@ export default function Gastos() {
         <NumericFormat
           label="Monto"
           value={form.amount}
-          onChange={handleChange}
+          onValueChange={handleAmountChange}
           customInput={TextField}
           className="custom-textfield"
           decimalSeparator=","
@@ -215,7 +224,6 @@ export default function Gastos() {
         </Button>
       </Box>
 
-      {/* Dialog para mostrar la confirmación o el error */}
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
