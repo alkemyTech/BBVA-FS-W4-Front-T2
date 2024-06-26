@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '../../Redux/slice/transactionSlice';
 import {
@@ -6,19 +6,18 @@ import {
   Typography,
   Box,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Avatar,
-  Divider,
-  Paper
+  Card,
+  CardContent,
+  CardActions
 } from '@mui/material';
 
 import { ArrowDownwardOutlined, ArrowUpwardOutlined } from '@mui/icons-material';
+import CatLoader from '../../UI/CatLoader/catLoader';
 
 const Movimientos = () => {
   const dispatch = useDispatch();
   const { transactions, status, error } = useSelector((state) => state.transactions);
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   useEffect(() => {
     dispatch(fetchTransactions({ page: 0 }));
@@ -27,23 +26,24 @@ const Movimientos = () => {
   const getIcon = (type) => {
     switch (type) {
       case 'DEPOSIT':
-        return <ArrowUpwardOutlined sx={{ color: 'blue' }} />;
+        return <ArrowUpwardOutlined sx={{ color: 'green', fontSize: 40 }} />;
       case 'PAYMENT':
-        return <ArrowDownwardOutlined sx={{ color: 'red' }} />;
+        return <ArrowDownwardOutlined sx={{ color: 'red', fontSize: 40 }} />;
       default:
-        return <ArrowUpwardOutlined sx={{ color: 'green' }} />;
+        return <ArrowUpwardOutlined sx={{ color: 'green', fontSize: 40 }} />;
     }
   };
 
-  const formatAmount = (amount) => {
-    return amount.toLocaleString('es-ES', {
+  const formatAmount = (amount, type) => {
+    const formattedAmount = amount.toLocaleString('es-ES', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+    return type === 'PAYMENT' ? `- ${formattedAmount}` : `+ ${formattedAmount}`;
   };
 
   if (status === 'loading') {
-    return <CircularProgress />;
+    return <CatLoader />;
   }
 
   if (status === 'failed') {
@@ -56,37 +56,42 @@ const Movimientos = () => {
         Transacciones
       </Typography>
       {transactions.length === 0 ? (
-        <Paper>
-          <Typography variant='h3'>No hay transacciones para mostrar.</Typography>
-        </Paper>
+        <Typography variant='h3'>No hay transacciones para mostrar.</Typography>
       ) : (
-          <List sx={{overflow:"auto", minHeight:350, maxHeight:350, width:600, borderRadius:"40px",bgcolor:"background.paper"}}>
+        <Box sx={{ overflow: "auto", minHeight: 450, maxHeight: 650, width: 1000, borderRadius: "10px", bgcolor: "background.paper", boxShadow: 3 }}>
+          <List>
             {transactions.map((transaction, index) => (
-              <div key={index}>
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
+              <Card
+                key={index}
+                sx={{ margin: 2, display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
+                onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <CardActions sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {getIcon(transaction.tipoDeTransaccion)}
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
+                  </CardActions>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center', width: '100%' }}>
+                      <Typography align="center" variant="h5" sx={{ color: transaction.tipoDeTransaccion === 'PAYMENT' ? 'red' : 'green', width: '100%' }}>
+                        {formatAmount(transaction.amount, transaction.tipoDeTransaccion)}
+                      </Typography>
+                    </Box>
+                    <Typography component="span" color="textPrimary" variant="body1">
+                      <strong>Descripción:</strong> {transaction.descripcion}
+                    </Typography>
+                    {expandedIndex === index && (
                       <>
-                        <Typography align="center">
-                          ${formatAmount(transaction.amount)}
-                        </Typography>
-                        <Typography component="span" variant="body2">
-                          <strong>Descripción:</strong> {transaction.descripcion}
-                        </Typography>
-                        <Typography>
+                        <Typography color="textPrimary">
                           <strong>Destino:</strong> {transaction.destino}
                         </Typography>
                         <Typography color="textPrimary">
                           <strong>Origen:</strong> {transaction.origen}
                         </Typography>
-                        <Typography component="span" variant="body2">
+                        <Typography component="span" variant="body2" color="textPrimary">
                           <strong>Tipo:</strong> {transaction.tipoDeTransaccion}
                         </Typography>
                         <br />
-                        <Typography component="span" variant="body2">
+                        <Typography component="span" variant="body2" color="textPrimary">
                           <strong>Moneda:</strong> {transaction.currency}
                         </Typography>
                         <br />
@@ -94,13 +99,13 @@ const Movimientos = () => {
                           <strong>Fecha:</strong> {transaction.fechaDeTransaccion}
                         </Typography>
                       </>
-                    }
-                  />
-                </ListItem>
-                {index < transactions.length - 1 && <Divider variant="inset" component="li" />}
-              </div>
+                    )}
+                  </CardContent>
+                </Box>
+              </Card>
             ))}
           </List>
+        </Box>
       )}
     </Box>
   );

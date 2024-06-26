@@ -1,7 +1,7 @@
 .box-principal-gastos {
     background-color: #ffffff;
     color: #103551;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
     width: 1200px; /* Aumentar el ancho del contenedor principal */
     border-radius: 10px;
@@ -39,6 +39,9 @@
     align-self: center;
     justify-self: center; 
 }
+.button-registrar {
+    margin-top: 20px;
+  }
 
 .custom-textfield .MuiInputLabel-root,
 .custom-formcontrol .MuiInputLabel-root {
@@ -72,3 +75,46 @@
 .custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
     border-color: #162368; /* Borde transparente */
 }
+
+.button-registrar {
+    grid-column: 2 / span 1;
+    background-color: #ffffff;
+    border: 3px solid #46A044;
+    color: #46A044;
+    height: 50px;
+    width: 400px;
+    align-self: center;
+    justify-self: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .button-registrar {
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button-loading {
+    pointer-events: none; /* Disable button interactions while loading */
+  }
+  
+  .button-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(70, 160, 68, 0.5);
+    animation: fillButton 2s infinite;
+  }
+  
+  @keyframes fillButton {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
