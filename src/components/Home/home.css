@@ -1,65 +1,104 @@
 .card {
-    min-height: 25vh;
-    flex: 1 1 auto;
-    border-radius: 10% !important;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  min-height: 25vh;
+  flex: 1 1 auto;
+  border-radius: 10% !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .status-card-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 25vh;
-    padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 25vh;
+  padding: 30px;
 }
 
 .status-card-bg-blue {
-    background: -webkit-gradient(linear,right top,left top,from(#7beafe),to(#1c8cfa));
-    background: linear-gradient(270deg,#7beafe,#1c8cfa);
-    color: #fff;
+  background: -webkit-gradient(
+    linear,
+    right top,
+    left top,
+    from(#7beafe),
+    to(#1c8cfa)
+  );
+  background: linear-gradient(270deg, #7beafe, #1c8cfa);
+  color: #fff;
 }
 
 .status-card-bg-green {
-    background: -webkit-gradient(linear,left top,right top,from(#3adf9e),to(#b3fb5b));
-    background: linear-gradient(90deg,#3adf9e,#b3fb5b);
-    color: #fff;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#3adf9e),
+    to(#b3fb5b)
+  );
+  background: linear-gradient(90deg, #3adf9e, #b3fb5b);
+  color: #fff;
 }
 
 .status-card-bg-read {
-    background: -webkit-gradient(linear,left top,right top,from(#fc516a),to(#ff7e76));
-    background: linear-gradient(90deg,#fc516a,#ff7e76);
-    color: #fff;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#fc516a),
+    to(#ff7e76)
+  );
+  background: linear-gradient(90deg, #fc516a, #ff7e76);
+  color: #fff;
 }
 
 .table-container {
-    background-color: #507192; 
-    color: white; 
-    height: auto; 
+    min-height: auto;
     max-height: 40vh;
-    margin: 0 auto; 
-    overflow-y: auto; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.table {
+    overflow-y: auto;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow:  3px 10px  8px  rgba(0, 0, 0, 0.3); /* Sombra suave */
+  }
+  
+  .table {
     width: 100%;
-    background-color: #2d66a0; /* Fondo negro azulado no tan oscuro */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.table th,
-.table td {
-    color: #fff;
-    font-size: larger;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    border: 1px solid #041322; /* Borde de las celdas */
-}
-
-.table th {
-    background-color: #2b4c6d; /* Fondo del encabezado */
-}
-
-.table td {
-    background-color: #8cb3db; /* Fondo de las celdas */
-}
+    background: rgba(74, 144, 226, 0.9); /* Fondo semitransparente más claro */
+    border-collapse: collapse;
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Para asegurar que los bordes redondeados funcionen */
+  }
+  
+  .table th,
+  .table td {
+    color: #ffffff; /* Color blanco para texto */
+    font-size: 1rem; /* Tamaño de fuente más consistente */
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
+    padding: 12px; /* Espaciado interno */
+  }
+  
+  .table th {
+    background-color: rgba(7, 48, 105, 0.9); /* Fondo del encabezado, más claro que antes */
+  }
+  
+  .table td {
+    background-color: rgba(74, 144, 226, 0.9); /* Fondo de las celdas */
+    border-bottom: 1px solid rgba(65, 114, 184, 0.9); /* Línea divisoria entre filas */
+  }
+  
+  .table tr:nth-child(even) td {
+    background-color: rgba(65, 122, 200, 0.9); /* Alterna el color de las filas */
+  }
+  
+  .table tr:hover td {
+    background-color: rgba(58, 104, 169, 0.9); /* Color de la fila al pasar el ratón por encima */
+  }
+  
+  .HomeContainer {
+  background-color: #f8f8f8; 
+  border-radius: 12px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding: 20px;
+  max-width: 1200px;
+  width: 90%; 
+  margin: 20px; 
+} 
+  

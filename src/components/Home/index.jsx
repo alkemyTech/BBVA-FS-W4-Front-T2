@@ -11,16 +11,21 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import CatLoader from "../../assets/components/CatLoader/catLoader";
 import "./home.css";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { useDispatch, useSelector } from 'react-redux';
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
+import CatLoader from "../../UI/CatLoader/catLoader";
+import { fetchAccounts} from "../../Redux/slice/accountSlice";
 
 export default function Home() {
   const [data, setData] = useState(null);
+  const userId = useSelector((state) => state.user.id);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -47,13 +52,24 @@ export default function Home() {
       });
   }, []);
 
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchAccounts(userId));
+    }
+  }, [userId, dispatch]);
+
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Intl.DateTimeFormat("en-US", options).format(
+      new Date(dateString)
+    );
   };
 
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
   };
 
   if (loading) {
@@ -69,7 +85,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <div className="HomeContainer">
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card className="card">
@@ -80,11 +96,13 @@ export default function Home() {
             >
               <Grid item sx={6}>
                 <Typography variant="h4">Cuenta ARS</Typography>
-                <Typography variant="h5">{formatCurrency(data.accountArs)}</Typography>
+                <Typography variant="h5">
+                  {formatCurrency(data.accountArs)}
+                </Typography>
               </Grid>
               <Grid item sx={6}>
                 <AccountBalanceWalletIcon
-                  sx={{ fontSize: "80px", opacity: "0.5" }}
+                  sx={{ fontSize: "80px", opacity: "0.7" }}
                 />
               </Grid>
             </Grid>
@@ -99,10 +117,12 @@ export default function Home() {
             >
               <Grid item sx={6}>
                 <Typography variant="h4">Cuenta USD</Typography>
-                <Typography variant="h5">{formatCurrency(data.accountUsd)}</Typography>
+                <Typography variant="h5">
+                  {formatCurrency(data.accountUsd)}
+                </Typography>
               </Grid>
               <Grid item sx={6}>
-                <AttachMoneyIcon sx={{ fontSize: "80px", opacity: "0.5" }} />
+                <AttachMoneyIcon sx={{ fontSize: "80px", opacity: "0.7" }} />
               </Grid>
             </Grid>
           </Card>
@@ -121,18 +141,14 @@ export default function Home() {
                 </Typography>
               </Grid>
               <Grid item sx={6}>
-                <MovingIcon sx={{ fontSize: "80px", opacity: "0.5" }} />
+                <MovingIcon sx={{ fontSize: "80px", opacity: "0.7" }} />
               </Grid>
             </Grid>
           </Card>
         </Grid>
       </Grid>
 
-      <TableContainer
-        component={Paper}
-        style={{ marginTop: "10vh" }}
-        className="table-container"
-      >
+      <TableContainer style={{ marginTop: "10vh" }} className="table-container">
         <Table className="table">
           <TableHead>
             <TableRow>
@@ -146,16 +162,26 @@ export default function Home() {
           <TableBody>
             {data.accountTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
-                <TableCell>{formatDate(transaction.transactionDate)}</TableCell>
-                <TableCell>{transaction.type}</TableCell>
-                <TableCell>{transaction.currency}</TableCell>
-                <TableCell>{formatCurrency(transaction.amount)}</TableCell>
-                <TableCell>{transaction.originAccountCBU}</TableCell>
+                <TableCell>
+                  <b>{formatDate(transaction.transactionDate)}</b>
+                </TableCell>
+                <TableCell>
+                  <b>{transaction.type}</b>
+                </TableCell>
+                <TableCell>
+                  <b>{formatCurrency(transaction.amount)}</b>
+                </TableCell>
+                <TableCell>
+                  <b>{transaction.originAccountCBU}</b>
+                </TableCell>
+                <TableCell>
+                  <b>{transaction.currency}</b>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/material';
+import { Box, TextField, Button, Typography, Card, CardContent, Grid } from '@mui/material';
 import { setUser } from '../../Redux/slice/userSlice';
 import { fetchBirthDate, updateUser } from '../../utils/Auth';
 import './datos.css';
@@ -18,6 +18,9 @@ const DatosUser = () => {
         password: '',
         birthDate: '',
     });
+    const [isEditing, setIsEditing] = useState(false);
+
+    const [password, setPassword] = useState('');
     const [isEditing, setIsEditing] = useState(false);
 
     const [password, setPassword] = useState('');
@@ -62,6 +65,7 @@ const DatosUser = () => {
     };
 
 
+
     const handleSave = () => {
         const updatedUserData = { ...userData, password };
         dispatch(setUser(updatedUserData));
@@ -92,7 +96,7 @@ const DatosUser = () => {
                     name="firstName"
                     value={userData.firstName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
 
@@ -124,7 +128,7 @@ const DatosUser = () => {
                     name="lastName"
                     value={userData.lastName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
                 <TextField
@@ -138,6 +142,7 @@ const DatosUser = () => {
                 />
 
                 <TextField
+                    label="Contraseña"
                     label="Contraseña"
                     variant="outlined"
                     name="password"
@@ -153,7 +158,7 @@ const DatosUser = () => {
 
             </Box>
 
-            
+
         </Box>
 
 
@@ -161,3 +166,4 @@ const DatosUser = () => {
 };
 
 export default DatosUser;
+

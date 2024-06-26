@@ -1,27 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Paper, Typography, Box, TextField, MenuItem, Button } from '@mui/material';
-import { fetchAccounts, addBalance } from "../../Redux/slice/accountSlice"; // Importa tus acciones
+import { Grid, Paper, Typography, Box, TextField, MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment } from '@mui/material';
+import { fetchAccounts, addBalance } from "../../Redux/slice/accountSlice";
+import { NumericFormat } from 'react-number-format';
+import { useNavigate } from 'react-router-dom';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 const Deposito = () => {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.id); // Obtener el id del usuario del estado global
+  const navigate = useNavigate();
+  const userId = useSelector((state) => state.user.id);
   const accounts = useSelector((state) => state.account.accounts);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [amount, setAmount] = useState("");
   const [details, setDetails] = useState("");
   const [date, setDate] = useState(new Date());
   const [error, setError] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState({
+    title: '',
+    message: '',
+    icon: null
+  });
   const token = localStorage.getItem('token');
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchAccounts(userId));
-    }
-  }, [userId, dispatch]);
+  const materialUITextFieldProps = {
+    id: "filled-multiline-flexible",
+    label: "Monto",
+    multiline: true,
+    maxRows: 4,
+    variant: "filled"
+  };
 
   const updateTokenForAccount = async (accountId) => {
-  
     try {
       const response = await fetch(`http://localhost:8080/accounts/select/${accountId}`, {
         method: 'POST',
@@ -32,11 +44,11 @@ const Deposito = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      let newToken = response.headers.get('authorization'); 
+      let newToken = response.headers.get('authorization');
       if (newToken && newToken.startsWith('Bearer ')) {
         newToken = newToken.slice(7, newToken.length);
       }
-      localStorage.setItem('token', newToken); // Actualizar el token en el almacenamiento local
+      localStorage.setItem('token', newToken);
       return newToken;
     } catch (error) {
       console.error('Error al actualizar el token:', error);
@@ -46,7 +58,8 @@ const Deposito = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (amount <= 0) {
+    const cleanedAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
+    if (cleanedAmount <= 0) {
       setError("El monto debe ser mayor que cero");
       return;
     }
@@ -56,20 +69,18 @@ const Deposito = () => {
 
       const transactionDetails = {
         destino: selectedAccount,
-        amount: parseFloat(amount),
-        currency: selectedAccount.currency,
+        amount: cleanedAmount,
+        currency: accounts.find(account => account.id === selectedAccount).currency,
         description: details,
       };
 
-      // Llamar a addBalance en el frontend
       dispatch(addBalance(transactionDetails));
 
-      // Llamar al backend
       const response = await fetch('http://localhost:8080/transactions/deposit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${newToken}`, // Usar el nuevo token actualizado
+          'Authorization': `Bearer ${newToken}`,
         },
         body: JSON.stringify(transactionDetails),
       });
@@ -78,20 +89,37 @@ const Deposito = () => {
       console.log(data);
 
       let updatedToken = response.headers.get('authorization');
-    if (updatedToken && updatedToken.startsWith('Bearer ')) {
-      updatedToken = updatedToken.slice(7); // Remover 'Bearer ' del token
-      localStorage.setItem('token', updatedToken); // Actualizar el token en el almacenamiento local
-    }
+      if (updatedToken && updatedToken.startsWith('Bearer ')) {
+        updatedToken = updatedToken.slice(7);
+        localStorage.setItem('token', updatedToken);
+      }
 
       setError("");
       setSelectedAccount("");
       setAmount("");
       setDetails("");
       setDate(new Date());
+
+      handleDialogOpen('Depósito Exitoso', 'El depósito se ha registrado correctamente.', <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
     } catch (error) {
       console.error('Error:', error);
       setError("Error al procesar la transacción");
+      handleDialogOpen('Error en la Transacción', 'Error al procesar la transacción', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
     }
+  };
+
+  const handleDialogOpen = (title, message, icon) => {
+    setDialogContent({
+      title,
+      message,
+      icon
+    });
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    navigate('/home');
   };
 
   return (
@@ -137,10 +165,15 @@ const Deposito = () => {
               </MenuItem>
             ))}
           </TextField>
-          <TextField
+          <NumericFormat
             label="Monto"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onValueChange={(values) => setAmount(values.value)}
+            customInput={TextField}
+            decimalSeparator=","
+            thousandSeparator="."
+            prefix={'$'}
+            {...materialUITextFieldProps}
             fullWidth
             margin="normal"
           />
@@ -151,12 +184,49 @@ const Deposito = () => {
             fullWidth
             margin="normal"
           />
-
-          <Button variant="contained" type="submit" fullWidth>
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+          >
             Cargar Saldo
           </Button>
         </Box>
       </Paper>
+
+      {/* Dialog para mostrar la confirmación o el error */}
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        PaperProps={{
+          style: {
+            padding: '20px',
+            borderRadius: '15px',
+            backgroundColor: '#f5f5f5',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #ccc'
+          }
+        }}
+      >
+        <DialogTitle>
+          <Box display="flex" alignItems="center">
+            {dialogContent.icon}
+            <Typography variant="h6" component="span" style={{ fontWeight: 'bold', marginLeft: 8, fontSize: '1.5rem' }}>
+              {dialogContent.title}
+            </Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Typography style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap', textAlign: 'left', fontSize: '1.3rem' }}>
+            {dialogContent.message}
+          </Typography>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: 'right' }}>
+          <Button onClick={handleDialogClose} color="primary" style={{ fontSize: '1.2rem' }}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
