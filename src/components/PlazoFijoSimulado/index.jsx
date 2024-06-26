@@ -300,7 +300,7 @@ export default function PlazoFijoSimulado() {
                     <p>Capital Invertido: {simulationResult.invertedAmount}</p>
                     <p>Intereses Ganados: {simulationResult.gainedInterest}</p>
                     <p>Taza de interes: 0.2%</p>
-                    <p>Plazo: {fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month() + 1)} - {simulationResult.closingDate.split("/")[0] , 10} de {obtenerNombreDelMes(parseInt(simulationResult.closingDate.split("/")[1],10))}</p>
+                    <p>Plazo: {fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month() + 1)} - {simulationResult.closingDate.split("/")[0]} de {obtenerNombreDelMes(parseInt(simulationResult.closingDate.split("/")[1],10))}</p>
                     <p>{dias} días</p>
                   </>
                 )}
