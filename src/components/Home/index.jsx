@@ -28,28 +28,27 @@ export default function Home() {
   
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    // Configurar fetch con el token de autorización
-    fetch("http://localhost:8080/accounts/balance", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8080/accounts/balance", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then((data) => {
+        const data = await response.json();
         setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         setError(error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+  
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -154,9 +153,9 @@ export default function Home() {
             <TableRow>
               <TableCell>Fecha</TableCell>
               <TableCell>Tipo de Transccion</TableCell>
-              <TableCell>Moneda</TableCell>
               <TableCell>Monto</TableCell>
               <TableCell>CBU Destino</TableCell>
+              <TableCell>Moneda</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
