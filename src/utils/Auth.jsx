@@ -1,4 +1,4 @@
-
+import { setUser } from "../Redux/slice/userSlice"; // Importa la acción setUser
 
 
 const login = async (userName, password, dni) => {
@@ -86,11 +86,62 @@ const validateToken = async () => {
     console.error('Error en la validación del token:', error);
     throw error;
   }
+
+  
 };
+const fetchBirthDate = async (userId) => {
+  try {
+    const response = await fetch(`http://localhost:8080/${userId}/birthdate`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(`Error ${response.status}: ${errorMessage}`);
+    }
+
+    const birthDate = await response.json();
+    return birthDate;
+  } catch (error) {
+    console.error('Error al obtener la fecha de nacimiento:', error);
+    throw error;
+  }
+};
+const updateUser = async (userId, userData) => {
+  try {
+    const response = await fetch(`http://localhost:8080/users/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(`Error ${response.status}: ${errorMessage}`);
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    throw error;
+  }
+};
+
+
 
 
 export {
   login,
   register,
   validateToken,
+  fetchBirthDate,
+  updateUser,
+
 };

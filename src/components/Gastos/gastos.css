@@ -42,11 +42,7 @@
 
 .custom-textfield .MuiInputLabel-root,
 .custom-formcontrol .MuiInputLabel-root {
-    color: #1565c0 !important; 
-}
 
-.custom-textfield .MuiInputBase-root {
-    background-color: transparent; 
 }
 
 .custom-textfield .MuiInputBase-root input {
@@ -70,7 +66,9 @@
 }
 
 .custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+
     border-color: #1565c0; /* Borde transparente */
+
 }
 
 .custom-textfield:hover .MuiInputBase-input {
@@ -104,3 +102,4 @@
       width: 100%;
     }
   }
+
