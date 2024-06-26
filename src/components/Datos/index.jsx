@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/material';
+import { Box, TextField, Button, Typography, Card, CardContent, Grid } from '@mui/material';
 import { setUser } from '../../Redux/slice/userSlice';
 import { fetchBirthDate, updateUser } from '../../utils/Auth';
 import './datos.css';
@@ -17,20 +17,13 @@ const DatosUser = () => {
         email: '',
         password: '',
         birthDate: '',
+
     });
-    const [isEditing, setIsEditing] = useState(false);
 
-    const [password, setPassword] = useState('');
 
-    useEffect(() => {
-        if (user) {
-            setUserData({
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.userName,
-                password: user.password,
                 DNI: user.dni,
                 birthDate: user.birthDate,
+
             });
         }
     }, [user]);
@@ -67,6 +60,7 @@ const DatosUser = () => {
         dispatch(setUser(updatedUserData));
         console.log('Datos actualizados:', updatedUserData);
     };
+
     
     const handleEditClick = () => {
         if (isEditing) {
@@ -92,7 +86,7 @@ const DatosUser = () => {
                     name="firstName"
                     value={userData.firstName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
 
@@ -124,7 +118,7 @@ const DatosUser = () => {
                     name="lastName"
                     value={userData.lastName}
                     onChange={handleChange}
-                    disabled
+                    disabled={!isEditing}
                     fullWidth
                 />
                 <TextField
@@ -147,13 +141,15 @@ const DatosUser = () => {
                     disabled={!isEditing}
                     fullWidth
                 />
-               <Button onClick={handleEditClick} variant="contained">
+
+                <Button onClick={handleEditClick} variant="contained">
+
                     {isEditing ? 'Guardar' : 'Editar'}
                 </Button>
 
             </Box>
 
-            
+
         </Box>
 
 
@@ -161,3 +157,4 @@ const DatosUser = () => {
 };
 
 export default DatosUser;
+

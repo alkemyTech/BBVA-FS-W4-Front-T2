@@ -6,7 +6,7 @@
     color: #fff;
     padding: 5px ;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     z-index: 1000;
     padding-left: 16px; /* Ajusta el padding izquierdo según tu preferencia */

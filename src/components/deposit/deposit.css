@@ -1,0 +1,160 @@
+
+.box-principal-deposito {
+    background-image: url('./assets/fondoCargarSaldo.svg'); 
+    color: #103551;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    width: 1200px; /* Aumentar el ancho del contenedor principal */
+    border-radius: 10px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.titulo-deposito {
+    font-size: 32px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.box-deposito {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 18px; 
+}
+
+.custom-textfield, .custom-formcontrol {
+    grid-column: span 1;
+}
+
+.custom-textfield.description {
+    grid-column: span 3; 
+}
+
+.button-registrar {
+    grid-column: 2 / span 1; 
+    background-color: #ffffff;
+    border: 3px solid #46A044;
+    color: #46A044;
+    height: 50px;
+    width:400px;
+    align-self: center;
+    justify-self: center; 
+}
+
+.custom-textfield .MuiInputLabel-root,
+.custom-formcontrol .MuiInputLabel-root {
+    color: #162368!important; 
+}
+
+.custom-textfield .MuiInputBase-root {
+    background-color: transparent; 
+}
+
+.custom-textfield .MuiInputBase-root input {
+    color: #162368 !important; /* Texto blanco dentro de TextField */
+}
+
+.custom-textfield .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #162368; /* Borde transparente */
+}
+
+.custom-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #162368; /* Borde azul cuando está enfocado */
+}
+
+.custom-formcontrol .MuiInputBase-root {
+    background-color: transparent; /* Fondo azul claro para Select */
+}
+
+.custom-formcontrol .MuiInputBase-root input {
+    color: #162368 !important; /* Texto blanco dentro de Select */
+}
+
+.custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #162368; /* Borde transparente */
+}
+.box-deposito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .input-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px; /* Add space between the fields */
+  }
+  
+  .custom-formcontrol, .custom-textfield {
+    flex: 1;
+    width: 100%;
+  }
+  
+  .description {
+    width: 100%;
+  }
+  
+  .titulo-deposito {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .button-registrar {
+    margin-top: 20px;
+  }
+
+  .box-deposito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .input-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px; /* Add space between the fields */
+  }
+  
+  .custom-formcontrol, .custom-textfield {
+    flex: 1;
+    width: 100%;
+  }
+  
+  .description {
+    width: 100%;
+  }
+  
+  .titulo-deposito {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 5px;
+  }
+  
+  .button-registrar {
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    animation: fillButton 2s infinite;
+  }
+  
+  @keyframes fillButton {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
