@@ -61,7 +61,29 @@ export default function PlazoFijoSimulado() {
   const [errorMonto, setErrorMonto] = useState(false);
   const [simulationResult, setSimulationResult] = useState(null);
 
-  const handleCuenta = (event) => setCuenta(event.target.value);
+  const handleCuenta = async (event) => {
+    const value = event.target.value;
+    setCuenta(value);
+  
+    try {
+      const response = await fetch(`http://localhost:8080/accounts/select/${value}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      if (response.ok) {
+        const updatedToken = response.headers.get('Authorization').split(' ')[1]; // Obtener el nuevo token del header
+        localStorage.setItem('token', updatedToken); // Guardar el nuevo token en localStorage
+      } else {
+        console.error('Error al actualizar el token:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al actualizar el token:', error);
+    }
+  };
 
   const handleChangeMonto = (event) => {
     const value = event.target.value.replace(/\./g, "");
@@ -113,10 +135,7 @@ export default function PlazoFijoSimulado() {
     const montoSinPuntos = monto.replace(/\./g, '');
     const invertedAmount = parseFloat(montoSinPuntos);
     
-    //pasar cuenta x acá despues
-
     const formData = {
-      cuenta,
       invertedAmount,
       creationDate,
       closingDate,
@@ -142,6 +161,45 @@ export default function PlazoFijoSimulado() {
       }
     } catch (error) {
       console.error("Error al simular plazo fijo:", error);
+    }
+  };
+
+
+  const handleCreate = async () => {
+
+    const creationDate = transformaFecha(fechaInicial);
+    const closingDateCal = fechaInicial.add(dias, "day");
+    const closingDate = transformaFecha(closingDateCal);
+
+    const montoSinPuntos = monto.replace(/\./g, '');
+    const invertedAmount = parseFloat(montoSinPuntos);
+
+    const formData = {
+      invertedAmount,
+      creationDate,
+      closingDate,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/fixedTerm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSimulationResult(data);
+        setOpen(false);
+        console.log("Plazo fijo creado:", data);
+      } else {
+        console.error("Error al crear plazo fijo:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error al crear plazo fijo:", error);
     }
   };
 
@@ -308,7 +366,7 @@ export default function PlazoFijoSimulado() {
             </DialogContent>
             <DialogActions>
               <CustomButton onClick={handleClose}>Cancelar</CustomButton>
-              <CustomButton onClick={handleClose} autoFocus>
+              <CustomButton onClick={handleCreate} autoFocus>
                 Crear
               </CustomButton>
             </DialogActions>
