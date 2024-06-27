@@ -35,53 +35,27 @@
   min-height: auto;
   max-height: 40vh;
   overflow-y: auto;
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 3px 10px 8px rgba(0, 0, 0, 0.3); /* Sombra suave */
-}
-
-.table {
-  width: 100%;
-  background: rgba(74, 144, 226, 0.9); /* Fondo semitransparente más claro */
-  border-collapse: collapse;
-  border-radius: 8px; /* Bordes redondeados */
-  overflow: hidden; /* Para asegurar que los bordes redondeados funcionen */
-}
-
-.table th,
-.table td {
-  color: #ffffff; /* Color blanco para texto */
-  font-size: 1rem; /* Tamaño de fuente más consistente */
-  text-align: center;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
-  padding: 12px; /* Espaciado interno */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más suave */
 }
 
 .table th {
-  background-color: rgba(
-    7,
-    48,
-    105,
-    0.9
-  ); /* Fondo del encabezado, más claro que antes */
+  background-color: #1e88e5; /* Fondo del encabezado */
 }
 
 .table td {
-  background-color: rgba(74, 144, 226, 0.9); /* Fondo de las celdas */
-  border-bottom: 1px solid rgba(65, 114, 184, 0.9); /* Línea divisoria entre filas */
+  background-color: #e3f2fd; /* Fondo de las celdas */
+  border-bottom: 1px solid #90caf9; /* Línea divisoria */
 }
 
 .table tr:nth-child(even) td {
-  background-color: rgba(65, 122, 200, 0.9); /* Alterna el color de las filas */
+  background-color: #bbdefb; /* Alterna el color de las filas */
 }
 
 .table tr:hover td {
-  background-color: rgba(
-    58,
-    104,
-    169,
-    0.9
-  ); /* Color de la fila al pasar el ratón por encima */
+  background-color: #64b5f6; /* Color de la fila al pasar el ratón por encima */
 }
+
 
 .HomeContainer {
   background-color: #ffffff; /* Fondo blanco limpio */

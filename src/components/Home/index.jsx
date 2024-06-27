@@ -223,7 +223,7 @@ export default function Home() {
               <TableCell>Fecha</TableCell>
               <TableCell>Tipo de Transacción</TableCell>
               <TableCell>Monto</TableCell>
-              <TableCell>CBU Destino</TableCell>
+              <TableCell>CBU / Alias</TableCell>
               <TableCell>Moneda</TableCell>
             </TableRow>
           </TableHead>
@@ -234,7 +234,7 @@ export default function Home() {
                   <b>{formatDate(transaction.transactionDate)}</b>
                 </TableCell>
                 <TableCell style={{ textAlign: "center" }}>
-                  <div style={{ display: "flex", alignItems: "center",  justifyContent:"center"}}>
+                  <div style={{ display: "flex"}}>
                     {getIcon(transaction.type)} &nbsp;
                     <div style={{ textAlign: "left" }}>
                       <b>
