@@ -1,0 +1,117 @@
+.calculator-container {
+  position: fixed;
+  bottom: 4rem; /* Ajusta la posición vertical inicial */
+  right: 4rem; /* Ajusta la posición horizontal inicial */
+  z-index: 1000;
+}
+
+.calculator {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4299e1;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease-out, width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out;
+}
+
+.calculator:hover {
+  background-color: #e2e8f0;
+}
+
+.calculator.expanded {
+  width: 28rem; /* Ajusta el ancho de la calculadora expandida según sea necesario */
+  height: auto;
+  border-radius: 0.5rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.calculator-content {
+  background-color: #f7fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #718096;
+}
+
+.calculator-display {
+  margin-bottom: 1rem;
+  text-align: right;
+  font-size: 1.5rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-text {
+  color: #63b3ed; /* Celeste clarito */
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.calculator-button {
+  background-color: #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calculator-button:hover {
+  background-color: #cbd5e0;
+  transform: scale(1.05);
+}
+
+.calculator-button.operator {
+  background-color: #f6ad55;
+}
+
+.calculator-button.operator:hover {
+  background-color: #ed8936;
+}
+
+.calculator-button.equal {
+  background-color: #63b3ed;
+}
+
+.calculator-button.equal:hover {
+  background-color: #4299e1;
+}
+
+.calculator-button.clear,
+.calculator-button.backspace {
+  background-color: #fc8181;
+}
+
+.calculator-button.clear:hover,
+.calculator-button.backspace:hover {
+  background-color: #f56565;
+}
+
+.calculator-button.number {
+  color: #63b3ed; /* Celeste clarito */
+}

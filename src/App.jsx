@@ -12,7 +12,7 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 import DatosUser from "./components/Datos";
 import Deposito from "./components/deposit"
 import Movimientos from "./components/Movimientos";
-
+import Calculadora from "./components/Calculadora";
 
 
 
@@ -20,6 +20,7 @@ function App() {
   return (
     <Page>
       <Routes>
+        <Route path="/calculadora" element={<Calculadora/>}/>
         <Route path="/" element={<Login />} />
         <Route path="/signUp" element={<Registro />} />
         <Route path="/signUp/admin" element={""} />
