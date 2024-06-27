@@ -12,6 +12,7 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 import DatosUser from "./components/Datos";
 import Deposito from "./components/deposit"
 import Movimientos from "./components/Movimientos";
+import MisCuentas from "./components/MisCuentas";
 
 
 
@@ -30,6 +31,8 @@ function App() {
           <Route path="/inversiones" element={<PlazoFijoSimulado />} />
           <Route path="/Transferir" element={<Transferir />} />
           <Route path="/MisDatos" element={<DatosUser />} />
+
+          <Route path="/mis-cuentas" element={<MisCuentas/>} />
 
              <Route path="/pagos" element={<Gastos/>} />
 
