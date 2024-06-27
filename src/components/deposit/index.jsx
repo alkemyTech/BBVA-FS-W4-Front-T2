@@ -142,11 +142,12 @@ const Deposito = () => {
         justifyContent: "center",
       }}
     >
-      <Paper className="box-principal-deposito" style={{
-        backgroundImage: `url(${fondoCargarSaldo})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}>
+      <Paper className="box-principal-deposito"  style={{
+          backgroundImage: `url(${fondoCargarSaldo})`,
+          backgroundColor: '#f8f8f8',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
         <>
           <p className="titulo-deposito">Carga de Saldo</p>
           {error && (
