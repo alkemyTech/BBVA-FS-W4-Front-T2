@@ -4,11 +4,14 @@ import { Box, TextField, Button, Typography, Card, CardContent, Grid } from '@mu
 import { setUser } from '../../Redux/slice/userSlice';
 import { fetchBirthDate, updateUser } from '../../utils/Auth';
 import './datos.css';
+import { useNavigate } from 'react-router-dom';
 
 
 const DatosUser = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
+    const navigate = useNavigate();
+
 
     const [userData, setUserData] = useState({
         firstName: '',
@@ -79,6 +82,9 @@ const DatosUser = () => {
             console.log('Datos actualizados:', updatedUser);
             setIsEditing(false);
             setShowNotification(true);
+            setTimeout(() => {
+                navigate('/'); // Redirigir al login después de un breve retraso
+            }, 1000); // 1 segundos de retraso para mostrar la notificación
         } catch (error) {
             console.error('Error al guardar los datos:', error);
         }
