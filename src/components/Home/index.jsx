@@ -18,8 +18,8 @@ import MovingIcon from "@mui/icons-material/Moving";
 import ArrowUpwardOutlined from "@mui/icons-material/ArrowUpwardOutlined";
 import ArrowDownwardOutlined from "@mui/icons-material/ArrowDownwardOutlined";
 import CatLoader from "../../UI/CatLoader/catLoader";
-import { fetchAccounts } from "../../Redux/slice/accountSlice";
-
+import { fetchAccounts} from "../../Redux/slice/accountSlice";
+import { SnackbarProvider, useSnackbar } from 'notistack';
 const transactionTypeTranslations = {
   INCOME: "Ingreso",
   PAYMENT: "Pago",
@@ -64,12 +64,15 @@ const getIcon = (type) => {
   }
 };
 
+
 export default function Home() {
   const [data, setData] = useState(null);
   const userId = useSelector((state) => state.user.id);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,6 +103,17 @@ export default function Home() {
       dispatch(fetchAccounts(userId));
     }
   }, [userId, dispatch]);
+
+  useEffect(() => {
+    const message = localStorage.getItem('snackbarMessage');
+    const variant = localStorage.getItem('snackbarVariant');
+
+    if (message && variant) {
+      enqueueSnackbar(message, { variant });
+      localStorage.removeItem('snackbarMessage');
+      localStorage.removeItem('snackbarVariant');
+    }
+  }, [enqueueSnackbar]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -246,5 +260,14 @@ export default function Home() {
         </Table>
       </TableContainer>
     </div>
+  );
+}
+
+// Wrapping Home in SnackbarProvider
+export function HomeWithSnackbar() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <Home />
+    </SnackbarProvider>
   );
 }
