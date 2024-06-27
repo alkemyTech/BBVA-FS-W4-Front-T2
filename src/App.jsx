@@ -2,7 +2,7 @@ import { Route, Routes, Router } from "react-router-dom";
 import "./App.css";
 import Page from "./UI/Page";
 import Login from "./components/login";
-import Home from "./components/Home";
+import {HomeWithSnackbar} from "./components/Home";
 import PageNotFound from "./UI/Page/PageNotFound";
 import Registro from "./components/SignUp";
 import PlazoFijoSimulado from "./components/PlazoFijoSimulado";
@@ -15,6 +15,7 @@ import Movimientos from "./components/Movimientos";
 
 
 
+
 function App() {
   return (
     <Page>
@@ -24,7 +25,7 @@ function App() {
         <Route path="/signUp/admin" element={""} />
 
         <Route element={<ProtectedRoutes />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<HomeWithSnackbar />} />
 
           <Route path="/inversiones" element={<PlazoFijoSimulado />} />
           <Route path="/Transferir" element={<Transferir />} />

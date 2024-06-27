@@ -18,6 +18,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import { fetchAccounts} from "../../Redux/slice/accountSlice";
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -25,31 +26,31 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    // Configurar fetch con el token de autorización
-    fetch("http://localhost:8080/accounts/balance", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8080/accounts/balance", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then((data) => {
+        const data = await response.json();
         setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         setError(error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+  
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -57,6 +58,17 @@ export default function Home() {
       dispatch(fetchAccounts(userId));
     }
   }, [userId, dispatch]);
+
+  useEffect(() => {
+    const message = localStorage.getItem('snackbarMessage');
+    const variant = localStorage.getItem('snackbarVariant');
+
+    if (message && variant) {
+      enqueueSnackbar(message, { variant });
+      localStorage.removeItem('snackbarMessage');
+      localStorage.removeItem('snackbarVariant');
+    }
+  }, [enqueueSnackbar]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -154,9 +166,9 @@ export default function Home() {
             <TableRow>
               <TableCell>Fecha</TableCell>
               <TableCell>Tipo de Transccion</TableCell>
-              <TableCell>Moneda</TableCell>
               <TableCell>Monto</TableCell>
               <TableCell>CBU Destino</TableCell>
+              <TableCell>Moneda</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -183,5 +195,14 @@ export default function Home() {
         </Table>
       </TableContainer>
     </div>
+  );
+}
+
+// Wrapping Home in SnackbarProvider
+export function HomeWithSnackbar() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <Home />
+    </SnackbarProvider>
   );
 }

@@ -1,10 +1,13 @@
 import Header from "../Header";
 import Footer from "../Footer";
+
+
 export default function Page(props) {
+    
     return (
     <>
-        <Header/>
-        <div style={{height:"6vh"}}></div>
+        <Header />
+        <div style={{height:"5vh"}}></div>
         <main style={{minHeight:"40vh"}}>{props.children}</main>
         <div style={{height:"1vh"}}></div>
         <Footer/>
