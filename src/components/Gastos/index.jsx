@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
+import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Tooltip } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 import './gastos.css';
-import fondoGastos from '../../assets/fondoGastos.svg'
+import fondoGastos from '../../assets/fondoGastos.svg';
 
 export default function Gastos() {
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -17,12 +17,13 @@ export default function Gastos() {
     description: ''
   });
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // State para controlar la animación de carga
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const userId = useSelector((state) => state.user.id);
   const accounts = useSelector((state) => state.account.accounts);
   const token = localStorage.getItem('token');
   const [dialogContent, setDialogContent] = useState({
-    title: '', 
+    title: '',
     message: '',
     icon: null
   });
@@ -61,6 +62,10 @@ export default function Gastos() {
       ...form,
       [name]: name === 'description' ? value.slice(0, 100) : value
     });
+    setErrors({
+      ...errors,
+      [name]: ''
+    });
   };
 
   const handleAmountChange = (values) => {
@@ -69,11 +74,30 @@ export default function Gastos() {
       ...form,
       amount: value
     });
+    setErrors({
+      ...errors,
+      amount: ''
+    });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.amount) {
+      newErrors.amount = 'El monto no puede estar vacío.';
+    }
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Activar la animación de carga
+    setLoading(true);
+
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      setLoading(false);
+      return;
+    }
 
     const cleanedAmount = parseFloat(form.amount.replace(/\./g, '').replace(',', '.'));
 
@@ -120,7 +144,7 @@ export default function Gastos() {
     } catch (error) {
       handleDialogOpen('Error', 'Ha ocurrido un error al intentar registrar el pago.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
     } finally {
-      setLoading(false); // Desactivar la animación de carga
+      setLoading(false);
     }
   };
 
@@ -135,6 +159,7 @@ export default function Gastos() {
       }));
     }
   };
+
   const handleDialogOpen = (title, message, icon) => {
     setDialogContent({
       title,
@@ -149,6 +174,19 @@ export default function Gastos() {
     navigate('/home');
   };
 
+  const handleCBUChange = (e) => {
+    const { name, value } = e.target;
+    const remainingCharacters = 22 - value.length;
+    setForm({
+      ...form,
+      [name]: value
+    });
+    setErrors({
+      ...errors,
+      [name]: ''
+    });
+  };
+
   return (
     <section className="box-principal-gastos" style={{
       backgroundImage: `url(${fondoGastos})`,
@@ -157,21 +195,24 @@ export default function Gastos() {
     }}>
       <p className="titulo-gastos">Registrar Pago</p>
       <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off" className="box-gastos">
-      <TextField
-  required
-  name="destino"
-  label="CBU Destino"
-  value={form.destino}
-  onChange={handleChange}
-  margin="normal"
-  className="custom-textfield"
-  inputProps={{
-    inputMode: 'numeric',
-    pattern: '\\d{22}',  // Asegura que solo se ingresen 22 dígitos numéricos
-    maxLength: 22,
-  }}
-  helperText="Debe contener exactamente 22 números."
-/>
+        <Tooltip title={`Caracteres restantes: ${22 - form.destino.length}`}>
+          <TextField
+            required
+            name="destino"
+            label="CBU Destino"
+            value={form.destino}
+            onChange={handleCBUChange}
+            margin="normal"
+            className="custom-textfield"
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '\\d{22}',
+              maxLength: 22,
+            }}
+            error={!!errors.destino}
+            helperText={errors.destino}
+          />
+        </Tooltip>
         <TextField
           label="Cuenta"
           select
@@ -200,6 +241,8 @@ export default function Gastos() {
           inputProps={{
             maxLength: 15
           }}
+          error={!!errors.amount}
+          helperText={errors.amount}
         />
         <TextField
           name="description"
@@ -208,7 +251,7 @@ export default function Gastos() {
           onChange={handleChange}
           margin="normal"
           className="custom-textfield description"
-          multiline={true}
+          multiline
           maxRows={2}
           inputProps={{
             maxLength: 100
@@ -219,7 +262,7 @@ export default function Gastos() {
           color="primary"
           type="submit"
           className={`button-registrar ${loading ? 'button-loading' : ''}`}
-          disabled={loading}
+          disabled={loading || form.destino.length !== 22}
         >
           {loading ? 'Procesando...' : 'Registrar'}
         </Button>
