@@ -18,6 +18,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import { fetchAccounts} from "../../Redux/slice/accountSlice";
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -25,6 +26,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   
 
   useEffect(() => {
@@ -56,6 +58,17 @@ export default function Home() {
       dispatch(fetchAccounts(userId));
     }
   }, [userId, dispatch]);
+
+  useEffect(() => {
+    const message = localStorage.getItem('snackbarMessage');
+    const variant = localStorage.getItem('snackbarVariant');
+
+    if (message && variant) {
+      enqueueSnackbar(message, { variant });
+      localStorage.removeItem('snackbarMessage');
+      localStorage.removeItem('snackbarVariant');
+    }
+  }, [enqueueSnackbar]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -182,5 +195,14 @@ export default function Home() {
         </Table>
       </TableContainer>
     </div>
+  );
+}
+
+// Wrapping Home in SnackbarProvider
+export function HomeWithSnackbar() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <Home />
+    </SnackbarProvider>
   );
 }
