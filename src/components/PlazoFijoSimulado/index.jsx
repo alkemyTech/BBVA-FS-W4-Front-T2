@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -33,6 +34,7 @@ export default function PlazoFijoSimulado() {
   const status = useSelector((state) => state.account.status);
   const error = useSelector((state) => state.account.error);
   const userId = 1;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (status === "idle") {
@@ -180,6 +182,7 @@ export default function PlazoFijoSimulado() {
       closingDate,
     };
 
+
     try {
       const response = await fetch("http://localhost:8080/fixedTerm", {
         method: "POST",
@@ -193,8 +196,9 @@ export default function PlazoFijoSimulado() {
       if (response.ok) {
         const data = await response.json();
         setSimulationResult(data);
-        setOpen(false);
         console.log("Plazo fijo creado:", data);
+        setOpen(false);
+        navigate('/home');
       } else {
         console.error("Error al crear plazo fijo:", response.statusText);
       }
