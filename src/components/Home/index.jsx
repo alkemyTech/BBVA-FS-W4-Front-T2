@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Card,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -16,8 +15,54 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useDispatch, useSelector } from "react-redux";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
+import ArrowUpwardOutlined from "@mui/icons-material/ArrowUpwardOutlined";
+import ArrowDownwardOutlined from "@mui/icons-material/ArrowDownwardOutlined";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import { fetchAccounts } from "../../Redux/slice/accountSlice";
+
+const transactionTypeTranslations = {
+  INCOME: "Ingreso",
+  PAYMENT: "Pago",
+  DEPOSIT: "Depósito",
+};
+
+const getIcon = (type) => {
+  switch (type) {
+    case "DEPOSIT":
+      return (
+        <ArrowUpwardOutlined
+          sx={{
+            color: "white",
+            fontSize: 15,
+            background: "green",
+            borderRadius: "50px",
+          }}
+        />
+      );
+    case "PAYMENT":
+      return (
+        <ArrowDownwardOutlined
+          sx={{
+            color: "white",
+            fontSize: 15,
+            background: "red",
+            borderRadius: "50px",
+          }}
+        />
+      );
+    default:
+      return (
+        <ArrowUpwardOutlined
+          sx={{
+            color: "white",
+            fontSize: 15,
+            background: "green",
+            borderRadius: "50px",
+          }}
+        />
+      );
+  }
+};
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -57,10 +102,11 @@ export default function Home() {
   }, [userId, dispatch]);
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Intl.DateTimeFormat("en-US", options).format(
-      new Date(dateString)
-    );
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0"); // Asegura dos dígitos
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses son de 0 a 11, se suma 1
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   const userNameHome = useSelector(
@@ -84,6 +130,10 @@ export default function Home() {
   if (!data) {
     return <Typography>No data available</Typography>;
   }
+
+  const sortedTransactions = data.accountTransactions.sort(
+    (a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)
+  );
 
   return (
     <div className="HomeContainer">
@@ -157,21 +207,30 @@ export default function Home() {
           <TableHead>
             <TableRow>
               <TableCell>Fecha</TableCell>
-              <TableCell>Tipo de Transccion</TableCell>
+              <TableCell>Tipo de Transacción</TableCell>
               <TableCell>Monto</TableCell>
               <TableCell>CBU Destino</TableCell>
               <TableCell>Moneda</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.accountTransactions.map((transaction) => (
+            {sortedTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell>
                   <b>{formatDate(transaction.transactionDate)}</b>
                 </TableCell>
-                <TableCell>
-                  <b>{transaction.type}</b>
+                <TableCell style={{ textAlign: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center",  justifyContent:"center"}}>
+                    {getIcon(transaction.type)} &nbsp;
+                    <div style={{ textAlign: "left" }}>
+                      <b>
+                        {transactionTypeTranslations[transaction.type] ||
+                          transaction.type}
+                      </b>
+                    </div>
+                  </div>
                 </TableCell>
+
                 <TableCell>
                   <b>{formatCurrency(transaction.amount)}</b>
                 </TableCell>

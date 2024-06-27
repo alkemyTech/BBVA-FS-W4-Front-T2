@@ -12,43 +12,24 @@
   align-items: center;
   min-height: 25vh;
   padding: 30px;
+  margin: 10px 0; /* Espacio entre tarjetas */
 }
 
 .status-card-bg-blue {
-  background: -webkit-gradient(
-    linear,
-    right top,
-    left top,
-    from(#7beafe),
-    to(#1c8cfa)
-  );
-  background: linear-gradient(270deg, #7beafe, #1c8cfa);
+  background: linear-gradient(270deg, #85d7ff, #1fb6ff);
   color: #fff;
 }
 
 .status-card-bg-green {
-  background: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    from(#3adf9e),
-    to(#b3fb5b)
-  );
-  background: linear-gradient(90deg, #3adf9e, #b3fb5b);
+  background: linear-gradient(90deg, #29b6f6, #00e676);
   color: #fff;
 }
 
 .status-card-bg-read {
-  background: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    from(#fc516a),
-    to(#ff7e76)
-  );
-  background: linear-gradient(90deg, #fc516a, #ff7e76);
+  background: linear-gradient(90deg, #ff8a80, #ff5252);
   color: #fff;
 }
+
 
 .table-container {
   min-height: auto;
@@ -103,7 +84,7 @@
 }
 
 .HomeContainer {
-  background-color: #f8f8f8;
+  background-color: #ffffff; /* Fondo blanco limpio */
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -116,7 +97,8 @@
   color: #1565c0;
   text-align: left;
   font-style: italic;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding-bottom: 20px;
-  font-size: 10px;
+  font-size: 1.5rem; /* Tamaño de fuente más grande */
+  font-weight: bold; /* Texto más destacado */
 }
