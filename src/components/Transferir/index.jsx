@@ -8,12 +8,19 @@ import {
   Typography,
   Card,
   CardContent,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField
 } from "@mui/material";
 import Contactos from "../Contactos";
 import SeleccionarDestinatario from "./SeleccionarDestinatario";
 import IngresarCBU from "./IngresarCBU";
 import IngresarMonto from "./IngresarMonto";
-import ConfirmarTransferencia from "./ConfirmarTransferencia"; // Importa el componente correctamente aquí
+import ConfirmarTransferencia from "./ConfirmarTransferencia";
 import TransferenciaExitosa from "./TransferenciaExitosa";
 
 const Transferir = () => {
@@ -24,31 +31,46 @@ const Transferir = () => {
     accountInfo: null,
   });
   const [contactList, setContactList] = useState([]);
-  const [selectedContact, setSelectedContact] = useState("");
+  const [selectedContact, setSelectedContact] = useState(null);
   const [showContactos, setShowContactos] = useState(false);
   const [error, setError] = useState("");
-
-  const mockContactList = [
-    { id: 1, name: "Juan Perez", cbu: "1234567890123456789012" },
-    { id: 2, name: "Maria Gomez", cbu: "9876543210987654321098" },
-  ];
+  const [openSaveContactDialog, setOpenSaveContactDialog] = useState(false);
+  const [newContactName, setNewContactName] = useState("");
 
   const account = useSelector((state) => state.account);
   const arsAccount = account.accounts.find((acc) => acc.currency === "ARS");
 
-  useEffect(() => {
-    setContactList(mockContactList);
-  }, []);
 
-  const handleSelectContact = (contact) => {
-    setSelectedContact(contact);
+  const handleSelectContact = async (contact) => {
     setTransferData({ ...transferData, cbu: contact.cbu });
-    setShowContactos(false);
-    setActiveStep(2);
+
+    setTransferData(prevTransferData => ({
+      ...prevTransferData,
+      cbu: contact.cbu,
+    }));
+
+    try {
+      const response = await fetch(`http://localhost:8080/accounts/info/${contact.cbu}`);
+      if (response.ok) {
+        const data = await response.json();
+        setTransferData(prevTransferData => ({
+          ...prevTransferData,
+          accountInfo: data,
+        }));
+
+        
+        setActiveStep(2); 
+        setShowContactos(false)
+      } else {
+        setError("Failed to fetch account information. Please try again.");
+      }
+    } catch (error) {
+      setError("Error fetching account information. Please try again.");
+    }
   };
 
   const handleNewTransfer = () => {
-    setSelectedContact("");
+    setSelectedContact(null); 
     setActiveStep(1);
   };
 
@@ -87,7 +109,11 @@ const Transferir = () => {
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    if (showContactos) {
+      setShowContactos(false);
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    }
   };
 
   const handleCBUChange = (e) => {
@@ -179,8 +205,36 @@ const Transferir = () => {
       amount: "",
       accountInfo: null,
     });
-    setSelectedContact("");
+    setSelectedContact(null);
     setActiveStep(0);
+  };
+
+  const handleSaveNewContact = async () => {
+    const newContact = {
+      name: newContactName,
+      cbu: transferData.cbu,
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8080/newContact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newContact),
+      });
+
+      if (response.ok) {
+        setContactList([...contactList, newContact]);
+        setOpenSaveContactDialog(false);
+      } else {
+        console.error("Error saving new contact");
+      }
+    } catch (error) {
+      console.error("Error saving new contact:", error);
+    }
   };
 
   const stepTitles = [
@@ -219,7 +273,7 @@ const Transferir = () => {
             </Stepper>
           )}
           <Box sx={{ mt: 4 }}>
-            {activeStep === 0 && (
+            {activeStep === 0 && !showContactos && (
               <SeleccionarDestinatario
                 handleNewTransfer={handleNewTransfer}
                 setShowContactos={setShowContactos}
@@ -253,7 +307,6 @@ const Transferir = () => {
             {!showContactos && activeStep === 3 && (
               <ConfirmarTransferencia
                 transferData={transferData}
-                selectedContact={selectedContact}
                 handleBack={handleBack}
                 handleConfirm={handleConfirm}
               />
@@ -262,6 +315,8 @@ const Transferir = () => {
               <TransferenciaExitosa handleReset={handleReset} />
             )}
           </Box>
+         
+          
         </CardContent>
       </Card>
     </Box>
