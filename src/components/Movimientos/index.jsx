@@ -204,101 +204,97 @@ const Movimientos = () => {
           >
             <List>
               {transactions.map((transaction, index) => (
-                <Card
-                  key={index}
-                  sx={{
-                    margin: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    cursor: "pointer",
-                    backgroundColor: "#f8f8f8",
-                  }}
-                  onClick={() =>
-                    setExpandedIndex(expandedIndex === index ? null : index)
-                  }
+        <Card
+        key={index}
+        sx={{
+          margin: 2,
+          display: "flex",
+          flexDirection: "column",
+          cursor: "pointer",
+          backgroundColor: "#f8f8f8",
+        }}
+        onClick={() =>
+          setExpandedIndex(expandedIndex === index ? null : index)
+        }
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <CardActions
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 0, // Ajusta el margen derecho para reducir espacio
+            }}
+          >
+            {getIcon(transaction.tipoDeTransaccion)}
+          </CardActions>
+          <CardContent sx={{ flexGrow: 1 }}>
+            <div style={{display:"flex", justifyContent:"space-between"}}>
+            <Typography
+              align="center"
+              variant="h5"
+              sx={{
+                color:
+                  transaction.tipoDeTransaccion === "PAYMENT"
+                    ? "red"
+                    : "green",
+                marginLeft: 2,  // Ajusta el espacio entre el icono y el monto
+              }}
+            >
+              {formatAmount(
+                transaction.amount,
+                transaction.tipoDeTransaccion
+              )}
+            </Typography>
+            <Typography
+              component="span"
+              color="textPrimary"
+              variant="body1"
+            >
+              <strong>Descripción:</strong> {transaction.descripcion}
+            </Typography>
+            </div>
+     
+           
+            {expandedIndex === index && (
+              <>
+                <Typography color="textPrimary">
+                  <strong>Destino:</strong> {transaction.destino}
+                </Typography>
+                <Typography color="textPrimary">
+                  <strong>Origen:</strong> {transaction.origen}
+                </Typography>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="textPrimary"
                 >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <CardActions
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {getIcon(transaction.tipoDeTransaccion)}
-                    </CardActions>
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          textAlign: "center",
-                          width: "100%",
-                          backgroundColor: "#f8f8f8",
-                        }}
-                      >
-                        <Typography
-                          align="center"
-                          variant="h5"
-                          sx={{
-                            color:
-                              transaction.tipoDeTransaccion === "PAYMENT"
-                                ? "red"
-                                : "green",
-                            width: "100%",
-                          }}
-                        >
-                          {formatAmount(
-                            transaction.amount,
-                            transaction.tipoDeTransaccion
-                          )}
-                        </Typography>
-                      </Box>
-                      <Typography
-                        component="span"
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        <strong>Descripción:</strong> {transaction.descripcion}
-                      </Typography>
-                      {expandedIndex === index && (
-                        <>
-                          <Typography color="textPrimary">
-                            <strong>Destino:</strong> {transaction.destino}
-                          </Typography>
-                          <Typography color="textPrimary">
-                            <strong>Origen:</strong> {transaction.origen}
-                          </Typography>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="textPrimary"
-                          >
-                            <strong>Tipo:</strong>{" "}
-                            {transaction.tipoDeTransaccion}
-                          </Typography>
-                          <br />
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="textPrimary"
-                          >
-                            <strong>Moneda:</strong> {transaction.currency}
-                          </Typography>
-                          <br />
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="textPrimary"
-                          >
-                            <strong>Fecha:</strong>{" "}
-                            {transaction.fechaDeTransaccion}
-                          </Typography>
-                        </>
-                      )}
-                    </CardContent>
-                  </Box>
-                </Card>
+                  <strong>Tipo:</strong>{" "}
+                  {transaction.tipoDeTransaccion}
+                </Typography>
+                <br />
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="textPrimary"
+                >
+                  <strong>Moneda:</strong> {transaction.currency}
+                </Typography>
+                <br />
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="textPrimary"
+                >
+                  <strong>Fecha:</strong>{" "}
+                  {transaction.fechaDeTransaccion}
+                </Typography>
+              </>
+            )}
+          </CardContent>
+        </Box>
+      </Card>
+      
               ))}
             </List>
           </Box>
