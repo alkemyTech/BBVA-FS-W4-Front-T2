@@ -58,6 +58,7 @@ const Deposito = () => {
     const cleanedAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
     if (cleanedAmount <= 0) {
       setError("El monto debe ser mayor que cero");
+      setAmountError(true); // Marca el campo de monto como error
       return;
     }
 
@@ -154,7 +155,7 @@ const Deposito = () => {
             </Typography>
           )}
           <Box component="form" onSubmit={handleSubmit} className="box-deposito">
-            <Box className="input-container">
+            <Box className={`input-container ${error ? 'error' : ''}`}>
               <TextField
                 className="custom-formcontrol"
                 label="Cuenta"

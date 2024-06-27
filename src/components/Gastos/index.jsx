@@ -22,7 +22,7 @@ export default function Gastos() {
   const accounts = useSelector((state) => state.account.accounts);
   const token = localStorage.getItem('token');
   const [dialogContent, setDialogContent] = useState({
-    title: '',
+    title: '', 
     message: '',
     icon: null
   });
@@ -148,20 +148,21 @@ export default function Gastos() {
     }}>
       <p className="titulo-gastos">Registrar Pago</p>
       <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off" className="box-gastos">
-        <TextField
-          required
-          name="destino"
-          label="CBU Destino"
-          value={form.destino}
-          onChange={handleChange}
-          margin="normal"
-          className="custom-textfield"
-          inputProps={{
-            inputMode: 'numeric',
-            pattern: '\\d{22}',
-            maxLength: 22,
-          }}
-        />
+      <TextField
+  required
+  name="destino"
+  label="CBU Destino"
+  value={form.destino}
+  onChange={handleChange}
+  margin="normal"
+  className="custom-textfield"
+  inputProps={{
+    inputMode: 'numeric',
+    pattern: '\\d{22}',  // Asegura que solo se ingresen 22 dígitos numéricos
+    maxLength: 22,
+  }}
+  helperText="Debe contener exactamente 22 números."
+/>
         <TextField
           label="Cuenta"
           select
