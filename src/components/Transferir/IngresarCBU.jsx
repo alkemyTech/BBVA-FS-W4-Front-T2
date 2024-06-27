@@ -79,7 +79,7 @@ const IngresarCBU = ({ cbu, handleCBUChange, handleNext, handleBack, error }) =>
         <Button
           variant="contained"
           color="primary"
-          onClick={handleNext}
+          onClick={handleSaveClick}
         >
           Guardar nuevo contacto
         </Button>
@@ -87,7 +87,7 @@ const IngresarCBU = ({ cbu, handleCBUChange, handleNext, handleBack, error }) =>
           variant="contained"
           color="primary"
           sx={{ marginLeft: 'auto' }} // Centra este botón al final
-          onClick={handleSaveClick}
+          onClick={handleNext}
         >
           SIGUIENTE
         </Button>
