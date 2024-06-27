@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import "./home.css";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
 import CatLoader from "../../UI/CatLoader/catLoader";
-import { fetchAccounts} from "../../Redux/slice/accountSlice";
+import { fetchAccounts } from "../../Redux/slice/accountSlice";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -25,7 +25,6 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +46,7 @@ export default function Home() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -64,6 +63,9 @@ export default function Home() {
     );
   };
 
+  const userNameHome = useSelector(
+    (state) => state.user.firstName + " " + state.user.lastName
+  );
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -85,6 +87,9 @@ export default function Home() {
 
   return (
     <div className="HomeContainer">
+      <Grid item xs={12} md={4} className="bienvenido">
+        <Typography variant="h2">¡Hola {userNameHome}!</Typography>
+      </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card className="card">
