@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from '@mui/material/styles';
 import { Box, Grid, Typography, List, ListItem, Card, CardContent, Paper, Button } from "@mui/material";
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -34,6 +35,10 @@ const ListaPlazos = () => {
             moneda: "USD",
         },
     ];
+    const handleSimulateClick = () => {
+        const navigate = useNavigate();
+        navigate('/inversiones');
+    };
 
     const formatCurrency = (value) => {
         return new Intl.NumberFormat("es-AR", {
@@ -74,9 +79,7 @@ const ListaPlazos = () => {
     const StyledArrowRightIcon = styled(ArrowRightIcon)`
         color: #0d99ff;
     `;
-    const handleSimulateClick = () => {
-        navigate('/inversiones');
-    };
+    
 
     return (
         <Box sx={{ display: "flex", gap: 2 }}>
