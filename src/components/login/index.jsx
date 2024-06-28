@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -11,18 +11,20 @@ import {
   FormControlLabel,
   Link,
   Grid,
+  Snackbar,
   Alert,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import fondoLogin from "../../assets/fondoLogin.svg"; // Asegúrate de que la ruta es correcta
 import gatoOjosCerrados from "../../assets/gatoOjosCerrados.svg"; // Ajustar si es necesario
-import LoadingCat from "../../assets/components/loadingCat"; // Ajustar si es necesario
 import { useImageLoader } from "../../utils/useImageLoader";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/slice/userSlice";
 import { login } from "../../utils/Auth";
+import CatLoader from "../../UI/CatLoader/catLoader";
+import "./Login.css"; // Import the CSS file for animations
 
 export default function Login() {
   const [localUserName, setLocalUserName] = useState("");
@@ -31,31 +33,38 @@ export default function Login() {
   const [error, setError] = useState({ userName: false, password: false });
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const imagesLoaded = useImageLoader([fondoLogin, gatoOjosCerrados]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setLoading(true);
     if (!localUserName || !localPassword || !dni) {
       setError({
         userName: !localUserName,
-        password: !localPassword ,
-        dni: !dni
+        password: !localPassword,
+        dni: !dni,
       });
       setErrorMessage("Por favor, complete todo los campos");
+      setSnackbarOpen(true);
+      setLoading(false);
       return;
     }
     try {
       const data = await login(localUserName, localPassword, dni);
-        setError({ userName: false, password: false, dni:false });
-        dispatch(setUser(data));
-        navigate("/home");
-      } catch (error) {
-        setError({ userName: true, password: true, dni: true });
-        setErrorMessage("Usuario, contraseña o DNI incorrectos");
-        console.error("Error en el inicio de sesión", error);
-      }
+      setError({ userName: false, password: false, dni: false });
+      dispatch(setUser(data));
+      navigate("/home");
+    } catch (error) {
+      setError({ userName: true, password: true, dni: true });
+      setErrorMessage("Usuario, contraseña o DNI incorrectos");
+      setSnackbarOpen(true);
+      console.error("Error en el inicio de sesión", error);
+    }
+    setLoading(false);
   };
 
   const handleUsernameChange = (e) => {
@@ -74,6 +83,10 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   if (!imagesLoaded) {
     return (
       <Box
@@ -81,60 +94,65 @@ export default function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "100vh",
         }}
       >
-        <LoadingCat />
+        <CatLoader />
       </Box>
     );
   }
 
   return (
-      <Grid 
-        container 
-        sx={{ 
-          width: "980px", 
-          boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",  
-          borderRadius: "10px",  
-          backgroundImage: `url(${ showPassword ? gatoOjosCerrados : 
-          fondoLogin})`,
+    <>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Grid
+        container
+        sx={{
+          width: "980px",
+          boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",
+          borderRadius: "10px",
+          backgroundImage: `url(${showPassword ? gatoOjosCerrados : fondoLogin})`,
           backgroundSize: "cover",
           minHeight: "300px",
-          
         }}
+        component="form"
+        onSubmit={handleLogin}
       >
-          <Grid item xs={6} sx={{ p: 4.5, mt:9}}>
-            <Grid container spacing={1}>
+        <Grid item xs={6} sx={{ p: 4.5, mt: 9 }}>
+          <Grid container spacing={1}>
             <Grid item xs={12}>
               <Typography variant="h4" component="h1" gutterBottom color={"primary"}>
-              Iniciar Sesión
+                Iniciar Sesión
               </Typography>
             </Grid>
-            {error.userName || 
-              (error.password && <Alert severity="error">{errorMessage}</Alert>
-            )}
+            {error.userName ||
+              (error.password && <Alert severity="error">{errorMessage}</Alert>)}
             <Grid item xs={12}>
               <TextField
                 label="Correo Electrónico"
                 value={localUserName}
                 onChange={handleUsernameChange}
                 error={error.userName}
-                helperText={
-                 error.userName ? "El correo electrónico es necesario":""
-               }
                 fullWidth
                 margin="normal"
               />
             </Grid>
             <Grid item xs={12}>
-            <TextField
-              label="DNI"
-              value={dni}
-              onChange={handleDniChange}
-              error={error.dni}
-              fullWidth
-              margin="normal"
-            />
+              <TextField
+                label="DNI"
+                value={dni}
+                onChange={handleDniChange}
+                error={error.dni}
+                fullWidth
+                margin="normal"
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -153,43 +171,48 @@ export default function Login() {
                         onClick={handleClickShowPassword}
                         edge="end"
                         sx={{
-                        "&:focus": { outline: "none" },
+                          "&:focus": { outline: "none" },
                         }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
-                     </IconButton>
+                      </IconButton>
                     </InputAdornment>
                   ),
-               }}
+                }}
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControlLabel 
-                
+              <FormControlLabel
                 control={<Checkbox name="rememberMe" />}
                 label="Recuérdame"
-                sx={{color: "black"}}
+                sx={{ color: "black" }}
               />
-              
             </Grid>
             <Grid item xs={12}>
-            <Button variant="contained" type="submit" fullWidth onClick={handleLogin}>
-              Iniciar Sesión
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="space-between" sx={{ mt: 1 }}>
-              <Typography variant="body2">
-                ¿Aún no tienes cuenta?
-              </Typography>
-              <Link href="/signUp" underline="hover">
-                Regístrate aquí
-              </Link>
-            </Box>
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+                disabled={loading}
+                className={loading ? "button-loading" : ""}
+              >
+                Iniciar Sesión
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="space-between" sx={{ mt: 1 }}>
+                <Typography variant="body2">
+                  ¿Aún no tienes cuenta?
+                </Typography>
+                <Link href="/signUp" underline="hover">
+                  Regístrate aquí
+                </Link>
+              </Box>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={4}/>
-    </Grid> 
+        <Grid item xs={4} />
+      </Grid>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 .box-principal-gastos {
-    background-color: #ffffff;
-    color: #103551;
-    font-family: "Roboto", sans-serif;
+    background-color:#f8f8f8;
+    color: #1565c0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
     width: 1200px; /* Aumentar el ancho del contenedor principal */
     border-radius: 10px;
@@ -13,12 +13,13 @@
     font-size: 32px;
     margin-bottom: 5px;
     text-align: center;
+    color: #1565c0;
 }
 
 .box-gastos {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Define tres columnas iguales */
-    gap: 18px; /* Espacio entre los elementos */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 18px; 
 }
 
 .custom-textfield, .custom-formcontrol {
@@ -26,49 +27,79 @@
 }
 
 .custom-textfield.description {
-    grid-column: span 3; /* Ocupa las tres columnas disponibles */
+    grid-column: span 3; 
 }
 
 .button-registrar {
-    grid-column: 2 / span 1; /* Ocupa una columna, comenzando en la segunda columna */
+    grid-column: 1 / span 3; 
     background-color: #ffffff;
     border: 3px solid #46A044;
-    color: #46A044;
     height: 50px;
-    width:400px;
+    width:100%;
     align-self: center;
-    justify-self: center; /* Centrar horizontalmente el botón */
+    justify-self: center; 
 }
 
 .custom-textfield .MuiInputLabel-root,
 .custom-formcontrol .MuiInputLabel-root {
-    color: #162368!important; /* Color blanco para las etiquetas */
-}
 
-.custom-textfield .MuiInputBase-root {
-    background-color: transparent; /* Fondo azul oscuro para TextField */
 }
 
 .custom-textfield .MuiInputBase-root input {
-    color: #162368 !important; /* Texto blanco dentro de TextField */
+    color: #1565c0 !important; 
 }
 
 .custom-textfield .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #162368; /* Borde transparente */
+    border-color: #1565c0; 
 }
 
 .custom-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #162368; /* Borde azul cuando está enfocado */
+    border-color: #1565c0; 
 }
 
 .custom-formcontrol .MuiInputBase-root {
-    background-color: transparent; /* Fondo azul claro para Select */
+    background-color: transparent; 
 }
 
 .custom-formcontrol .MuiInputBase-root input {
-    color: #162368 !important; /* Texto blanco dentro de Select */
+    color: #1565c0 !important; /* Texto blanco dentro de Select */
 }
 
 .custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #162368; /* Borde transparente */
+
+    border-color: #1565c0; /* Borde transparente */
+
 }
+
+.custom-textfield:hover .MuiInputBase-input {
+    color: #1565c0 !important; /* Color del texto al pasar el mouse */
+  }
+  .custom-textfield .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1565c1; /* Color del borde al pasar el mouse */
+  }
+  
+  
+  .button-loading {
+    pointer-events: none; /* Disable button interactions while loading */
+  }
+  
+  .button-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(70, 160, 68, 0.5);
+    animation: fillButton 2s infinite;
+  }
+  
+  @keyframes fillButton {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+

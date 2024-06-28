@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography, InputAdornment } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Button, Box, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Tooltip } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import './gastos.css';
 import { useSelector } from 'react-redux';
-import { fetchAccounts } from '../../utils/Accounts';
 import { useNavigate } from 'react-router-dom';
+import { NumericFormat } from 'react-number-format';
+import './gastos.css';
+import fondoGastos from '../../assets/fondoGastos.svg';
 
 export default function Gastos() {
-  const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
   const [form, setForm] = useState({
     destino: '',
@@ -17,7 +17,10 @@ export default function Gastos() {
     description: ''
   });
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const userId = useSelector((state) => state.user.id);
+  const accounts = useSelector((state) => state.account.accounts);
   const token = localStorage.getItem('token');
   const [dialogContent, setDialogContent] = useState({
     title: '',
@@ -25,37 +28,6 @@ export default function Gastos() {
     icon: null
   });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const getAccounts = async () => {
-      if (userId) {
-        try {
-          const fetchedAccounts = await fetchAccounts(userId);
-          setAccounts(fetchedAccounts);
-        } catch (error) {
-          console.error('Failed to fetch accounts:', error);
-          setAccounts([]); // Ensure accounts is set to an array on error
-        }
-      }
-    };
-
-    getAccounts();
-  }, [userId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    // Validar que solo se ingresen números en el campo "amount"
-    if (name === 'amount' && !/^\d*$/.test(value)) {
-      return; // Si no es un número, no actualizamos el estado
-    }
-
-    setForm({
-      ...form,
-      [name]: name === 'description' ? value.slice(0, 100) : value  // Limitar description a 100 caracteres
-    });
-  };
-
 
   const updateTokenForAccount = async (accountId) => {
     try {
@@ -80,52 +52,99 @@ export default function Gastos() {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'amount') {
+      return;
+    }
+
+    setForm({
+      ...form,
+      [name]: name === 'description' ? value.slice(0, 100) : value
+    });
+    setErrors({
+      ...errors,
+      [name]: ''
+    });
+  };
+
+  const handleAmountChange = (values) => {
+    const { formattedValue, value } = values;
+    setForm({
+      ...form,
+      amount: value
+    });
+    setErrors({
+      ...errors,
+      amount: ''
+    });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.amount) {
+      newErrors.amount = 'El monto no puede estar vacío.';
+    }
+    return newErrors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      setLoading(false);
+      return;
+    }
+
+    const cleanedAmount = parseFloat(form.amount.replace(/\./g, '').replace(',', '.'));
 
     try {
       const newToken = await updateTokenForAccount(selectedAccount);
-      
+
       const response = await fetch(`http://localhost:8080/transactions/payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${newToken}`
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify({ ...form, amount: cleanedAmount })
       });
 
-      const text = await response.text(); // Get the response text
+      const text = await response.text();
 
       if (response.ok) {
-        let newToken = response.headers.get('authorization');
-        if (newToken && newToken.startsWith('Bearer ')) {
-          newToken = newToken.slice(7, newToken.length);
+        let updatedToken = response.headers.get('authorization');
+        if (updatedToken && updatedToken.startsWith('Bearer ')) {
+          updatedToken = updatedToken.slice(7);
+          localStorage.setItem('token', updatedToken);
         }
-        localStorage.setItem('token', newToken);
 
         if (text) {
-          const data = JSON.parse(text); // Parse the text as JSON
+          const data = JSON.parse(text);
           const message =
-          ` Información de la transacción
-          Fecha del pago: ${data.fechaPago} 
-          Moneda: ${data.currency} 
-          CBU destino: ${data.destino} 
-          Monto: $${data.amount} 
-          Descripción: ${data.description}`;
+            `Información de la transacción
+            Fecha del pago: ${data.fechaPago} 
+            Moneda: ${data.currency} 
+            CBU destino: ${data.destino} 
+            Monto: $${cleanedAmount} 
+            Descripción: ${data.description}`;
 
           handleDialogOpen('Pago Exitoso', message, <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         } else {
           handleDialogOpen('Pago Exitoso', 'El pago se ha registrado correctamente, pero no se recibió respuesta del servidor.', <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'green' }} />);
         }
+      } else if (response.status === 500) {
+        handleDialogOpen('Error', 'Error del servidor. Por favor, inténtelo de nuevo más tarde.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       } else {
-        const data = text ? JSON.parse(text) : { message: 'Error desconocido' }; // Parse the text as JSON if not empty
-        handleDialogOpen('Error en la Transacción', data.message, <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
+        handleDialogOpen('Error', 'Ha ocurrido un error al intentar registrar el pago.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
       }
     } catch (error) {
-      // Handle general errors
-      console.error('Error al registrar el pago:', error);
       handleDialogOpen('Error', 'Ha ocurrido un error al intentar registrar el pago.', <CancelOutlinedIcon sx={{ fontSize: 48, color: 'red' }} />);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,10 +155,11 @@ export default function Gastos() {
       setSelectedAccount(accountId);
       setForm(prevForm => ({
         ...prevForm,
-        currency: selected.currency // Actualizar la moneda del formulario
+        currency: selected.currency
       }));
     }
   };
+
   const handleDialogOpen = (title, message, icon) => {
     setDialogContent({
       title,
@@ -151,27 +171,48 @@ export default function Gastos() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    navigate('/home'); 
+    navigate('/home');
+  };
+
+  const handleCBUChange = (e) => {
+    const { name, value } = e.target;
+    const remainingCharacters = 22 - value.length;
+    setForm({
+      ...form,
+      [name]: value
+    });
+    setErrors({
+      ...errors,
+      [name]: ''
+    });
   };
 
   return (
-    <section className="box-principal-gastos">
+    <section className="box-principal-gastos" style={{
+      backgroundImage: `url(${fondoGastos})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
       <p className="titulo-gastos">Registrar Pago</p>
       <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off" className="box-gastos">
-        <TextField
-          required
-          name="destino"
-          label="CBU Destino"
-          value={form.destino}
-          onChange={handleChange}
-          margin="normal"
-          className="custom-textfield"
-          inputProps={{
-            inputMode: 'numeric',
-            pattern: '\\d{22}',
-            maxLength: 22,
-          }}
-        />
+        <Tooltip title={`Caracteres restantes: ${22 - form.destino.length}`}>
+          <TextField
+            required
+            name="destino"
+            label="CBU Destino"
+            value={form.destino}
+            onChange={handleCBUChange}
+            margin="normal"
+            className="custom-textfield"
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '\\d{22}',
+              maxLength: 22,
+            }}
+            error={!!errors.destino}
+            helperText={errors.destino}
+          />
+        </Tooltip>
         <TextField
           label="Cuenta"
           select
@@ -186,89 +227,79 @@ export default function Gastos() {
             </MenuItem>
           ))}
         </TextField>
-        <TextField
-          required
-          name="amount"
+        <NumericFormat
           label="Monto"
-          type="text" // Mantenemos type="text"
           value={form.amount}
+          onValueChange={handleAmountChange}
+          customInput={TextField}
           className="custom-textfield"
-          onChange={handleChange}
+          decimalSeparator=","
+          thousandSeparator="."
+          prefix={'$'}
           fullWidth
           margin="normal"
-          variant="outlined"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-          }}
           inputProps={{
-            maxLength: 20,
+            maxLength: 15
           }}
+          error={!!errors.amount}
+          helperText={errors.amount}
         />
-         <TextField
+        <TextField
           name="description"
           label="Descripción"
           value={form.description}
           onChange={handleChange}
           margin="normal"
           className="custom-textfield description"
-          multiline={true}
+          multiline
           maxRows={2}
           inputProps={{
-            maxLength: 100  
+            maxLength: 100
           }}
-          
         />
-        <Button variant="contained" color="primary" type="submit" className="button-registrar">
-          Registrar
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          className={`button-registrar ${loading ? 'button-loading' : ''}`}
+          disabled={loading || form.destino.length !== 22}
+        >
+          {loading ? 'Procesando...' : 'Registrar'}
         </Button>
       </Box>
 
-      {/* Dialog para mostrar la confirmación o el error */}
-    <Dialog
-      open={dialogOpen}
-      onClose={handleDialogClose}
-      PaperProps={{
-        style: {
-          padding: '20px',
-          borderRadius: '15px',
-          backgroundColor: '#f5f5f5',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #ccc'
-        }
-      }}
-    />
       <Dialog
-      open={dialogOpen}
-      onClose={handleDialogClose}
-      PaperProps={{
-        style: {
-          padding: '10px',
-          borderRadius: '15px',
-          backgroundColor: '#f5f5f5',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #ccc'
-        }
-      }}
-    >
-      <DialogTitle>
-        <Box display="flex" alignItems="center">
-          {dialogContent.icon}
-          <Typography variant="h6" component="span" style={{ fontWeight: 'bold', marginLeft: 8, fontSize: '1.5rem' }}>
-            {dialogContent.title}
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        PaperProps={{
+          style: {
+            padding: '20px',
+            borderRadius: '15px',
+            backgroundColor: '#f5f5f5',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #ccc'
+          }
+        }}
+      >
+        <DialogTitle>
+          <Box display="flex" alignItems="center">
+            {dialogContent.icon}
+            <Typography variant="h6" component="span" style={{ fontWeight: 'bold', marginLeft: 8, fontSize: '1.5rem' }}>
+              {dialogContent.title}
+            </Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Typography style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap', textAlign: 'left', fontSize: '1.3rem' }}>
+            {dialogContent.message}
           </Typography>
-        </Box>
-      </DialogTitle>
-      <DialogContent>
-        <Typography style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap', textAlign: 'left', fontSize: '1.3rem' }}>
-          {dialogContent.message}
-        </Typography>
-      </DialogContent>
-      <DialogActions style={{ justifyContent: 'right' }}>
-        <Button onClick={handleDialogClose} color="primary" style={{ fontSize: '1.2rem' }}>
-          Cerrar
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: 'right' }}>
+          <Button onClick={handleDialogClose} color="primary" style={{ fontSize: '1.2rem' }}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </section>
   );
 }
