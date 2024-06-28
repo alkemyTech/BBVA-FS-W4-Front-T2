@@ -8,7 +8,7 @@ const CatLoader = () => {
   return (
     <div>
       <img src={CatImage} alt="loader" className="rotated-image" />
-      <div className="coin"></div>
+      <div className="loaderCoin"></div>
     </div>
   );
 };
