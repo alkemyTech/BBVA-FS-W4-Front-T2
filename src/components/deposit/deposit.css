@@ -37,7 +37,7 @@
 }
 
 .custom-textfield .MuiInputBase-root {
-    background-color: transparent; 
+    background-color: #f8f8f8; 
 }
 
 .custom-textfield .MuiInputBase-root input {
@@ -60,7 +60,7 @@
 }
 
 .custom-formcontrol .MuiInputBase-root {
-    background-color: transparent; /* Fondo azul claro para Select */
+    background-color: #f8f8f8;  /* Fondo azul claro para Select */
 }
 
 .custom-formcontrol .MuiInputBase-root input {

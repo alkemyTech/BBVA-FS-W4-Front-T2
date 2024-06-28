@@ -193,7 +193,7 @@ export default function Registro() {
         }}
       >
         <Grid container>
-          <Grid item xs={12} md={6} sx={{ padding: 3 }}>
+          <Grid item xs={12} md={6} sx={{ padding: 3}}>
             <Typography variant="h4" component="h1" gutterBottom>
               Registro
             </Typography>
@@ -227,16 +227,14 @@ export default function Registro() {
                 esES.components.MuiLocalizationProvider.defaultProps.localeText
               }
             >
-              <Grid container spacing={2.5}>
-                <Grid item xs={12}>
-                  <DatePicker
+                  <DatePicker sx={{width:'100%'}}
                     label="Fecha de Nacimiento"
                     value={birthDate}
                     onChange={(newValue) => setBirthDate(newValue)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        fullWidth
+                        
                         margin="normal"
                         error={isSubmitted && error.birthDate}
                       />
@@ -245,8 +243,7 @@ export default function Registro() {
                     maxDate={dayjs()}
                     fullWidth
                   />
-                </Grid>
-              </Grid>
+               
             </LocalizationProvider>
             <TextField
               label="DNI"

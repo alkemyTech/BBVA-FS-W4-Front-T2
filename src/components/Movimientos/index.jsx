@@ -90,6 +90,19 @@ const Movimientos = () => {
     return type === "PAYMENT" ? `- ${formattedAmount}` : `+ ${formattedAmount}`;
   };
 
+  const getTransactionTypeText = (type) => {
+    switch (type) {
+      case "DEPOSIT":
+        return "Depósito";
+      case "PAYMENT":
+        return "Pago";
+      case "INCOME":
+        return "Ingreso";
+      default:
+        return "Tipo desconocido";
+    }
+  };
+
   const handleFilterChange = (name, value) => {
     setFilters({
       ...filters,
@@ -236,7 +249,7 @@ const Movimientos = () => {
               overflow: "auto",
               minHeight: 400,
               maxHeight: 450,
-              width: 950,
+              width: 850,
               borderRadius: "10px",
               backgroundColor: "#f8f8f8",
               boxShadow: 3,
@@ -247,7 +260,8 @@ const Movimientos = () => {
                 <Card
                   key={index}
                   sx={{
-                    margin: 2,
+                    margin: 1,
+                    
                     display: "flex",
                     flexDirection: "column",
                     cursor: "pointer",
@@ -301,35 +315,36 @@ const Movimientos = () => {
                           {transaction.descripcion}
                         </Typography>
                         <Typography
-                            component="span"
-                            variant="body1"
-                            color="textPrimary"
-                          >
-                            <strong>Fecha:</strong>{" "}
-                            {dayjs(transaction.fechaDeTransaccion).format(
-                              "DD/MM/YYYY"
-                            )}
-                          </Typography>
+                          component="span"
+                          variant="body1"
+                          color="textPrimary"
+                        >
+                          <strong>Fecha:</strong>{" "}
+                          {dayjs(transaction.fechaDeTransaccion).format(
+                            "DD/MM/YYYY"
+                          )}
+                        </Typography>
                       </div>
 
                       {expandedIndex === index && (
                         <>
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="textPrimary"
+                          >
+                            <strong>Tipo: </strong>{" "}
+                            {getTransactionTypeText(
+                              transaction.tipoDeTransaccion
+                            )}
+                          </Typography>
                           
                           <Typography
                             component="span"
                             variant="body1"
                             color="textPrimary"
                           >
-                            <strong>Tipo:</strong>{" "}
-                            {transaction.tipoDeTransaccion}
-                          </Typography>
-                          <br />
-                          <Typography
-                            component="span"
-                            variant="body1"
-                            color="textPrimary"
-                          >
-                            <strong>Moneda:</strong> {transaction.currency}
+                            <strong>  Moneda:</strong> {transaction.currency}
                           </Typography>
                           <Typography color="textPrimary">
                             <strong>Destino:</strong> {transaction.destino}
@@ -337,8 +352,7 @@ const Movimientos = () => {
                           <Typography color="textPrimary">
                             <strong>Origen:</strong> {transaction.origen}
                           </Typography>
-                          
-                          <br />
+
                         </>
                       )}
                     </CardContent>
