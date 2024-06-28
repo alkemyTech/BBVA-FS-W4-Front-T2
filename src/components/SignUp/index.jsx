@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -26,12 +26,15 @@ import { setUser } from "../../Redux/slice/userSlice";
 import { register } from "../../utils/Auth";
 import { useNavigate } from "react-router-dom";
 import CatLoader from "../../UI/CatLoader/catLoader";
-
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { esES } from "@mui/x-date-pickers/locales";
+import dayjs from "dayjs";
 
 export default function Registro() {
   const user = useSelector((state) => state.user);
   const { id, userName, firstName, lastName } = user;
-  const [birthDate, setBirthDate] = useState("");
+  const [birthDate, setBirthDate] = useState(null);
   const [dni, setDni] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -125,16 +128,20 @@ export default function Registro() {
       navigate("/home");
     } catch (error) {
       if (error.response) {
-        
-        setError({ userName: true, password: true, dni: true, firstName: true, lastName: true, birthDate: true });
+        setError({
+          userName: true,
+          password: true,
+          dni: true,
+          firstName: true,
+          lastName: true,
+          birthDate: true,
+        });
         setErrorMessage("Usuario, contraseña o DNI incorrectos");
         console.error("Error en el inicio de sesión", error);
       } else if (error.request) {
-        
         setErrorMessage("Error de red: no se pudo conectar con el servidor");
         console.error("Error de red:", error);
       } else {
-        
         setErrorMessage("Ocurrió un error inesperado");
         console.error("Error inesperado:", error);
       }
@@ -213,14 +220,34 @@ export default function Registro() {
               fullWidth
               margin="normal"
             />
-            <TextField
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              error={isSubmitted && error.birthDate}
-              fullWidth
-              margin="normal"
-            />
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale="es"
+              localeText={
+                esES.components.MuiLocalizationProvider.defaultProps.localeText
+              }
+            >
+              <Grid container spacing={2.5}>
+                <Grid item xs={12}>
+                  <DatePicker
+                    label="Fecha de Nacimiento"
+                    value={birthDate}
+                    onChange={(newValue) => setBirthDate(newValue)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        margin="normal"
+                        error={isSubmitted && error.birthDate}
+                      />
+                    )}
+                    format="DD/MM/YYYY"
+                    maxDate={dayjs()}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+            </LocalizationProvider>
             <TextField
               label="DNI"
               value={dni}

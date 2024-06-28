@@ -47,11 +47,23 @@ const Movimientos = () => {
   const getIcon = (type) => {
     switch (type) {
       case "DEPOSIT":
-        return <ArrowUpwardOutlined sx={{ color: "green", fontSize: 40 }} />;
+        return (
+          <ArrowUpwardOutlined
+            sx={{ color: "green", fontSize: 40, backgroundColor: "#ffffff" }}
+          />
+        );
       case "PAYMENT":
-        return <ArrowDownwardOutlined sx={{ color: "red", fontSize: 40 }} />;
+        return (
+          <ArrowDownwardOutlined
+            sx={{ color: "red", fontSize: 40, backgroundColor: "#ffffff" }}
+          />
+        );
       default:
-        return <ArrowUpwardOutlined sx={{ color: "green", fontSize: 40 }} />;
+        return (
+          <ArrowUpwardOutlined
+            sx={{ color: "green", fontSize: 40, backgroundColor: "#ffffff" }}
+          />
+        );
     }
   };
 
@@ -71,13 +83,15 @@ const Movimientos = () => {
   };
 
   const handleApplyFilters = () => {
-    dispatch(fetchTransactions({
-      page: 0,
-      fromDate: filters.fromDate ? filters.fromDate.format("YYYY-MM-DD") : "",
-      toDate: filters.toDate ? filters.toDate.format("YYYY-MM-DD") : "",
-      transactionType: filters.transactionType,
-      currency: filters.currency,
-    }));
+    dispatch(
+      fetchTransactions({
+        page: 0,
+        fromDate: filters.fromDate ? filters.fromDate.format("YYYY-MM-DD") : "",
+        toDate: filters.toDate ? filters.toDate.format("YYYY-MM-DD") : "",
+        transactionType: filters.transactionType,
+        currency: filters.currency,
+      })
+    );
   };
 
   const handlePageChange = (event, value) => {
@@ -100,6 +114,7 @@ const Movimientos = () => {
           minWidth: 100,
           maxWidth: 200,
           boxShadow: 3,
+          borderRadius: "10px",
           height: 400,
           marginTop: 9,
           backgroundColor: "#f8f8f8",
@@ -112,13 +127,17 @@ const Movimientos = () => {
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
             adapterLocale="es"
-            localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
+            localeText={
+              esES.components.MuiLocalizationProvider.defaultProps.localeText
+            }
           >
             <Grid item xs={12}>
               <DatePicker
                 label="Desde"
                 value={filters.fromDate}
-                onChange={(newValue) => handleFilterChange("fromDate", newValue)}
+                onChange={(newValue) =>
+                  handleFilterChange("fromDate", newValue)
+                }
                 renderInput={(params) => <TextField {...params} fullWidth />}
                 format="DD/MM/YYYY"
               />
@@ -129,7 +148,9 @@ const Movimientos = () => {
                 value={filters.toDate}
                 onChange={(newValue) => {
                   if (newValue && newValue.isBefore(filters.fromDate)) {
-                    alert("La fecha Hasta no puede ser anterior a la fecha Desde.");
+                    alert(
+                      "La fecha Hasta no puede ser anterior a la fecha Desde."
+                    );
                   } else {
                     handleFilterChange("toDate", newValue);
                   }
@@ -145,7 +166,9 @@ const Movimientos = () => {
               label="Tipo"
               name="transactionType"
               value={filters.transactionType}
-              onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
+              onChange={(e) =>
+                handleFilterChange(e.target.name, e.target.value)
+              }
               select
               fullWidth
             >
@@ -160,7 +183,9 @@ const Movimientos = () => {
               label="Moneda"
               name="currency"
               value={filters.currency}
-              onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
+              onChange={(e) =>
+                handleFilterChange(e.target.name, e.target.value)
+              }
               select
               fullWidth
               sx={{ marginBottom: 2 }}
@@ -204,97 +229,106 @@ const Movimientos = () => {
           >
             <List>
               {transactions.map((transaction, index) => (
-        <Card
-        key={index}
-        sx={{
-          margin: 2,
-          display: "flex",
-          flexDirection: "column",
-          cursor: "pointer",
-          backgroundColor: "#f8f8f8",
-        }}
-        onClick={() =>
-          setExpandedIndex(expandedIndex === index ? null : index)
-        }
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <CardActions
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginRight: 0, // Ajusta el margen derecho para reducir espacio
-            }}
-          >
-            {getIcon(transaction.tipoDeTransaccion)}
-          </CardActions>
-          <CardContent sx={{ flexGrow: 1 }}>
-            <div style={{display:"flex", justifyContent:"space-between"}}>
-            <Typography
-              align="center"
-              variant="h5"
-              sx={{
-                color:
-                  transaction.tipoDeTransaccion === "PAYMENT"
-                    ? "red"
-                    : "green",
-                marginLeft: 2,  // Ajusta el espacio entre el icono y el monto
-              }}
-            >
-              {formatAmount(
-                transaction.amount,
-                transaction.tipoDeTransaccion
-              )}
-            </Typography>
-            <Typography
-              component="span"
-              color="textPrimary"
-              variant="body1"
-            >
-              <strong>Descripción:</strong> {transaction.descripcion}
-            </Typography>
-            </div>
-     
-           
-            {expandedIndex === index && (
-              <>
-                <Typography color="textPrimary">
-                  <strong>Destino:</strong> {transaction.destino}
-                </Typography>
-                <Typography color="textPrimary">
-                  <strong>Origen:</strong> {transaction.origen}
-                </Typography>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  color="textPrimary"
+                <Card
+                  key={index}
+                  sx={{
+                    margin: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    cursor: "pointer",
+                    backgroundColor: "#ffffff",
+                  }}
+                  onClick={() =>
+                    setExpandedIndex(expandedIndex === index ? null : index)
+                  }
                 >
-                  <strong>Tipo:</strong>{" "}
-                  {transaction.tipoDeTransaccion}
-                </Typography>
-                <br />
-                <Typography
-                  component="span"
-                  variant="body2"
-                  color="textPrimary"
-                >
-                  <strong>Moneda:</strong> {transaction.currency}
-                </Typography>
-                <br />
-                <Typography
-                  component="span"
-                  variant="body2"
-                  color="textPrimary"
-                >
-                  <strong>Fecha:</strong>{" "}
-                  {transaction.fechaDeTransaccion}
-                </Typography>
-              </>
-            )}
-          </CardContent>
-        </Box>
-      </Card>
-      
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <CardActions
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight: 0,
+                        backgroundColor: "#ffffff",
+                      }}
+                    >
+                      {getIcon(transaction.tipoDeTransaccion)}
+                    </CardActions>
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography
+                          align="center"
+                          variant="h5"
+                          sx={{
+                            color:
+                              transaction.tipoDeTransaccion === "PAYMENT"
+                                ? "red"
+                                : "green",
+                            marginLeft: 2,
+                          }}
+                        >
+                          {formatAmount(
+                            transaction.amount,
+                            transaction.tipoDeTransaccion
+                          )}
+                        </Typography>
+                        <Typography
+                          component="span"
+                          color="textPrimary"
+                          variant="body1"
+                        >
+                          <strong>Descripción:</strong>{" "}
+                          {transaction.descripcion}
+                        </Typography>
+                        <Typography
+                            component="span"
+                            variant="body1"
+                            color="textPrimary"
+                          >
+                            <strong>Fecha:</strong>{" "}
+                            {dayjs(transaction.fechaDeTransaccion).format(
+                              "DD/MM/YYYY"
+                            )}
+                          </Typography>
+                      </div>
+
+                      {expandedIndex === index && (
+                        <>
+                          
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="textPrimary"
+                          >
+                            <strong>Tipo:</strong>{" "}
+                            {transaction.tipoDeTransaccion}
+                          </Typography>
+                          <br />
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="textPrimary"
+                          >
+                            <strong>Moneda:</strong> {transaction.currency}
+                          </Typography>
+                          <Typography color="textPrimary">
+                            <strong>Destino:</strong> {transaction.destino}
+                          </Typography>
+                          <Typography color="textPrimary">
+                            <strong>Origen:</strong> {transaction.origen}
+                          </Typography>
+                          
+                          <br />
+                        </>
+                      )}
+                    </CardContent>
+                  </Box>
+                </Card>
               ))}
             </List>
           </Box>
