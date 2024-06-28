@@ -29,12 +29,12 @@
   animation: giro 1s linear infinite; 
 }
 
-.coin {
+.loaderCoin {
   position: absolute;
   top: 45%;
   left: 50%;
-  width: 20px;
-  height: 20px;
+  width: 35px;
+  height: 35px;
   background-color: gold;
   border-radius: 50%;
   border: 5px solid darkgoldenrod;
@@ -47,7 +47,7 @@
   font-weight: bold;
   color: darkgoldenrod;
 }
-.coin::before {
+.loaderCoin::before {
   content: "$";
   color: darkgoldenrod;
 }

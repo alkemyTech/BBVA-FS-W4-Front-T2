@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Card,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -13,12 +12,58 @@ import {
 } from "@mui/material";
 import "./home.css";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MovingIcon from "@mui/icons-material/Moving";
+import ArrowUpwardOutlined from "@mui/icons-material/ArrowUpwardOutlined";
+import ArrowDownwardOutlined from "@mui/icons-material/ArrowDownwardOutlined";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import { fetchAccounts} from "../../Redux/slice/accountSlice";
 import { SnackbarProvider, useSnackbar } from 'notistack';
+const transactionTypeTranslations = {
+  INCOME: "Ingreso",
+  PAYMENT: "Pago",
+  DEPOSIT: "Depósito",
+};
+
+const getIcon = (type) => {
+  switch (type) {
+    case "DEPOSIT":
+      return (
+        <ArrowUpwardOutlined
+          sx={{
+            color: "white",
+            fontSize: 15,
+            background: "green",
+            borderRadius: "50px",
+          }}
+        />
+      );
+    case "PAYMENT":
+      return (
+        <ArrowDownwardOutlined
+          sx={{
+            color: "white",
+            fontSize: 15,
+            background: "red",
+            borderRadius: "50px",
+          }}
+        />
+      );
+    default:
+      return (
+        <ArrowUpwardOutlined
+          sx={{
+            color: "white",
+            fontSize: 15,
+            background: "green",
+            borderRadius: "50px",
+          }}
+        />
+      );
+  }
+};
+
 import Bubble from "../Calculadora"
 
 export default function Home() {
@@ -50,7 +95,7 @@ export default function Home() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -72,12 +117,16 @@ export default function Home() {
   }, [enqueueSnackbar]);
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Intl.DateTimeFormat("en-US", options).format(
-      new Date(dateString)
-    );
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0"); // Asegura dos dígitos
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses son de 0 a 11, se suma 1
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
+  const userNameHome = useSelector(
+    (state) => state.user.firstName + " " + state.user.lastName
+  );
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -97,8 +146,15 @@ export default function Home() {
     return <Typography>No data available</Typography>;
   }
 
+  const sortedTransactions = data.accountTransactions.sort(
+    (a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)
+  );
+
   return (
     <div className="HomeContainer">
+      <Grid item xs={12} md={4} className="bienvenido">
+        <Typography variant="h2">¡Hola {userNameHome}!</Typography>
+      </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card className="card">
@@ -166,21 +222,30 @@ export default function Home() {
           <TableHead>
             <TableRow>
               <TableCell>Fecha</TableCell>
-              <TableCell>Tipo de Transccion</TableCell>
+              <TableCell>Tipo de Transacción</TableCell>
               <TableCell>Monto</TableCell>
-              <TableCell>CBU Destino</TableCell>
+              <TableCell>CBU / Alias</TableCell>
               <TableCell>Moneda</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.accountTransactions.map((transaction) => (
+            {sortedTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell>
                   <b>{formatDate(transaction.transactionDate)}</b>
                 </TableCell>
-                <TableCell>
-                  <b>{transaction.type}</b>
+                <TableCell style={{ textAlign: "center" }}>
+                  <div style={{ display: "flex"}}>
+                    {getIcon(transaction.type)} &nbsp;
+                    <div style={{ textAlign: "left" }}>
+                      <b>
+                        {transactionTypeTranslations[transaction.type] ||
+                          transaction.type}
+                      </b>
+                    </div>
+                  </div>
                 </TableCell>
+
                 <TableCell>
                   <b>{formatCurrency(transaction.amount)}</b>
                 </TableCell>

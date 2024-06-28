@@ -22,7 +22,7 @@ const pages = [
   "Depositar",
   "Transacciones",
   "Inversiones",
-  "Balance",
+  "Mis Cuentas",
   "Pagos"
 ];
 const settings = ["Mis datos", "Cerrar Sesion"];
