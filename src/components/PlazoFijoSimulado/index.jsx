@@ -27,6 +27,7 @@ import { fetchAccounts } from "../../Redux/slice/accountSlice";
 import "./fixedTerm.css";
 
 
+import Bubble from "../Calculadora"
 
 export default function PlazoFijoSimulado() {
   const dispatch = useDispatch();
@@ -382,6 +383,9 @@ export default function PlazoFijoSimulado() {
         <br /> al primer día hábil siguiente.
       </p>
       <hr className="gray-line-bottom" />
+
+    
+      <Bubble/>
     </section>
   );
 }

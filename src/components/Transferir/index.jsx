@@ -22,6 +22,7 @@ import IngresarCBU from "./IngresarCBU";
 import IngresarMonto from "./IngresarMonto";
 import ConfirmarTransferencia from "./ConfirmarTransferencia";
 import TransferenciaExitosa from "./TransferenciaExitosa";
+import Bubble from "../Calculadora"
 
 const Transferir = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -319,6 +320,7 @@ const Transferir = () => {
           
         </CardContent>
       </Card>
+      <Bubble/>
     </Box>
   );
 };

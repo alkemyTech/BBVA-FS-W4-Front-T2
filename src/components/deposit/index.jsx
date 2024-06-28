@@ -9,6 +9,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import fondoCargarSaldo from '../../assets/fondoCargarSaldo.svg';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import './deposit.css';
+import Bubble from "../Calculadora"
 
 const Deposito = () => {
   const dispatch = useDispatch();
@@ -204,6 +205,7 @@ const Deposito = () => {
             </Button>
           </Box>
         </>
+        <Bubble/>
       </Paper>
 
       <Dialog
@@ -239,6 +241,7 @@ const Deposito = () => {
         </DialogActions>
       </Dialog>
     </Grid>
+    
   );
 };
 
