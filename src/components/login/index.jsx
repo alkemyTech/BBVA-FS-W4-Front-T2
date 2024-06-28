@@ -25,6 +25,7 @@ import { setUser } from "../../Redux/slice/userSlice";
 import { login } from "../../utils/Auth";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import "./Login.css"; // Import the CSS file for animations
+import Bubble from "../Calculadora"
 
 export default function Login() {
   const [localUserName, setLocalUserName] = useState("");
@@ -182,11 +183,7 @@ export default function Login() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox name="rememberMe" />}
-                label="Recuérdame"
-                sx={{ color: "black" }}
-              />
+              
             </Grid>
             <Grid item xs={12}>
               <Button
@@ -204,7 +201,7 @@ export default function Login() {
                 <Typography variant="body2">
                   ¿Aún no tienes cuenta?
                 </Typography>
-                <Link href="/signUp" underline="hover">
+                <Link href="/signUp" underline="hover" sx={{fontFamily:'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'}}>
                   Regístrate aquí
                 </Link>
               </Box>
@@ -213,6 +210,7 @@ export default function Login() {
         </Grid>
         <Grid item xs={4} />
       </Grid>
+      <Bubble/>
     </>
   );
 }
