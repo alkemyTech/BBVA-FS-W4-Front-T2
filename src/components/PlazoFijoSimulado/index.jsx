@@ -24,6 +24,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Bubble from "../Calculadora"
 
 export default function PlazoFijoSimulado() {
   function obtenerNombreDelMes(numeroMes) {
@@ -376,6 +377,7 @@ export default function PlazoFijoSimulado() {
       </p>
 
       <hr className="gray-line-bottom"></hr>
+      <Bubble/>
     </section>
   );
 }

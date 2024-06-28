@@ -26,6 +26,7 @@ import dayjs from "dayjs";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import "dayjs/locale/es";
 import { esES } from "@mui/x-date-pickers/locales";
+import Bubble from "../Calculadora"
 
 const Movimientos = () => {
   const dispatch = useDispatch();
@@ -320,6 +321,7 @@ const Movimientos = () => {
           />
         </Box>
       </Box>
+      <Bubble/>
     </Box>
   );
 };

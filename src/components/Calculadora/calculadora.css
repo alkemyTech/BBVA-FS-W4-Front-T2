@@ -34,10 +34,10 @@
 }
 .close-button {
   position: absolute;
-  top: -1.5rem;
-  right: -0.5rem;
+  top:397px;
+  right: -0.09rem;
   background-color: #96767600;
-  border: none;
+  border-radius: 30px;
   font-size: 3rem;
   cursor: pointer;
   color: #fe0000d1;

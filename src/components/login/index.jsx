@@ -25,7 +25,7 @@ import { setUser } from "../../Redux/slice/userSlice";
 import { login } from "../../utils/Auth";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import "./Login.css"; // Import the CSS file for animations
-import Bubble from "../Calculadora"
+
 
 export default function Login() {
   const [localUserName, setLocalUserName] = useState("");
@@ -210,7 +210,6 @@ export default function Login() {
         </Grid>
         <Grid item xs={4} />
       </Grid>
-      <Bubble/>
     </>
   );
 }

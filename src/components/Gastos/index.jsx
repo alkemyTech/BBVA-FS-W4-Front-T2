@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 import './gastos.css';
 import fondoGastos from '../../assets/fondoGastos.svg';
+import Bubble from "../Calculadora"
 
 export default function Gastos() {
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -300,6 +301,7 @@ export default function Gastos() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Bubble/>
     </section>
   );
 }

@@ -19,6 +19,7 @@ import MovingIcon from "@mui/icons-material/Moving";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import { fetchAccounts} from "../../Redux/slice/accountSlice";
 import { SnackbarProvider, useSnackbar } from 'notistack';
+import Bubble from "../Calculadora"
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -194,6 +195,7 @@ export default function Home() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Bubble/>
     </div>
   );
 }
