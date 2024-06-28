@@ -49,19 +49,34 @@ const Movimientos = () => {
       case "DEPOSIT":
         return (
           <ArrowUpwardOutlined
-            sx={{ color: "green", fontSize: 40, backgroundColor: "#ffffff" }}
+            sx={{
+              color: "white",
+              fontSize: 40,
+              background: "green",
+              borderRadius: "50px",
+            }}
           />
         );
       case "PAYMENT":
         return (
           <ArrowDownwardOutlined
-            sx={{ color: "red", fontSize: 40, backgroundColor: "#ffffff" }}
+            sx={{
+              color: "white",
+              fontSize: 40,
+              background: "red",
+              borderRadius: "50px",
+            }}
           />
         );
       default:
         return (
           <ArrowUpwardOutlined
-            sx={{ color: "green", fontSize: 40, backgroundColor: "#ffffff" }}
+            sx={{
+              color: "white",
+              fontSize: 50,
+              background: "green",
+              borderRadius: "50px",
+            }}
           />
         );
     }
