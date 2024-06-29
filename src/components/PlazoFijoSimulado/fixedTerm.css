@@ -54,11 +54,12 @@
 }
 
 .aviso {
-  margin: 20px;
+  margin-top: 34px;
 }
 
 .gray-line-bottom {
   margin: auto;
+  margin-top: 20px;
   width: 126.35px;
   height: 0px;
   border-color: #1565c0;
