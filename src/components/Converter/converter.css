@@ -23,7 +23,7 @@ body {
 }
 .container {
   position: fixed;
-  height: 400px;
+  height: 474.5px;
   width: 300px;
   top: 60%;
   left: 10%;
@@ -42,6 +42,7 @@ body {
 .title {
   font-size: 1.75rem;
   margin-bottom: 2rem;
+  margin-top: 8px;
 }
 .converter {
   display: grid;
