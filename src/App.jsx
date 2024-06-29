@@ -13,14 +13,18 @@ import DatosUser from "./components/Datos";
 import Deposito from "./components/deposit"
 import Movimientos from "./components/Movimientos";
 import MisCuentas from "./components/MisCuentas";
+import ListaPlazos from "./components/ListaPF";
+import { useNavigate } from 'react-router-dom';
 
 
+import Converter from "./components/Converter";
 
 
 function App() {
   return (
     <Page>
       <Routes>
+        <Route path="/converter" element={<Converter/>}/>
         <Route path="/" element={<Login />} />
         <Route path="/signUp" element={<Registro />} />
         <Route path="/signUp/admin" element={""} />
@@ -31,8 +35,8 @@ function App() {
           <Route path="/inversiones" element={<PlazoFijoSimulado />} />
           <Route path="/Transferir" element={<Transferir />} />
           <Route path="/MisDatos" element={<DatosUser />} />
-
           <Route path="/mis-cuentas" element={<MisCuentas/>} />
+          <Route path="/ListaPF" element={<ListaPlazos/>} />
 
              <Route path="/pagos" element={<Gastos/>} />
 

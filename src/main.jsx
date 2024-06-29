@@ -6,9 +6,9 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./Redux/store.jsx";
-import LoadingCat from "./assets/components/loadingCat";
 import createTheme from "@mui/material/styles/createTheme";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import CatLoader from "./UI/CatLoader/catLoader.jsx";
 
 const theme = createTheme({
   typography: {
@@ -29,7 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <React.StrictMode>
         <Provider store={store}>
-          <PersistGate loading={<LoadingCat />} persistor={persistor}>
+          <PersistGate loading={<CatLoader />} persistor={persistor}>
             <App />
           </PersistGate>
         </Provider>
