@@ -15,6 +15,7 @@
   color: #1E6FBA;
   max-width: 126px;
   height: 0;
+  margin: auto;
   margin-top: 4px;
   border-color: #1565c0;
   margin-bottom: 26px;
@@ -56,5 +57,4 @@
   font-size: 12px;
   margin:0px;
   color: rgb(60, 77, 231);
-  
 }
