@@ -87,8 +87,11 @@ const MisCuentas = () => {
               </p>
             )}
           </article>
+
+          
         ))}
       </section>
+      
     </section>
   );
 };
