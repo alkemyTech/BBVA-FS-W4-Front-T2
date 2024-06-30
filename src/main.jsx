@@ -9,6 +9,7 @@ import store, { persistor } from "./Redux/store.jsx";
 import createTheme from "@mui/material/styles/createTheme";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import CatLoader from "./UI/CatLoader/catLoader.jsx";
+import { SnackbarProvider } from 'notistack';  // Importa el SnackbarProvider
 
 const theme = createTheme({
   typography: {
@@ -30,7 +31,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <React.StrictMode>
         <Provider store={store}>
           <PersistGate loading={<CatLoader />} persistor={persistor}>
-            <App />
+            <SnackbarProvider maxSnack={3}>  {/* Envolviendo tu aplicación con SnackbarProvider */}
+              <App />
+            </SnackbarProvider>
           </PersistGate>
         </Provider>
       </React.StrictMode>
