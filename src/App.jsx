@@ -17,12 +17,15 @@ import ListaPlazos from "./components/ListaPF";
 import { useNavigate } from 'react-router-dom';
 
 
+import Converter from "./components/Converter";
+
 
 
 function App() {
   return (
     <Page>
       <Routes>
+        <Route path="/converter" element={<Converter/>}/>
         <Route path="/" element={<Login />} />
         <Route path="/signUp" element={<Registro />} />
         <Route path="/signUp/admin" element={""} />

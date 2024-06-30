@@ -26,6 +26,8 @@ import dayjs from "dayjs";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import "dayjs/locale/es";
 import { esES } from "@mui/x-date-pickers/locales";
+import Bubble from "../Calculadora"
+import NoTransactionsImage from '../../assets/gatoSinTransacciones.svg'
 
 const Movimientos = () => {
   const dispatch = useDispatch();
@@ -128,7 +130,7 @@ const Movimientos = () => {
           maxWidth: 200,
           boxShadow: 3,
           borderRadius: "10px",
-          height: 400,
+          height: 450,
           marginTop: 9,
           backgroundColor: "#f8f8f8",
         }}
@@ -225,9 +227,12 @@ const Movimientos = () => {
           Transacciones
         </Typography>
         {transactions.length === 0 ? (
-          <Typography variant="h3">
-            No hay transacciones para mostrar.
+          <Box sx={{ textAlign: 'center', padding: 2 }}>
+          {<img src={NoTransactionsImage} alt="No hay transacciones" style={{ width: '400px', marginBottom: '16px' }} />}
+          <Typography variant="h4">
+            Aún no hay transacciones
           </Typography>
+        </Box>
         ) : (
           <Box
             sx={{
@@ -364,6 +369,7 @@ const Movimientos = () => {
           />
         </Box>
       </Box>
+      <Bubble/>
     </Box>
   );
 };

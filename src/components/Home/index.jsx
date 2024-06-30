@@ -64,6 +64,7 @@ const getIcon = (type) => {
   }
 };
 
+import Bubble from "../Calculadora"
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -259,6 +260,7 @@ export default function Home() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Bubble/>
     </div>
   );
 }

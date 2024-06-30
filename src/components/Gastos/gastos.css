@@ -54,7 +54,7 @@
 }
 
 .custom-formcontrol .MuiInputBase-root {
-    background-color: transparent; 
+    background-color: #f8f8f8;  
 }
 
 .custom-formcontrol .MuiInputBase-root input {
