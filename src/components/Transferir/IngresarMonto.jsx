@@ -33,6 +33,9 @@ const IngresarMonto = ({ amount, handleAmountChange, handleNext, handleBack, err
           '& .MuiInputLabel-root.Mui-focused': {
             color: '#1565c0',
           },
+           '& .MuiInputBase-root input': {
+              color: '#1565c0',
+          }
         }}
       />
       {error && (

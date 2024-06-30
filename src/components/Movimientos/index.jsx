@@ -26,8 +26,8 @@ import dayjs from "dayjs";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import "dayjs/locale/es";
 import { esES } from "@mui/x-date-pickers/locales";
-import Bubble from "../Calculadora"
-import NoTransactionsImage from '../../assets/gatoSinTransacciones.svg'
+import Bubble from "../Calculadora";
+import NoTransactionsImage from "../../assets/gatoSinTransacciones.svg";
 
 const Movimientos = () => {
   const dispatch = useDispatch();
@@ -137,7 +137,7 @@ const Movimientos = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", gap: 1 }}>
+    <Box sx={{ display: "flex", gap: 3 }}>
       <Paper
         sx={{
           padding: 3,
@@ -146,7 +146,7 @@ const Movimientos = () => {
           boxShadow: 3,
           borderRadius: "10px",
           height: 450,
-          marginTop: 9,
+          marginTop: 15,
           backgroundColor: "#f8f8f8",
         }}
       >
@@ -225,39 +225,47 @@ const Movimientos = () => {
               <MenuItem value="ARS">ARS</MenuItem>
             </TextField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} >
             <Button
               variant="contained"
               color="primary"
               onClick={handleApplyFilters}
               fullWidth
+              
             >
               Aplicar Filtros
             </Button>
           </Grid>
         </Grid>
       </Paper>
-      <Box sx={{ padding: 2, textAlign: "right" }}>
-        <Typography variant="h4" gutterBottom>
+      <Box sx={{ flex: 1, marginLeft: 2 }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ textAlign: "right", padding: 2 }}
+        >
           Transacciones
         </Typography>
         {transactions.length === 0 ? (
-          <Box sx={{ textAlign: 'center', padding: 2 }}>
-          {<img src={NoTransactionsImage} alt="No hay transacciones" style={{ width: '400px', marginBottom: '16px' }} />}
-          <Typography variant="h4">
-            Aún no hay transacciones
-          </Typography>
-        </Box>
+          <Box sx={{ textAlign: "center", padding: 2 }}>
+            <img
+              src={NoTransactionsImage}
+              alt="No hay transacciones"
+              style={{ width: "400px", marginBottom: "16px" }}
+            />
+            <Typography variant="h4">Aún no hay transacciones</Typography>
+          </Box>
         ) : (
           <Box
             sx={{
               overflow: "auto",
               minHeight: 400,
-              maxHeight: 450,
+              maxHeight: 525,
               width: 850,
               borderRadius: "10px",
               backgroundColor: "#f8f8f8",
               boxShadow: 3,
+              marginBottom: 2,
             }}
           >
             <List>
@@ -266,7 +274,6 @@ const Movimientos = () => {
                   key={index}
                   sx={{
                     margin: 1,
-                    
                     display: "flex",
                     flexDirection: "column",
                     cursor: "pointer",
@@ -283,27 +290,30 @@ const Movimientos = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         marginRight: 0,
+                        marginLeft: 2,
                         backgroundColor: "#ffffff",
                       }}
                     >
                       {getIcon(transaction.tipoDeTransaccion)}
                     </CardActions>
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
+                      <Box
+                        display={"flex"}
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                        marginLeft={1}
+                        marginRight={2}
                       >
+                        <Typography variant="h6">
+                          {transaction.nombreDestino}
+                        </Typography>
                         <Typography
-                          align="center"
-                          variant="h5"
+                          variant="h6"
                           sx={{
                             color:
                               transaction.tipoDeTransaccion === "PAYMENT"
                                 ? "red"
                                 : "green",
-                            marginLeft: 2,
                           }}
                         >
                           {formatAmount(
@@ -311,54 +321,49 @@ const Movimientos = () => {
                             transaction.tipoDeTransaccion
                           )}
                         </Typography>
-                        <Typography
-                          component="span"
-                          color="textPrimary"
-                          variant="body1"
-                        >
-                          <strong>Descripción:</strong>{" "}
-                          {transaction.descripcion}
-                        </Typography>
-                        <Typography
-                          component="span"
-                          variant="body1"
-                          color="textPrimary"
-                        >
-                          <strong>Fecha:</strong>{" "}
-                          {dayjs(transaction.fechaDeTransaccion).format(
-                            "DD/MM/YYYY"
-                          )}
-                        </Typography>
-                      </div>
-
-                      {expandedIndex === index && (
-                        <>
-                          <Typography
-                            component="span"
-                            variant="body1"
-                            color="textPrimary"
-                          >
-                            <strong>Tipo: </strong>{" "}
-                            {getTransactionTypeText(
-                              transaction.tipoDeTransaccion
+                      </Box>
+                      <Box display={"flex"} justifyContent={"space-between"}>
+                        <Box marginLeft={1} textAlign={"left"}>
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>Descripción:</strong>{" "}
+                            {transaction.descripcion}
+                          </Typography>
+                        </Box>
+                        <Box marginRight={2}>
+                          <Typography variant="body1" color="textPrimary">
+                            <strong></strong>{" "}
+                            {dayjs(transaction.fechaDeTransaccion).format(
+                              "DD/MM/YYYY"
                             )}
                           </Typography>
-                          
-                          <Typography
-                            component="span"
-                            variant="body1"
-                            color="textPrimary"
-                          >
-                            <strong>  Moneda:</strong> {transaction.currency}
-                          </Typography>
-                          <Typography color="textPrimary">
-                            <strong>Destino:</strong> {transaction.destino}
-                          </Typography>
-                          <Typography color="textPrimary">
-                            <strong>Origen:</strong> {transaction.origen}
-                          </Typography>
-
-                        </>
+                        </Box>
+                      </Box>
+                      {expandedIndex === index && (
+                        <Box
+                          display={"flex"}
+                          justifyContent={"space-between"}
+                          textAlign={"left"}
+                        >
+                          <Box marginLeft={1}>
+                            <Typography variant="body1" color="textPrimary">
+                              <strong>Tipo:</strong>{" "}
+                              {getTransactionTypeText(
+                                transaction.tipoDeTransaccion
+                              )}
+                            </Typography>
+                            <Typography variant="body1" color="textPrimary">
+                              <strong>Moneda:</strong> {transaction.currency}
+                            </Typography>
+                          </Box>
+                          <Box marginRight={2} textAlign={"right"}>
+                            <Typography variant="body2" color="textPrimary">
+                              <strong>Destino:</strong> {transaction.destino}
+                            </Typography>
+                            <Typography variant="body2" color="textPrimary">
+                              <strong>Origen:</strong> {transaction.origen}
+                            </Typography>
+                          </Box>
+                        </Box>
                       )}
                     </CardContent>
                   </Box>
@@ -384,7 +389,7 @@ const Movimientos = () => {
           />
         </Box>
       </Box>
-      <Bubble/>
+      <Bubble />
     </Box>
   );
 };

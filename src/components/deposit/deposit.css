@@ -41,34 +41,32 @@
 }
 
 .custom-textfield .MuiInputBase-root input {
-    color: #1565c0 !important; /* Texto blanco dentro de TextField */
+    color: #1565c0 !important; 
 }
 .custom-textfield:hover .MuiInputBase-input {
-  color: #1565c0 !important; /* Color del texto al pasar el mouse */
+  color: #1565c0 !important; 
 }
 .custom-textfield .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #1565c1; /* Color del borde al pasar el mouse */
+  border-color: #1565c1; 
 }
-
-
 .custom-textfield .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #1565c0; /* Borde transparente */
+    border-color: #1565c0; 
 }
 
 .custom-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #1565c0; /* Borde azul cuando está enfocado */
+    border-color: #1565c0; 
 }
 
 .custom-formcontrol .MuiInputBase-root {
-    background-color: #f8f8f8;  /* Fondo azul claro para Select */
+    background-color: #f8f8f8; 
 }
 
 .custom-formcontrol .MuiInputBase-root input {
-    color: #1565c0 !important; /* Texto blanco dentro de Select */
+    color: #1565c0 !important; 
 }
 
 .custom-formcontrol .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #1565c0; /* Borde transparente */
+    border-color: #1565c0; 
 }
 .box-deposito {
     display: flex;
