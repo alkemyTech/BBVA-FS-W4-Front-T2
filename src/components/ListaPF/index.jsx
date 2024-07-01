@@ -168,7 +168,7 @@ const ListaPlazos = () => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
+                                        <Typography variant="body2" sx={{ fontSize: '1.0rem' }}>
                                             <strong>Fecha de Cierre:</strong> {plazo.formattedClosingDate}
                                         </Typography>
                                     </Grid>
