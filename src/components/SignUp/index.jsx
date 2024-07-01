@@ -26,6 +26,7 @@ import { setUser } from "../../Redux/slice/userSlice";
 import { register } from "../../utils/Auth";
 import { useNavigate } from "react-router-dom";
 import CatLoader from "../../UI/CatLoader/catLoader";
+import "./signUp.css";
 
 
 export default function Registro() {
@@ -51,6 +52,7 @@ export default function Registro() {
   const imagesLoaded = useImageLoader([fondoRegistro, fondoRegistroClosedEyes]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const requirements = useMemo(
     () => [
@@ -103,6 +105,8 @@ export default function Registro() {
       return;
     }
 
+    setIsLoading(true); // Activar el estado de carga
+
     try {
       const data = await register(
         userName,
@@ -125,19 +129,25 @@ export default function Registro() {
       navigate("/home");
     } catch (error) {
       if (error.response) {
-        
-        setError({ userName: true, password: true, dni: true, firstName: true, lastName: true, birthDate: true });
+        setError({
+          userName: true,
+          password: true,
+          dni: true,
+          firstName: true,
+          lastName: true,
+          birthDate: true,
+        });
         setErrorMessage("Usuario, contraseña o DNI incorrectos");
         console.error("Error en el inicio de sesión", error);
       } else if (error.request) {
-        
         setErrorMessage("Error de red: no se pudo conectar con el servidor");
         console.error("Error de red:", error);
       } else {
-        
         setErrorMessage("Ocurrió un error inesperado");
         console.error("Error inesperado:", error);
       }
+    } finally {
+      setIsLoading(false); // Desactivar el estado de carga
     }
   };
 
@@ -315,8 +325,10 @@ export default function Registro() {
               type="submit"
               fullWidth
               onClick={handleRegistro}
+              disabled={isLoading} // Deshabilitar el botón mientras carga
+              className={isLoading ? "button-loading" : ""} // Añadir clase de carga
             >
-              Registrarse
+              {isLoading ? "Registrando..." : "Registrarse"}
             </Button>
             <Typography variant="body2" sx={{ marginTop: 2 }}>
               ¿Ya tienes cuenta? <Link to="/">Volver a inicio de sesión</Link>
