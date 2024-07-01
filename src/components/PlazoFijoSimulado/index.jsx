@@ -74,6 +74,7 @@ const [cuenta, setCuenta] = useState(defaultAccount);
   const [fechaInicial, setFechaInicial] = useState(dayjs());
   const [dias, setDias] = useState(30);
   const [errorMonto, setErrorMonto] = useState(false);
+  const [errorDias, setErrorDias] = useState(false);
   const [simulationResult, setSimulationResult] = useState(null);
 
 
@@ -122,7 +123,17 @@ const [cuenta, setCuenta] = useState(defaultAccount);
   };
 
   const handleFechaInicial = (event) => setFechaInicial(event.target.value);
-  const handleChangeDias = (event) => setDias(event.target.value);
+  const handleChangeDias = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setDias(value); // Actualiza el estado de días
+  
+    // Validación: muestra error si el número de días es menor que 30
+    if (value < 30) {
+      setErrorDias(true);
+    } else {
+      setErrorDias(false);
+    }
+  };
 
   const transformaFecha = (fecha) => {
     const { $M } = fecha;
@@ -399,7 +410,11 @@ const [cuenta, setCuenta] = useState(defaultAccount);
               },
             }}
             className="white-select"
-          ></TextField>
+          >
+            
+
+          </TextField>
+          
         </div>
 
         {/* Terminos y Condiciones */}
