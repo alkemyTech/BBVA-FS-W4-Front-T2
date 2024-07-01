@@ -1,7 +1,8 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
+import "./transferir.css"
 
-const ConfirmarTransferencia = ({ transferData,  handleBack, handleConfirm }) => {
+const ConfirmarTransferencia = ({ transferData,  handleBack, handleConfirm, isLoading }) => {
   return (
     <Box display={"flex"} justifyContent={"center"} flexDirection={"column"} textAlign={"center"}> 
       <Box border={"1px solid #1565c0"} padding={2} textAlign={'left'}>
@@ -29,15 +30,17 @@ const ConfirmarTransferencia = ({ transferData,  handleBack, handleConfirm }) =>
           justifyContent: "space-between",
         }}
       >
-        <Button variant="contained" onClick={handleBack}>
+        <Button  onClick={handleBack}>
           Atrás
         </Button>
         <Button
           variant="contained"
           color="primary"
           onClick={handleConfirm}
+          disabled={isLoading}
+          className={isLoading ? "button-loading" : ""} 
         >
-          Confirmar
+          {isLoading ? "Tranfiriendo..." : "Confirmar" }
         </Button>
       </Box>
     </Box>

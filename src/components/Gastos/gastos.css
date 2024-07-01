@@ -40,10 +40,6 @@
     justify-self: center; 
 }
 
-.custom-textfield .MuiInputLabel-root,
-.custom-formcontrol .MuiInputLabel-root {
-
-}
 
 .custom-textfield .MuiInputBase-root input {
     color: #1565c0 !important; 
@@ -58,7 +54,7 @@
 }
 
 .custom-formcontrol .MuiInputBase-root {
-    background-color: transparent; 
+    background-color: #f8f8f8;  
 }
 
 .custom-formcontrol .MuiInputBase-root input {
