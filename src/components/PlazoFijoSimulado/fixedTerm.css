@@ -74,3 +74,97 @@
 #input{
   text-align: left;
 }
+
+.box-popup{
+  width: 600px;
+  height: 140px;
+  border-radius: 30px;
+}
+
+#alert-dialog-title{
+  display: flex;
+  justify-content: center;
+}
+
+.titulo-resumen-plazo-fijo{
+  font-size:20px;
+  text-align: center;
+  color: #ffffff;
+
+  border-radius: 15px;
+  background-color: #9fc2f6;
+  width: 300px;
+ 
+  padding:10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+
+  
+}
+
+.popup-text-box{
+  display:flex;
+  flex-direction: column;
+  gap:12px;
+  
+}
+
+.popup-text{
+  font-size: 20px;
+  border-radius: 15px;
+  
+  width: 336px;
+  padding-left: 11px;
+  padding-right: 10px;
+
+  background-color: #d3e0ea;
+
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.popup-text:nth-child(odd){
+  color: #1565C0;
+  
+}
+
+.popup-text:nth-child(even){
+  color:#ffffff;
+  background-color: #2cabf3;
+}
+
+.all-popup-box{
+  display: flex;
+  align-items: center;
+  gap:34px;
+}
+
+.popup-plazo-box{
+  color: #1565C0;
+  font-size: 24px;
+
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #d3e0ea;
+  border-radius: 30px;
+
+  margin-left: 0px;
+  padding: 20px;
+  
+}
+
+#popup-plazo-meses{
+  font-size: 12px;
+  width: 140px;
+}
+
+.popup-botones{
+  display:flex;
+  justify-content: space-between;
+  gap:120px;
+  padding: 20px;
+}
+

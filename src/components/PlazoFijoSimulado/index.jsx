@@ -234,6 +234,21 @@ export default function PlazoFijoSimulado() {
     },
   });
 
+  const CustomButtonSecundario = styled(Button)({
+    backgroundColor: "#2CABF3",
+    color: "white",
+    width: 216,
+    height: 56,
+    "&:hover": {
+      backgroundColor: "#2CABF3",
+      border: "3px solid #2CABF3",
+    },
+    "&:focus": {
+      backgroundColor: "#2CABF3",
+      outline: "none",
+    },
+  });
+
   const StyledArrowRightIcon = styled(ArrowRightIcon)`
     color: #0d99ff;
   `;
@@ -260,36 +275,39 @@ export default function PlazoFijoSimulado() {
         id="box-secundario"
         onSubmit={handleSubmit}
       >
-        {/* Cuentas */}
-        <div>
-          <FormControl
-            sx={{
-              m: 1,
-              minWidth: 216,
-              minHeight: 48,
-              "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "transparent" },
-                "&:hover fieldset": { borderColor: "transparent" },
-                "&.Mui-focused fieldset": { borderColor: "#0D99FF" },
-              },
-            }}
-            className="white-select"
-          >
-            <Select value={cuenta} onChange={handleCuenta}>
-              {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
-              {status === "succeeded" &&
-                accounts.map((account) => (
-                  <MenuItem key={account.id} value={account.id}>
-                    {account.accountType + " " + account.currency}
-                  </MenuItem>
-                ))}
-              {status === "failed" && (
-                <MenuItem>Error al cargar cuentas</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        </div>
+       {/* Cuentas */}
+<div>
+  <FormControl
+    sx={{
+      m: 1,
+      minWidth: 216,
+      minHeight: 48,
+      "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
+      "& .MuiOutlinedInput-root": {
+        "& fieldset": { borderColor: "transparent" },
+        "&:hover fieldset": { borderColor: "transparent" },
+        "&.Mui-focused fieldset": { borderColor: "#0D99FF" },
+      },
+    }}
+    className="white-select"
+  >
+    <Select value={cuenta} onChange={handleCuenta}>
+      {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
+      {status === "succeeded" &&
+        accounts.map((account) => (
+          <MenuItem key={account.id} value={account.id}>
+            {account.accountType === "CAJA_AHORRO"
+              ? "Caja de Ahorro"
+              : account.accountType === "CUENTA_CORRIENTE"
+              ? "Cuenta Corriente"
+              : account.accountType}{" "}
+            {account.currency}
+          </MenuItem>
+        ))}
+      {status === "failed" && <MenuItem>Error al cargar cuentas</MenuItem>}
+    </Select>
+  </FormControl>
+</div>
 
         {/* Monto a invertir */}
         <div>
@@ -384,41 +402,58 @@ export default function PlazoFijoSimulado() {
             Simular <StyledArrowRightIcon />
           </CustomButton>
           <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Resumen del Plazo Fijo"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {simulationResult && (
-                  <>
-                    <p>Capital Invertido: {simulationResult.invertedAmount}</p>
-                    <p>Intereses Ganados: {simulationResult.gainedInterest}</p>
-                    <p>Taza de interes: 0.2%</p>
-                    <p>
-                      Plazo: {fechaInicial.date()} de{" "}
-                      {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
-                      {simulationResult.closingDate.split("/")[0]} de{" "}
-                      {obtenerNombreDelMes(
-                        parseInt(simulationResult.closingDate.split("/")[1], 10)
-                      )}
-                    </p>
-                    <p>{dias} días</p>
-                  </>
-                )}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <CustomButton onClick={handleClose}>Cancelar</CustomButton>
-              <CustomButton onClick={handleCreate} autoFocus>
-                Crear
-              </CustomButton>
-            </DialogActions>
-          </Dialog>
+  open={open}
+  onClose={handleClose}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+>
+  <DialogTitle id="alert-dialog-title">
+    <p className="titulo-resumen-plazo-fijo">Resumen del Plazo Fijo</p>
+  </DialogTitle>
+  <DialogContent className="box-popup">
+    <DialogContentText id="alert-dialog-description">
+      {simulationResult && (
+        <span className="all-popup-box">
+          <article className="popup-text-box">
+            <span className="popup-text">
+              <p>Capital Invertido:</p>
+              <p>
+                $ {new Intl.NumberFormat('de-DE').format(simulationResult.invertedAmount)}
+              </p>
+            </span>
+            <span className="popup-text">
+              <p>Intereses Ganados:</p>
+              <p>
+                $ {parseFloat(simulationResult.gainedInterest).toFixed(2).replace('.00', '').replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+              </p>
+            </span>
+            <span className="popup-text">
+              <p>Taza de interes:</p>
+              <p>0,2%</p>
+            </span>
+          </article>
+
+          <span className="popup-plazo-box">
+            <p>{dias} días</p>
+            <p id="popup-plazo-meses">
+              {fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
+              {simulationResult.closingDate.split("/")[0]} de{" "}
+              {obtenerNombreDelMes(parseInt(simulationResult.closingDate.split("/")[1], 10))}
+            </p>
+          </span>
+        </span>
+      )}
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <span className="popup-botones">
+      <CustomButtonSecundario onClick={handleClose}>Cancelar</CustomButtonSecundario>
+      <CustomButton onClick={handleCreate} autoFocus>
+        Crear
+      </CustomButton>
+    </span>
+  </DialogActions>
+</Dialog>
         </div>
       </Box>
       <p className="aviso">
