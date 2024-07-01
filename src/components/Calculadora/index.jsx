@@ -115,7 +115,7 @@ const Calculadora = () => {
                 <button
                   key={button.label}
                   className={`calculator-button ${button.type === 'operator' ? 'operator' : ''} ${button.label === '=' ? 'equal' : ''} ${button.label === 'AC' || button.label === 'backspace' ? 'clear backspace' : ''} ${button.type === 'number' ? 'number' : ''}`}
-                  onClick={() => handleButtonClick('1')}
+                  onClick={() => handleButtonClick(button.label)}
                 >
                   {button.label === 'backspace' ? <FaBackspace /> : button.label}
                 </button>
