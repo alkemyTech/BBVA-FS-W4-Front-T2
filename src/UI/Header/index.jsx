@@ -110,7 +110,7 @@ function Header({ logout, setLogout }) { // Recibe logout y setLogout como props
           {userName ? (
             <Box sx={{ flexGrow: 0 }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={userName} src="/static/images/avatar/2.jpg" />
+                <Avatar sx={{ backgroundColor: "#0d99ff" }} alt={userName} src="/static/images/avatar/2.jpg" />
               </IconButton>
               <Menu
                 sx={{ mt: "45px" }}
