@@ -24,11 +24,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAccounts } from "../../Redux/slice/accountSlice";
+import Checkbox from '@mui/material/Checkbox';
 import "./fixedTerm.css";
 
 import Bubble from "../Calculadora";
 
 export default function PlazoFijoSimulado() {
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   const dispatch = useDispatch();
   const accounts = useSelector((state) => state.account.accounts);
   const status = useSelector((state) => state.account.status);
@@ -66,12 +68,15 @@ export default function PlazoFijoSimulado() {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  const [cuenta, setCuenta] = useState("");
+  const defaultAccount = accounts.length > 0 ? accounts[0].id : "";
+const [cuenta, setCuenta] = useState(defaultAccount);
   const [monto, setMonto] = useState("");
   const [fechaInicial, setFechaInicial] = useState(dayjs());
   const [dias, setDias] = useState(30);
   const [errorMonto, setErrorMonto] = useState(false);
+  const [errorDias, setErrorDias] = useState(false);
   const [simulationResult, setSimulationResult] = useState(null);
+
 
   const handleCuenta = async (event) => {
     const value = event.target.value;
@@ -118,7 +123,17 @@ export default function PlazoFijoSimulado() {
   };
 
   const handleFechaInicial = (event) => setFechaInicial(event.target.value);
-  const handleChangeDias = (event) => setDias(event.target.value);
+  const handleChangeDias = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setDias(value); // Actualiza el estado de días
+  
+    // Validación: muestra error si el número de días es menor que 30
+    if (value < 30) {
+      setErrorDias(true);
+    } else {
+      setErrorDias(false);
+    }
+  };
 
   const transformaFecha = (fecha) => {
     const { $M } = fecha;
@@ -139,25 +154,27 @@ export default function PlazoFijoSimulado() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
     const montoNumber = parseInt(monto.replace(/\./g, ""), 10);
     if (!montoNumber || montoNumber < 500) {
       setErrorMonto(true);
       return;
     }
-
+  
     const creationDate = transformaFecha(fechaInicial);
     const closingDateCal = fechaInicial.add(dias, "day");
     const closingDate = transformaFecha(closingDateCal);
-
+  
     const montoSinPuntos = monto.replace(/\./g, "");
     const invertedAmount = parseFloat(montoSinPuntos);
-
+  
     const formData = {
       invertedAmount,
       creationDate,
       closingDate,
+      accountId: cuenta, // Incluye la cuenta seleccionada en formData
     };
-
+  
     try {
       const response = await fetch("http://localhost:8080/fixedTerm/simulate", {
         method: "POST",
@@ -167,7 +184,7 @@ export default function PlazoFijoSimulado() {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setSimulationResult(data);
@@ -180,7 +197,6 @@ export default function PlazoFijoSimulado() {
       console.error("Error al simular plazo fijo:", error);
     }
   };
-
   const handleCreate = async () => {
     const creationDate = transformaFecha(fechaInicial);
     const closingDateCal = fechaInicial.add(dias, "day");
@@ -234,6 +250,21 @@ export default function PlazoFijoSimulado() {
     },
   });
 
+  const CustomButtonSecundario = styled(Button)({
+    backgroundColor: "#2CABF3",
+    color: "white",
+    width: 216,
+    height: 56,
+    "&:hover": {
+      backgroundColor: "#2CABF3",
+      border: "3px solid #2CABF3",
+    },
+    "&:focus": {
+      backgroundColor: "#2CABF3",
+      outline: "none",
+    },
+  });
+
   const StyledArrowRightIcon = styled(ArrowRightIcon)`
     color: #0d99ff;
   `;
@@ -260,36 +291,40 @@ export default function PlazoFijoSimulado() {
         id="box-secundario"
         onSubmit={handleSubmit}
       >
-        {/* Cuentas */}
-        <div>
-          <FormControl
-            sx={{
-              m: 1,
-              minWidth: 216,
-              minHeight: 48,
-              "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "transparent" },
-                "&:hover fieldset": { borderColor: "transparent" },
-                "&.Mui-focused fieldset": { borderColor: "#0D99FF" },
-              },
-            }}
-            className="white-select"
-          >
-            <Select value={cuenta} onChange={handleCuenta}>
-              {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
-              {status === "succeeded" &&
-                accounts.map((account) => (
-                  <MenuItem key={account.id} value={account.id}>
-                    {account.accountType + " " + account.currency}
-                  </MenuItem>
-                ))}
-              {status === "failed" && (
-                <MenuItem>Error al cargar cuentas</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        </div>
+       {/* Cuentas */}
+<div>
+  <FormControl
+    sx={{
+      m: 1,
+      minWidth: 216,
+      minHeight: 48,
+      "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
+      "& .MuiOutlinedInput-root": {
+        "& fieldset": { borderColor: "transparent" },
+        "&:hover fieldset": { borderColor: "transparent" },
+        "&.Mui-focused fieldset": { borderColor: "#0D99FF" },
+      },
+    }}
+    className="white-select"
+  >
+    <Select value={cuenta} onChange={handleCuenta}>
+      {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
+      {status === "succeeded" &&
+        accounts.map((account) => (
+          <MenuItem key={account.id} value={account.id}>
+            {account.accountType === "CAJA_AHORRO"
+              ? "Caja de Ahorro"
+              : account.accountType === "CUENTA_CORRIENTE"
+              ? "Cuenta Corriente"
+              : account.accountType}{" "}
+            {account.currency}
+          </MenuItem>
+        ))}
+      {status === "failed" && <MenuItem>Error al cargar cuentas</MenuItem>}
+      
+    </Select>
+  </FormControl>
+</div>
 
         {/* Monto a invertir */}
         <div>
@@ -375,8 +410,14 @@ export default function PlazoFijoSimulado() {
               },
             }}
             className="white-select"
-          ></TextField>
+          >
+            
+
+          </TextField>
+          
         </div>
+
+        {/* Terminos y Condiciones */}
 
         {/* Boton simular */}
         <div>
@@ -384,41 +425,60 @@ export default function PlazoFijoSimulado() {
             Simular <StyledArrowRightIcon />
           </CustomButton>
           <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Resumen del Plazo Fijo"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {simulationResult && (
-                  <>
-                    <p>Capital Invertido: {simulationResult.invertedAmount}</p>
-                    <p>Intereses Ganados: {simulationResult.gainedInterest}</p>
-                    <p>Taza de interes: 0.2%</p>
-                    <p>
-                      Plazo: {fechaInicial.date()} de{" "}
-                      {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
-                      {simulationResult.closingDate.split("/")[0]} de{" "}
-                      {obtenerNombreDelMes(
-                        parseInt(simulationResult.closingDate.split("/")[1], 10)
-                      )}
-                    </p>
-                    <p>{dias} días</p>
-                  </>
-                )}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <CustomButton onClick={handleClose}>Cancelar</CustomButton>
-              <CustomButton onClick={handleCreate} autoFocus>
-                Crear
-              </CustomButton>
-            </DialogActions>
-          </Dialog>
+  open={open}
+  onClose={handleClose}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+>
+  <DialogTitle id="alert-dialog-title">
+    <p className="titulo-resumen-plazo-fijo">Resumen del Plazo Fijo</p>
+  </DialogTitle>
+  <DialogContent className="box-popup">
+    <DialogContentText id="alert-dialog-description">
+      {simulationResult && (
+        <span className="all-popup-box">
+          <article className="popup-text-box">
+            <span className="popup-text">
+              <p>Capital Invertido:</p>
+              <p>
+                $ {new Intl.NumberFormat('de-DE').format(simulationResult.invertedAmount)}
+              </p>
+            </span>
+            <span className="popup-text">
+              <p>Intereses Ganados:</p>
+              <p>
+                $ {parseFloat(simulationResult.gainedInterest).toFixed(2).replace('.00', '').replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+              </p>
+            </span>
+            <span className="popup-text">
+              <p>Taza de interes:</p>
+              <p>0,2%</p>
+            </span>
+          </article>
+
+          <span className="popup-plazo-box">
+            <p>{dias} días</p>
+            <p id="popup-plazo-meses">
+              {fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
+              {simulationResult.closingDate.split("/")[0]} de{" "}
+              {obtenerNombreDelMes(parseInt(simulationResult.closingDate.split("/")[1], 10))}
+            </p>
+          </span>
+        </span>
+      )}
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <div className="popup-botones">
+      <CustomButtonSecundario onClick={handleClose}>Cancelar</CustomButtonSecundario>
+      <CustomButton onClick={handleCreate} autoFocus>
+        
+        Crear
+      </CustomButton>
+      
+    </div>
+  </DialogActions>
+</Dialog>
         </div>
       </Box>
       <p className="aviso">

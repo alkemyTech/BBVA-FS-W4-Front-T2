@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import ContactsIcon from "@mui/icons-material/Contacts";
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 const IngresarCBU = ({
   cbu,
@@ -58,7 +58,7 @@ const IngresarCBU = ({
       });
 
       if (response.ok) {
-        enqueueSnackbar('Contacto guardado con éxito', { variant: 'success' });
+        enqueueSnackbar("Contacto guardado con éxito", { variant: "success" });
         handleClose();
       } else {
         throw new Error("Error al guardar el contacto");
@@ -78,27 +78,26 @@ const IngresarCBU = ({
         onChange={handleCBUChange}
         inputProps={{ maxLength: 22 }}
         sx={{
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: '#1565c0',
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "#1565c0",
             },
-            '&:hover fieldset': {
-              borderColor: '#1565c0',
+            "&:hover fieldset": {
+              borderColor: "#1565c0",
             },
-            '&.Mui-focused fieldset': {
-              borderColor: '#1565c0',
+            "&.Mui-focused fieldset": {
+              borderColor: "#1565c0",
             },
           },
-          '& .MuiInputLabel-root': {
-            color: '#1565c0',
+          "& .MuiInputLabel-root": {
+            color: "#1565c0",
           },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: '#1565c0',
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#1565c0",
           },
-           '& .MuiInputBase-root input': {
-              color: '#1565c0',
-          }
-         
+          "& .MuiInputBase-root input": {
+            color: "#1565c0",
+          },
         }}
       />
       {error && (
@@ -148,14 +147,53 @@ const IngresarCBU = ({
             <Typography
               variant="h5"
               component="span"
-              style={{ fontWeight: "bold", marginLeft: 10, fontSize: "1.5rem", marginBottom: 5 }}
+              style={{
+                fontWeight: "bold",
+                marginLeft: 10,
+                fontSize: "1.5rem",
+                marginBottom: 5,
+              }}
             >
               Guardar Contacto
             </Typography>
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              marginTop: 2,
+            }}
+          >
+            <div style={{ display: "flex", gap: 10 }}>
+              <Typography
+                variant="h4"
+                component="span"
+                style={{
+                  fontWeight: "bold",
+                  marginLeft: 10,
+                  fontSize: "1.5rem",
+                  marginBottom: 5,
+                  marginRight: 10,
+                }}
+              >
+                CBU
+              </Typography>
+              <Typography
+                variant="h5"
+                style={{
+                  marginLeft: 10,
+                  fontSize: "1.5rem",
+                  marginBottom: 5,
+                  marginRight: 10,
+                }}
+              >
+                {cbu}
+              </Typography>
+            </div>
+
             <TextField
               label="Nombre"
               variant="outlined"
@@ -193,4 +231,3 @@ const IngresarCBU = ({
 };
 
 export default IngresarCBU;
-   
