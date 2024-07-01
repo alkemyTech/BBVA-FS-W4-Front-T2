@@ -1,11 +1,15 @@
 import { Typography } from "@mui/material";
 import React from "react";
+import imageNotFounMeow from "../../../assets/gato404.svg"
 
 export default function PageNotFound() {
   return (
     <>
-      <Typography variant="h3">Error 404: Página no encontrada</Typography>
-      <Typography variant="h4">Lo sentimos, la pagina que estas buscando no existe</Typography>
+      <img
+              src={imageNotFounMeow}
+            style={{ width: "1750px"}}
+       />
+      
     </>
   );
 }

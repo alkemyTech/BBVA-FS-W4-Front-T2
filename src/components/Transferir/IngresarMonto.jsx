@@ -15,6 +15,28 @@ const IngresarMonto = ({ amount, handleAmountChange, handleNext, handleBack, err
             <InputAdornment position="start">$</InputAdornment>
           ),
         }}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#1565c0',
+            },
+            '&:hover fieldset': {
+              borderColor: '#1565c0',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#1565c0',
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#1565c0',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#1565c0',
+          },
+           '& .MuiInputBase-root input': {
+              color: '#1565c0',
+          }
+        }}
       />
       {error && (
         <Typography color="error" variant="body2" sx={{ mt: 1 }}>
@@ -28,7 +50,7 @@ const IngresarMonto = ({ amount, handleAmountChange, handleNext, handleBack, err
           justifyContent: 'space-between',
         }}
       >
-        <Button variant="contained" onClick={handleBack}>
+        <Button  onClick={handleBack}>
           Atrás
         </Button>
         <Button

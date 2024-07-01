@@ -23,6 +23,7 @@ import IngresarMonto from "./IngresarMonto";
 import ConfirmarTransferencia from "./ConfirmarTransferencia";
 import TransferenciaExitosa from "./TransferenciaExitosa";
 import Bubble from "../Calculadora"
+import "./transferir.css"
 
 const Transferir = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -37,10 +38,10 @@ const Transferir = () => {
   const [error, setError] = useState("");
   const [openSaveContactDialog, setOpenSaveContactDialog] = useState(false);
   const [newContactName, setNewContactName] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Estado de carga
 
   const account = useSelector((state) => state.account);
   const arsAccount = account.accounts.find((acc) => acc.currency === "ARS");
-
 
   const handleSelectContact = async (contact) => {
     setTransferData({ ...transferData, cbu: contact.cbu });
@@ -168,6 +169,7 @@ const Transferir = () => {
   };
 
   const handleConfirm = async () => {
+    setIsLoading(true); // Activar estado de carga
     try {
       const accountId = arsAccount.id;
       const newToken = await updateTokenForAccount(accountId);
@@ -197,6 +199,8 @@ const Transferir = () => {
       }
     } catch (error) {
       setError("Error al realizar la transferencia. Intente nuevamente.");
+    } finally {
+      setIsLoading(false); // Desactivar estado de carga
     }
   };
 
@@ -310,14 +314,13 @@ const Transferir = () => {
                 transferData={transferData}
                 handleBack={handleBack}
                 handleConfirm={handleConfirm}
+                isLoading={isLoading} // Pasar estado de carga
               />
             )}
             {activeStep === 4 && (
               <TransferenciaExitosa handleReset={handleReset} />
             )}
           </Box>
-         
-          
         </CardContent>
       </Card>
       <Bubble/>

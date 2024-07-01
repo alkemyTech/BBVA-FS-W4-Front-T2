@@ -20,6 +20,9 @@ import ArrowDownwardOutlined from "@mui/icons-material/ArrowDownwardOutlined";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import { fetchAccounts} from "../../Redux/slice/accountSlice";
 import { SnackbarProvider, useSnackbar } from 'notistack';
+import NoTransactionsImage from "../../assets/gatoSinDineroCeleste.svg";
+
+
 const transactionTypeTranslations = {
   INCOME: "Ingreso",
   PAYMENT: "Pago",
@@ -216,9 +219,19 @@ export default function Home() {
           </Card>
         </Grid>
       </Grid>
-
-      <TableContainer style={{ marginTop: "10vh" }} className="table-container">
-        <Table className="table">
+      {data.accountTransactions.length === 0 ? (
+          <div>
+            
+            <img
+              src={NoTransactionsImage}
+              alt="No hay transacciones"
+              style={{ width: "550px", alignContent: "center" }}
+            />
+            <Typography variant="h4" color={"#1565c0"} sx={{fontfamily: 'Segoe UI'}}>Aún no hay transacciones</Typography>
+          </div>
+        ) : (
+          <TableContainer style={{ marginTop: "10vh" }} className="table-container">
+          <Table className="table">
           <TableHead>
             <TableRow>
               <TableCell>Fecha</TableCell>
@@ -260,6 +273,7 @@ export default function Home() {
           </TableBody>
         </Table>
       </TableContainer>
+    )}
       <Bubble/>
     </div>
   );

@@ -245,10 +245,6 @@ const Deposito = () => {
   );
 };
 
-export default function IntegrationNotistack() {
-  return (
-    <SnackbarProvider maxSnack={3}>
-      <Deposito />
-    </SnackbarProvider>
-  );
-}
+export default  Deposito ;
+
+
