@@ -30,7 +30,7 @@ const ConfirmarTransferencia = ({ transferData,  handleBack, handleConfirm, isLo
           justifyContent: "space-between",
         }}
       >
-        <Button variant="contained" onClick={handleBack}>
+        <Button  onClick={handleBack}>
           Atrás
         </Button>
         <Button

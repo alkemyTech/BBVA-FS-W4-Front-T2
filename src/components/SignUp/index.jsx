@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -28,11 +28,15 @@ import { useNavigate } from "react-router-dom";
 import CatLoader from "../../UI/CatLoader/catLoader";
 import "./signUp.css";
 
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { esES } from "@mui/x-date-pickers/locales";
+import dayjs from "dayjs";
 
 export default function Registro() {
   const user = useSelector((state) => state.user);
   const { id, userName, firstName, lastName } = user;
-  const [birthDate, setBirthDate] = useState("");
+  const [birthDate, setBirthDate] = useState(null);
   const [dni, setDni] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -73,7 +77,6 @@ export default function Registro() {
   const handleRegistro = async (event) => {
     event.preventDefault();
     setIsSubmitted(true);
-
     if (
       !firstName ||
       !lastName ||
@@ -95,7 +98,6 @@ export default function Registro() {
       setErrorMessage("Todos los campos son necesarios");
       return;
     }
-
     if (password !== confirmPassword) {
       setError({
         password: true,
@@ -108,11 +110,12 @@ export default function Registro() {
     setIsLoading(true); // Activar el estado de carga
 
     try {
+      const formattedBirthDate = dayjs(birthDate).format("YYYY-MM-DD"); // Adjust the format as needed
       const data = await register(
         userName,
         firstName,
         lastName,
-        birthDate,
+        formattedBirthDate,
         password,
         dni
       );
@@ -129,6 +132,14 @@ export default function Registro() {
       navigate("/home");
     } catch (error) {
       if (error.response) {
+        setError({
+          userName: true,
+          password: true,
+          dni: true,
+          firstName: true,
+          lastName: true,
+          birthDate: true,
+        });
         setError({
           userName: true,
           password: true,
@@ -196,7 +207,7 @@ export default function Registro() {
         }}
       >
         <Grid container>
-          <Grid item xs={12} md={6} sx={{ padding: 3 }}>
+          <Grid item xs={12} md={6} sx={{ padding: 3}}>
             <Typography variant="h4" component="h1" gutterBottom>
               Registro
             </Typography>
@@ -223,14 +234,31 @@ export default function Registro() {
               fullWidth
               margin="normal"
             />
-            <TextField
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              error={isSubmitted && error.birthDate}
-              fullWidth
-              margin="normal"
-            />
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale="es"
+              localeText={
+                esES.components.MuiLocalizationProvider.defaultProps.localeText
+              }
+            >
+                  <DatePicker sx={{width:'100%'}}
+                    label="Fecha de Nacimiento"
+                    value={birthDate}
+                    onChange={(newValue) => setBirthDate(newValue)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        
+                        margin="normal"
+                        error={isSubmitted && error.birthDate}
+                      />
+                    )}
+                    format="DD/MM/YYYY"
+                    maxDate={dayjs()}
+                    fullWidth
+                  />
+               
+            </LocalizationProvider>
             <TextField
               label="DNI"
               value={dni}
