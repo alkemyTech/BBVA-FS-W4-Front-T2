@@ -161,10 +161,10 @@
   width: 140px;
 }
 
-.popup-botones{
-  display:flex;
+.popup-botones {
+  display: flex;
   justify-content: space-between;
-  gap:120px;
+  gap: 120px;
   padding: 20px;
 }
 

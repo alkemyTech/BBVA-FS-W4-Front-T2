@@ -24,11 +24,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAccounts } from "../../Redux/slice/accountSlice";
+import Checkbox from '@mui/material/Checkbox';
 import "./fixedTerm.css";
 
 import Bubble from "../Calculadora";
 
 export default function PlazoFijoSimulado() {
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   const dispatch = useDispatch();
   const accounts = useSelector((state) => state.account.accounts);
   const status = useSelector((state) => state.account.status);
@@ -66,12 +68,14 @@ export default function PlazoFijoSimulado() {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  const [cuenta, setCuenta] = useState("");
+  const defaultAccount = accounts.length > 0 ? accounts[0].id : "";
+const [cuenta, setCuenta] = useState(defaultAccount);
   const [monto, setMonto] = useState("");
   const [fechaInicial, setFechaInicial] = useState(dayjs());
   const [dias, setDias] = useState(30);
   const [errorMonto, setErrorMonto] = useState(false);
   const [simulationResult, setSimulationResult] = useState(null);
+
 
   const handleCuenta = async (event) => {
     const value = event.target.value;
@@ -139,25 +143,27 @@ export default function PlazoFijoSimulado() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
     const montoNumber = parseInt(monto.replace(/\./g, ""), 10);
     if (!montoNumber || montoNumber < 500) {
       setErrorMonto(true);
       return;
     }
-
+  
     const creationDate = transformaFecha(fechaInicial);
     const closingDateCal = fechaInicial.add(dias, "day");
     const closingDate = transformaFecha(closingDateCal);
-
+  
     const montoSinPuntos = monto.replace(/\./g, "");
     const invertedAmount = parseFloat(montoSinPuntos);
-
+  
     const formData = {
       invertedAmount,
       creationDate,
       closingDate,
+      accountId: cuenta, // Incluye la cuenta seleccionada en formData
     };
-
+  
     try {
       const response = await fetch("http://localhost:8080/fixedTerm/simulate", {
         method: "POST",
@@ -167,7 +173,7 @@ export default function PlazoFijoSimulado() {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setSimulationResult(data);
@@ -180,7 +186,6 @@ export default function PlazoFijoSimulado() {
       console.error("Error al simular plazo fijo:", error);
     }
   };
-
   const handleCreate = async () => {
     const creationDate = transformaFecha(fechaInicial);
     const closingDateCal = fechaInicial.add(dias, "day");
@@ -305,6 +310,7 @@ export default function PlazoFijoSimulado() {
           </MenuItem>
         ))}
       {status === "failed" && <MenuItem>Error al cargar cuentas</MenuItem>}
+      
     </Select>
   </FormControl>
 </div>
@@ -396,6 +402,8 @@ export default function PlazoFijoSimulado() {
           ></TextField>
         </div>
 
+        {/* Terminos y Condiciones */}
+
         {/* Boton simular */}
         <div>
           <CustomButton variant="outlined" onClick={handleSubmit}>
@@ -446,12 +454,14 @@ export default function PlazoFijoSimulado() {
     </DialogContentText>
   </DialogContent>
   <DialogActions>
-    <span className="popup-botones">
+    <div className="popup-botones">
       <CustomButtonSecundario onClick={handleClose}>Cancelar</CustomButtonSecundario>
       <CustomButton onClick={handleCreate} autoFocus>
+        
         Crear
       </CustomButton>
-    </span>
+      
+    </div>
   </DialogActions>
 </Dialog>
         </div>
