@@ -35,6 +35,8 @@ const Movimientos = () => {
     (state) => state.transactions
   );
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [filters, setFilters] = useState({
     fromDate: null,
     toDate: null,
@@ -43,7 +45,11 @@ const Movimientos = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchTransactions({ page: 0 }));
+    const fetchInitialTransactions = async () => {
+      await dispatch(fetchTransactions({ page: 0 }));
+      setIsInitialLoading(false);
+    };
+    fetchInitialTransactions();
   }, [dispatch]);
 
   const getIcon = (type) => {
@@ -112,8 +118,9 @@ const Movimientos = () => {
     });
   };
 
-  const handleApplyFilters = () => {
-    dispatch(
+  const handleApplyFilters = async () => {
+    setIsProcessing(true);
+    await dispatch(
       fetchTransactions({
         page: 0,
         fromDate: filters.fromDate ? filters.fromDate.format("YYYY-MM-DD") : "",
@@ -122,16 +129,16 @@ const Movimientos = () => {
         currency: filters.currency,
       })
     );
+    setIsProcessing(false);
   };
 
   const handlePageChange = (event, value) => {
     dispatch(fetchTransactions({ page: value - 1, ...filters }));
   };
 
-  if (status === "loading") {
+  if (isInitialLoading) {
     return <CatLoader />;
   }
-
   if (status === "failed") {
     return <Typography color="error">{error}</Typography>;
   }
@@ -226,14 +233,15 @@ const Movimientos = () => {
             </TextField>
           </Grid>
           <Grid item xs={12} >
-            <Button
+          <Button
               variant="contained"
               color="primary"
               onClick={handleApplyFilters}
               fullWidth
-              
+              disabled={isProcessing}
+              className={`button-registrar ${isProcessing ? 'button-loading' : ''}`}
             >
-              Aplicar Filtros
+              {isProcessing ? 'Procesando...' : 'Aplicar Filtros'}
             </Button>
           </Grid>
         </Grid>
@@ -259,7 +267,7 @@ const Movimientos = () => {
           <Box
             sx={{
               overflow: "auto",
-              minHeight: 400,
+              minHeight: 525,
               maxHeight: 525,
               width: 850,
               borderRadius: "10px",

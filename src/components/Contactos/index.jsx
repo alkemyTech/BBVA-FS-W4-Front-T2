@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, CircularProgress } from "@mui/material";
 
 const Contactos = ({ handleSelectContact, handleBack }) => {
   const [contactList, setContactList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -22,6 +23,8 @@ const Contactos = ({ handleSelectContact, handleBack }) => {
         setContactList(data);
       } catch (error) {
         console.error("Error fetching contacts:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -34,26 +37,34 @@ const Contactos = ({ handleSelectContact, handleBack }) => {
 
   return (
     <Box sx={{ mt: 2 }}>
-      <Box
-        sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 1, justifyContent:"center" }}
-      >
-        {contactList.map((contact) => (
-          <Button
-            key={contact.id}
-            variant="contained"
-            onClick={() => handleContactSelection(contact)}
-            sx={{ m: 1 }} // Añade margen alrededor de cada botón
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Box
+            sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 1, justifyContent:"center" }}
           >
-            {contact.name} - {contact.cbu}
-          </Button>
-        ))}
-      </Box>
+            {contactList.map((contact) => (
+              <Button
+                key={contact.id}
+                variant="contained"
+                onClick={() => handleContactSelection(contact)}
+                sx={{ m: 1 }} 
+              >
+                {contact.name} - {contact.cbu}
+              </Button>
+            ))}
+          </Box>
 
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-start" }}>
-        <Button variant="outlined" onClick={handleBack}>
-          Atrás
-        </Button>
-      </Box>
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-start" }}>
+            <Button variant="outlined" onClick={handleBack}>
+              Atrás
+            </Button>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
