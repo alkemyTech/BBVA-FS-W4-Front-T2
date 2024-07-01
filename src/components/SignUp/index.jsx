@@ -74,7 +74,6 @@ export default function Registro() {
   const handleRegistro = async (event) => {
     event.preventDefault();
     setIsSubmitted(true);
-
     if (
       !firstName ||
       !lastName ||
@@ -96,7 +95,6 @@ export default function Registro() {
       setErrorMessage("Todos los campos son necesarios");
       return;
     }
-
     if (password !== confirmPassword) {
       setError({
         password: true,
@@ -105,13 +103,13 @@ export default function Registro() {
       setErrorMessage("Las contraseñas no coinciden");
       return;
     }
-
     try {
+      const formattedBirthDate = dayjs(birthDate).format("YYYY-MM-DD"); // Adjust the format as needed
       const data = await register(
         userName,
         firstName,
         lastName,
-        birthDate,
+        formattedBirthDate,
         password,
         dni
       );
