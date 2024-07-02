@@ -4,6 +4,7 @@ import { Box, Grid, Typography, Paper, Button } from "@mui/material";
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { useNavigate } from "react-router-dom";
 import NoTransactionsImage from "../../assets/gatoSinDineroCeleste.svg";
+import Bubble from "../Calculadora"
 
 const ListaPlazos = () => {
     const [plazosFijos, setPlazosFijos] = useState([]);
@@ -165,8 +166,12 @@ const ListaPlazos = () => {
                     )}
                 </Box>
             </Grid>
+            <Bubble/>
         </Grid>
+       
     );
+
+     
 };
 
 export default ListaPlazos;

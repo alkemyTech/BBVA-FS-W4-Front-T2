@@ -3,6 +3,7 @@
   width: 550px;
   border-radius: 12px;
   font-family: roboto;
+  background-image: url(/src/assets/fondoMisCuentas.svg);
 }
 
 .titulo-cuentas{
