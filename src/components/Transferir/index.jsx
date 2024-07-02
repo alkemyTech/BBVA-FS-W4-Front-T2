@@ -24,6 +24,7 @@ import ConfirmarTransferencia from "./ConfirmarTransferencia";
 import TransferenciaExitosa from "./TransferenciaExitosa";
 import Bubble from "../Calculadora"
 import "./transferir.css"
+import fondo from "../../assets/fondoSeleccDestino.svg"
 
 const Transferir = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -251,7 +252,7 @@ const Transferir = () => {
   ];
 
   return (
-    <Box sx={{ display: "grid", placeItems: "center" }}>
+    <Box sx={{ display: "grid", placeItems: "center"}}>
       <Card
         sx={{
           width: "1200px",
@@ -259,6 +260,7 @@ const Transferir = () => {
           justifyContent: "center",
           alignItems: "center",
           color: "#1565c0",
+          backgroundImage: `url(${fondo})`
         }}
       >
         <CardContent>

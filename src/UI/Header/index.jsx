@@ -18,12 +18,12 @@ import { Logout } from "./Logout";
 
 const pages = [
   "Home",
-  "Transferir",
-  "Depositar",
-  "Transacciones",
-  "Inversiones",
   "Mis Cuentas",
-  "Pagos"
+  "Depositar",
+  "Pagos",
+  "Transferir",
+  "Movimientos",
+  "Inversiones",
 ];
 const settings = ["Mis datos", "Cerrar Sesion"];
 

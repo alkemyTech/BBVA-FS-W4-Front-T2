@@ -18,10 +18,9 @@ import MovingIcon from "@mui/icons-material/Moving";
 import ArrowUpwardOutlined from "@mui/icons-material/ArrowUpwardOutlined";
 import ArrowDownwardOutlined from "@mui/icons-material/ArrowDownwardOutlined";
 import CatLoader from "../../UI/CatLoader/catLoader";
-import { fetchAccounts} from "../../Redux/slice/accountSlice";
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { fetchAccounts } from "../../Redux/slice/accountSlice";
+import { SnackbarProvider, useSnackbar } from "notistack";
 import NoTransactionsImage from "../../assets/gatoSinDineroCeleste.svg";
-
 
 const transactionTypeTranslations = {
   INCOME: "Ingreso",
@@ -67,7 +66,7 @@ const getIcon = (type) => {
   }
 };
 
-import Bubble from "../Calculadora"
+import Bubble from "../Calculadora";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -76,7 +75,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,13 +107,13 @@ export default function Home() {
   }, [userId, dispatch]);
 
   useEffect(() => {
-    const message = localStorage.getItem('snackbarMessage');
-    const variant = localStorage.getItem('snackbarVariant');
+    const message = localStorage.getItem("snackbarMessage");
+    const variant = localStorage.getItem("snackbarVariant");
 
     if (message && variant) {
       enqueueSnackbar(message, { variant });
-      localStorage.removeItem('snackbarMessage');
-      localStorage.removeItem('snackbarVariant');
+      localStorage.removeItem("snackbarMessage");
+      localStorage.removeItem("snackbarVariant");
     }
   }, [enqueueSnackbar]);
 
@@ -155,8 +153,13 @@ export default function Home() {
 
   return (
     <div className="HomeContainer">
-      <Grid item xs={12} md={4} className="bienvenido">
-        <Typography variant="h2">¡Hola {userNameHome}!</Typography>
+      <Grid item xs={12} md={4} className="bienvenido" display={"flex"} gap={2}>
+        <Typography variant="h2">
+          Hola
+        </Typography>
+        <Typography variant="h2"  sx={{ fontWeight: "Bold" }} >
+          {userNameHome}
+        </Typography>
       </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
@@ -207,7 +210,7 @@ export default function Home() {
               className="status-card-inner status-card-bg-read"
             >
               <Grid item sx={6}>
-                <Typography variant="h4">Cuenta Plazos Fijos</Typography>
+                <Typography variant="h4">Cuenta Inversiones</Typography>
                 <Typography variant="h5">
                   {formatCurrency(data.totalFixedTermDeposits)}
                 </Typography>
@@ -220,61 +223,69 @@ export default function Home() {
         </Grid>
       </Grid>
       {data.accountTransactions.length === 0 ? (
-          <div>
-            
-            <img
-              src={NoTransactionsImage}
-              alt="No hay transacciones"
-              style={{ width: "550px", alignContent: "center" }}
-            />
-            <Typography variant="h4" color={"#1565c0"} sx={{fontfamily: 'Segoe UI'}}>Aún no hay transacciones</Typography>
-          </div>
-        ) : (
-          <TableContainer style={{ marginTop: "10vh" }} className="table-container">
+        <div>
+          <img
+            src={NoTransactionsImage}
+            alt="No hay transacciones"
+            style={{ width: "550px", alignContent: "center" }}
+          />
+          <Typography
+            variant="h4"
+            color={"#1565c0"}
+            sx={{ fontfamily: "Segoe UI" }}
+          >
+            Aún no hay transacciones
+          </Typography>
+        </div>
+      ) : (
+        <TableContainer
+          style={{ marginTop: "10vh" }}
+          className="table-container"
+        >
           <Table className="table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Fecha</TableCell>
-              <TableCell>Tipo de Transacción</TableCell>
-              <TableCell>Monto</TableCell>
-              <TableCell>CBU / Alias</TableCell>
-              <TableCell>Moneda</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedTransactions.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell>
-                  <b>{formatDate(transaction.transactionDate)}</b>
-                </TableCell>
-                <TableCell style={{ textAlign: "center" }}>
-                  <div style={{ display: "flex"}}>
-                    {getIcon(transaction.type)} &nbsp;
-                    <div style={{ textAlign: "left" }}>
-                      <b>
-                        {transactionTypeTranslations[transaction.type] ||
-                          transaction.type}
-                      </b>
-                    </div>
-                  </div>
-                </TableCell>
-
-                <TableCell>
-                  <b>{formatCurrency(transaction.amount)}</b>
-                </TableCell>
-                <TableCell>
-                  <b>{transaction.originAccountCBU}</b>
-                </TableCell>
-                <TableCell>
-                  <b>{transaction.currency}</b>
-                </TableCell>
+            <TableHead>
+              <TableRow>
+                <TableCell>Fecha</TableCell>
+                <TableCell>Tipo de Transacción</TableCell>
+                <TableCell>Monto</TableCell>
+                <TableCell>CBU / Alias</TableCell>
+                <TableCell>Moneda</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    )}
-      <Bubble/>
+            </TableHead>
+            <TableBody>
+              {sortedTransactions.map((transaction) => (
+                <TableRow key={transaction.id}>
+                  <TableCell>
+                    <b>{formatDate(transaction.transactionDate)}</b>
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
+                    <div style={{ display: "flex" }}>
+                      {getIcon(transaction.type)} &nbsp;
+                      <div style={{ textAlign: "left" }}>
+                        <b>
+                          {transactionTypeTranslations[transaction.type] ||
+                            transaction.type}
+                        </b>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <b>{formatCurrency(transaction.amount)}</b>
+                  </TableCell>
+                  <TableCell>
+                    <b>{transaction.originAccountCBU}</b>
+                  </TableCell>
+                  <TableCell>
+                    <b>{transaction.currency}</b>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      <Bubble />
     </div>
   );
 }

@@ -213,7 +213,7 @@ export default function Login() {
             </Grid>
             <Grid item xs={12}>
               <Box display="flex" justifyContent="space-between" sx={{ mt: 1 }}>
-                <Typography variant="body2">¿Aún no tienes cuenta?</Typography>
+                <Typography variant="body2" sx={{color:"black"}}>¿Aún no tienes cuenta?</Typography>
                 <Link
                   href="/signUp"
                   underline="hover"
