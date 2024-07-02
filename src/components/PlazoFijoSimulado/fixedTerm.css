@@ -6,6 +6,7 @@
   font-style: normal;
   padding: 20px;
   border-radius: 10px;
+  background-image: url(/src/assets/fondoPlazoFijo.svg);
 }
 
 .titulo-plazo-fijo {
@@ -15,14 +16,14 @@
 }
 
 .gray-line-top {
+  margin: auto;
   max-width: 308px;
   height: 0;
-  margin-top: 0;
+  margin-top: 8px;
   border-color: #1565c0;
   margin-bottom: 50px;
   display: flex;
 }
-
 
 .titulos {
   font-size: 20px;
@@ -31,31 +32,11 @@
   flex-direction: row;
   color: #1565c0;
   justify-content: space-around;
-  
+  text-align: lef;
 }
 
-.titulo-secundario{
+.titulo-secundario {
   width: 216px;
-}
-.moneda{
-  text-align: start;
-  margin-left: 30px;
-}
-
-.cuenta{
-  text-align: start;
-}
-
-.montoInvertir{
-  text-align: start;
-}
-
-.fechaInicio{
-  text-align: start;
-}
-
-.diasInvertir{
-  text-align: start;
 }
 
 
@@ -65,12 +46,8 @@
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
+  text-align: start;
 }
-
-#box-secundario > :last-child {
-  margin-top: 40px; 
-}
-
 
 .white-select .MuiSelect-icon {
   color: #0d99ff;
@@ -78,10 +55,13 @@
 }
 
 .aviso {
-  margin: 20px;
+  margin-top: 30px;
+  letter-spacing: 2px;
 }
 
 .gray-line-bottom {
+  margin: auto;
+  margin-top: 25px;
   width: 126.35px;
   height: 0px;
   border-color: #1565c0;
@@ -90,4 +70,131 @@
 .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
   padding-right: 32px;
   color: #1565c0;
+  
+}
+
+#input{
+  text-align: left;
+}
+
+.box-popup{
+  width: 600px;
+  height: auto;
+  border-radius: 30px;
+}
+
+#alert-dialog-title{
+  display: flex;
+  justify-content: center;
+}
+
+.titulo-resumen-plazo-fijo{
+  font-size:20px;
+  text-align: center;
+  color: #ffffff;
+
+  border-radius: 15px;
+  background-color: #9fc2f6;
+  width: 300px;
+ 
+  padding:10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+
+  
+}
+
+.popup-text-box{
+  display:flex;
+  flex-direction: column;
+  gap:12px;
+  
+}
+
+.popup-text{
+  font-size: 20px;
+  border-radius: 15px;
+  
+  width: 336px;
+  padding-left: 11px;
+  padding-right: 10px;
+
+  background-color: #d3e0ea;
+
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.popup-text:nth-child(odd){
+  color: #1565C0;
+  
+}
+
+.popup-text:nth-child(even){
+  color:#ffffff;
+  background-color: #2cabf3;
+}
+
+.all-popup-box{
+  display: flex;
+  align-items: center;
+  gap:34px;
+}
+
+.all-popup-box:last-child{
+}
+
+
+
+.popup-plazo-box{
+  color: #1565C0;
+  font-size: 24px;
+
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #d3e0ea;
+  border-radius: 30px;
+
+  margin-left: 0px;
+  padding: 20px;
+  
+}
+
+#popup-plazo-meses{
+  font-size: 12px;
+  width: 140px;
+}
+
+.terminos-y-condiciones{
+  display:flex;
+  font-size:12px;
+  justify-content: end;
+  margin-top: 10px;
+}
+
+.popup-botones {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.popup-botones:first-child{
+  text-align: center;
+  justify-self: center;
+}
+
+.ayuda{
+  width: 150px;
+  border: 0px;
+  margin-right: 5px;
+}
+
+.css-ypiqx9-MuiDialogContent-root{
+  padding: 1px 24px;
+
 }

@@ -108,7 +108,11 @@ export default function Login() {
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
           {errorMessage}
         </Alert>
       </Snackbar>
@@ -118,7 +122,9 @@ export default function Login() {
           width: "980px",
           boxShadow: "0 14px 60px rgba(0, 0, 0, 0.06)",
           borderRadius: "10px",
-          backgroundImage: `url(${showPassword ? gatoOjosCerrados : fondoLogin})`,
+          backgroundImage: `url(${
+            showPassword ? gatoOjosCerrados : fondoLogin
+          })`,
           backgroundSize: "cover",
           minHeight: "300px",
         }}
@@ -128,12 +134,19 @@ export default function Login() {
         <Grid item xs={6} sx={{ p: 4.5, mt: 9 }}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Typography variant="h4" component="h1" gutterBottom color={"primary"}>
+              <Typography
+                variant="h4"
+                component="h1"
+                gutterBottom
+                color={"primary"}
+              >
                 Iniciar Sesión
               </Typography>
             </Grid>
             {error.userName ||
-              (error.password && <Alert severity="error">{errorMessage}</Alert>)}
+              (error.password && (
+                <Alert severity="error">{errorMessage}</Alert>
+              ))}
             <Grid item xs={12}>
               <TextField
                 label="Correo Electrónico"
@@ -152,6 +165,11 @@ export default function Login() {
                 error={error.dni}
                 fullWidth
                 margin="normal"
+                inputProps={{
+                  inputMode: "numeric",
+                  pattern: "\\d{8}", // Cambiado a 8 dígitos
+                  maxLength: 8, // Ajustado a 8
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -181,13 +199,7 @@ export default function Login() {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox name="rememberMe" />}
-                label="Recuérdame"
-                sx={{ color: "black" }}
-              />
-            </Grid>
+            <Grid item xs={12}></Grid>
             <Grid item xs={12}>
               <Button
                 variant="contained"
@@ -201,10 +213,14 @@ export default function Login() {
             </Grid>
             <Grid item xs={12}>
               <Box display="flex" justifyContent="space-between" sx={{ mt: 1 }}>
-                <Typography variant="body2">
-                  ¿Aún no tienes cuenta?
-                </Typography>
-                <Link href="/signUp" underline="hover">
+                <Typography variant="body2" sx={{color:"black"}}>¿Aún no tienes cuenta?</Typography>
+                <Link
+                  href="/signUp"
+                  underline="hover"
+                  sx={{
+                    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+                  }}
+                >
                   Regístrate aquí
                 </Link>
               </Box>

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 import './gastos.css';
 import fondoGastos from '../../assets/fondoGastos.svg';
+import Bubble from "../Calculadora"
 
 export default function Gastos() {
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -125,8 +126,7 @@ export default function Gastos() {
         if (text) {
           const data = JSON.parse(text);
           const message =
-            `Información de la transacción
-            Fecha del pago: ${data.fechaPago} 
+            `     Fecha del Pago: ${data.fechaPago} 
             Moneda: ${data.currency} 
             CBU destino: ${data.destino} 
             Monto: $${cleanedAmount} 
@@ -268,30 +268,32 @@ export default function Gastos() {
         </Button>
       </Box>
 
-      <Dialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
-        PaperProps={{
-          style: {
-            padding: '20px',
-            borderRadius: '15px',
-            backgroundColor: '#f5f5f5',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-            border: '1px solid #ccc'
-          }
-        }}
-      >
+    <Dialog
+  open={dialogOpen}
+  onClose={handleDialogClose}
+  PaperProps={{
+    style: {
+      padding: '20px',
+      borderRadius: '30px',
+      backgroundColor: '#f5f5f5',  // Fondo claro
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',  // Sombra suave
+      border: '1px solid #ccc'  // Borde suave
+    }
+  }}
+>
         <DialogTitle>
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" justifyContent="center">
             {dialogContent.icon}
-            <Typography variant="h6" component="span" style={{ fontWeight: 'bold', marginLeft: 8, fontSize: '1.5rem' }}>
+            <Typography variant="h6" component="span" style={{ fontWeight: 'bold', marginLeft: 8, fontSize: '1.5rem', backgroundColor:"#9fc2f6",borderRadius:15,color:"#FFFFFF",width:"auto",padding:10}}>
               {dialogContent.title}
             </Typography>
           </Box>
         </DialogTitle>
-        <DialogContent>
-          <Typography style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap', textAlign: 'left', fontSize: '1.3rem' }}>
+        <DialogContent className="dialog-content">
+          <Typography style={{whiteSpace: 'pre-wrap',fontSize: '1.3rem',fontWeight: 'bold' }}>
+            <Box className="popup-detalle-transferencia">
             {dialogContent.message}
+            </Box>
           </Typography>
         </DialogContent>
         <DialogActions style={{ justifyContent: 'right' }}>
@@ -300,6 +302,7 @@ export default function Gastos() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Bubble/>
     </section>
   );
 }

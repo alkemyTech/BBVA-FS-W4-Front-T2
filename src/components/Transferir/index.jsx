@@ -22,6 +22,9 @@ import IngresarCBU from "./IngresarCBU";
 import IngresarMonto from "./IngresarMonto";
 import ConfirmarTransferencia from "./ConfirmarTransferencia";
 import TransferenciaExitosa from "./TransferenciaExitosa";
+import Bubble from "../Calculadora"
+import "./transferir.css"
+import fondo from "../../assets/fondoSeleccDestino.svg"
 
 const Transferir = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -36,10 +39,10 @@ const Transferir = () => {
   const [error, setError] = useState("");
   const [openSaveContactDialog, setOpenSaveContactDialog] = useState(false);
   const [newContactName, setNewContactName] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Estado de carga
 
   const account = useSelector((state) => state.account);
   const arsAccount = account.accounts.find((acc) => acc.currency === "ARS");
-
 
   const handleSelectContact = async (contact) => {
     setTransferData({ ...transferData, cbu: contact.cbu });
@@ -167,6 +170,7 @@ const Transferir = () => {
   };
 
   const handleConfirm = async () => {
+    setIsLoading(true); // Activar estado de carga
     try {
       const accountId = arsAccount.id;
       const newToken = await updateTokenForAccount(accountId);
@@ -196,6 +200,8 @@ const Transferir = () => {
       }
     } catch (error) {
       setError("Error al realizar la transferencia. Intente nuevamente.");
+    } finally {
+      setIsLoading(false); // Desactivar estado de carga
     }
   };
 
@@ -246,7 +252,7 @@ const Transferir = () => {
   ];
 
   return (
-    <Box sx={{ display: "grid", placeItems: "center" }}>
+    <Box sx={{ display: "grid", placeItems: "center"}}>
       <Card
         sx={{
           width: "1200px",
@@ -254,6 +260,7 @@ const Transferir = () => {
           justifyContent: "center",
           alignItems: "center",
           color: "#1565c0",
+          backgroundImage: `url(${fondo})`
         }}
       >
         <CardContent>
@@ -309,16 +316,16 @@ const Transferir = () => {
                 transferData={transferData}
                 handleBack={handleBack}
                 handleConfirm={handleConfirm}
+                isLoading={isLoading} // Pasar estado de carga
               />
             )}
             {activeStep === 4 && (
               <TransferenciaExitosa handleReset={handleReset} />
             )}
           </Box>
-         
-          
         </CardContent>
       </Card>
+      <Bubble/>
     </Box>
   );
 };

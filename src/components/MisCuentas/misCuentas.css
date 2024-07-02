@@ -1,104 +1,61 @@
-.card {
-  min-height: 25vh;
-  flex: 1 1 auto;
-  border-radius: 10% !important;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
-  box-shadow: 3px 10px 8px rgba(0, 0, 0, 0.3); /* Sombra suave */
-  width: 100%; /* Ajusta el ancho para que las tarjetas se alineen correctamente */
+.box-general{
+  background-color: rgb(255, 255, 255);
+  width: 550px;
+  border-radius: 12px;
+  font-family: roboto;
+  background-image: url(/src/assets/fondoMisCuentas.svg);
 }
 
-.status-card-inner {
+.titulo-cuentas{
+  color: #1E6FBA;
+  padding-top: 20px;
+  font-size: 24px;
+}
+
+.linea-azul{
+  color: #1E6FBA;
+  max-width: 126px;
+  height: 0;
+  margin: auto;
+  margin-top: 4px;
+  border-color: #1565c0;
+  margin-bottom: 26px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 25vh;
-  padding: 30px;
 }
 
-.status-card-bg-blue {
-  background: -webkit-gradient(
-    linear,
-    right top,
-    left top,
-    from(#7beafe),
-    to(#1c8cfa)
-  );
-  background: linear-gradient(270deg, #7beafe, #1c8cfa);
-  color: #fff;
+.box-de-cuentas{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding-bottom: 30px;
 }
 
-.status-card-bg-green {
-  background: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    from(#3adf9e),
-    to(#b3fb5b)
-  );
-  background: linear-gradient(90deg, #3adf9e, #b3fb5b);
-  color: #fff;
+.box-cuenta{
+  color: #1E6FBA;
+  background-color:#D8E4EF;
+  border-radius: 15px;
+  padding: 0em 2em 1em;
 }
 
-.status-card-bg-read {
-  background: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    from(#fc516a),
-    to(#ff7e76)
-  );
-  background: linear-gradient(90deg, #fc516a, #ff7e76);
-  color: #fff;
+.moneda-cuenta{
+  font-size: 16px;
+  margin: 5px 8px;
 }
 
-.table-container {
-  min-height: auto;
-  max-height: 40vh;
-  overflow-y: auto;
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 3px 10px 8px rgba(0, 0, 0, 0.3); /* Sombra suave */
+.tipo-cuenta{
+  margin:0px;
+  font-size: 24px;
+  margin-bottom: 5px;
 }
 
-.table {
-  width: 100%;
-  background: rgba(74, 144, 226, 0.9); /* Fondo semitransparente más claro */
-  border-collapse: collapse;
-  border-radius: 8px; /* Bordes redondeados */
-  overflow: hidden; /* Para asegurar que los bordes redondeados funcionen */
+.balance-cuenta{
+  margin: 0px;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
-.table th,
-.table td {
-  color: #ffffff; /* Color blanco para texto */
-  font-size: 1rem; /* Tamaño de fuente más consistente */
-  text-align: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
-  padding: 12px; /* Espaciado interno */
-}
-
-.table th {
-  background-color: rgba(7, 48, 105, 0.9); /* Fondo del encabezado, más claro que antes */
-}
-
-.table td {
-  background-color: rgba(74, 144, 226, 0.9); /* Fondo de las celdas */
-  border-bottom: 1px solid rgba(65, 114, 184, 0.9); /* Línea divisoria entre filas */
-}
-
-.table tr:nth-child(even) td {
-  background-color: rgba(65, 122, 200, 0.9); /* Alterna el color de las filas */
-}
-
-.table tr:hover td {
-  background-color: rgba(58, 104, 169, 0.9); /* Color de la fila al pasar el ratón por encima */
-}
-
-.HomeContainer {
-  background-color: #f8f8f8; 
-  border-radius: 12px; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  padding: 20px;
-  max-width: 1200px;
-  width: 90%; 
-  margin: 20px auto; 
+.cbu-cuenta{
+  font-size: 12px;
+  margin:0px;
+  color: rgb(60, 77, 231);
 }

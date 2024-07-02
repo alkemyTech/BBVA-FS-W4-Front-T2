@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -24,11 +24,14 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAccounts } from "../../Redux/slice/accountSlice";
+import Checkbox from "@mui/material/Checkbox";
+
 import "./fixedTerm.css";
 
-
+import Bubble from "../Calculadora";
 
 export default function PlazoFijoSimulado() {
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const dispatch = useDispatch();
   const accounts = useSelector((state) => state.account.accounts);
   const status = useSelector((state) => state.account.status);
@@ -44,8 +47,18 @@ export default function PlazoFijoSimulado() {
 
   function obtenerNombreDelMes(numeroMes) {
     const nombresMeses = [
-      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
     ];
     if (numeroMes < 1 || numeroMes > 12) {
       return "Número de mes inválido";
@@ -56,34 +69,41 @@ export default function PlazoFijoSimulado() {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  const [cuenta, setCuenta] = useState("");
+  const [cuenta, setCuenta] = useState();
   const [monto, setMonto] = useState("");
   const [fechaInicial, setFechaInicial] = useState(dayjs());
   const [dias, setDias] = useState(30);
   const [errorMonto, setErrorMonto] = useState(false);
+  const [errorDias, setErrorDias] = useState(false);
   const [simulationResult, setSimulationResult] = useState(null);
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
 
   const handleCuenta = async (event) => {
     const value = event.target.value;
     setCuenta(value);
-  
+
     try {
-      const response = await fetch(`http://localhost:8080/accounts/select/${value}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-  
+      const response = await fetch(
+        `http://localhost:8080/accounts/select/${value}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
       if (response.ok) {
-        const updatedToken = response.headers.get('Authorization').split(' ')[1]; // Obtener el nuevo token del header
-        localStorage.setItem('token', updatedToken); // Guardar el nuevo token en localStorage
+        const updatedToken = response.headers
+          .get("Authorization")
+          .split(" ")[1]; // Obtener el nuevo token del header
+        localStorage.setItem("token", updatedToken); // Guardar el nuevo token en localStorage
       } else {
-        console.error('Error al actualizar el token:', response.statusText);
+        console.error("Error al actualizar el token:", response.statusText);
       }
     } catch (error) {
-      console.error('Error al actualizar el token:', error);
+      console.error("Error al actualizar el token:", error);
     }
   };
 
@@ -103,7 +123,25 @@ export default function PlazoFijoSimulado() {
   };
 
   const handleFechaInicial = (event) => setFechaInicial(event.target.value);
-  const handleChangeDias = (event) => setDias(event.target.value);
+  const handleChangeDias = (event) => {
+    const value = event.target.value;
+    const numericValue = parseInt(value, 10);
+
+    if (value === "") {
+      setDias(""); // Permitir que el campo esté vacío temporalmente
+      setErrorDias(true); // Mostrar error si el campo está vacío
+    } else if (!isNaN(numericValue)) {
+      setDias(numericValue); // Actualizar el estado con el valor numérico
+      setErrorDias(numericValue < 30); // Validar si los días son menos de 30
+    }
+  };
+
+  const handleBlurDias = () => {
+    if (dias === "") {
+      setDias(30); // Establecer el valor predeterminado si el campo está vacío al perder el foco
+      setErrorDias(false); // Limpiar el error si se establece el valor predeterminado
+    }
+  };
 
   const transformaFecha = (fecha) => {
     const { $M } = fecha;
@@ -111,12 +149,12 @@ export default function PlazoFijoSimulado() {
     let mes = ($M + 1).toString();
     const año = fecha.year();
 
-    if(mes<10){
-      mes = '0' + mes;
+    if (mes < 10) {
+      mes = "0" + mes;
     }
 
-    if(dia<10){
-      dia = '0' + dia;
+    if (dia < 10) {
+      dia = "0" + dia;
     }
 
     return `${dia}/${mes}/${año}`;
@@ -124,6 +162,7 @@ export default function PlazoFijoSimulado() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const montoNumber = parseInt(monto.replace(/\./g, ""), 10);
     if (!montoNumber || montoNumber < 500) {
       setErrorMonto(true);
@@ -134,13 +173,14 @@ export default function PlazoFijoSimulado() {
     const closingDateCal = fechaInicial.add(dias, "day");
     const closingDate = transformaFecha(closingDateCal);
 
-    const montoSinPuntos = monto.replace(/\./g, '');
+    const montoSinPuntos = monto.replace(/\./g, "");
     const invertedAmount = parseFloat(montoSinPuntos);
-    
+
     const formData = {
       invertedAmount,
       creationDate,
       closingDate,
+      accountId: cuenta, // Incluye la cuenta seleccionada en formData
     };
 
     try {
@@ -148,7 +188,7 @@ export default function PlazoFijoSimulado() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(formData),
       });
@@ -165,15 +205,12 @@ export default function PlazoFijoSimulado() {
       console.error("Error al simular plazo fijo:", error);
     }
   };
-
-
   const handleCreate = async () => {
-
     const creationDate = transformaFecha(fechaInicial);
     const closingDateCal = fechaInicial.add(dias, "day");
     const closingDate = transformaFecha(closingDateCal);
 
-    const montoSinPuntos = monto.replace(/\./g, '');
+    const montoSinPuntos = monto.replace(/\./g, "");
     const invertedAmount = parseFloat(montoSinPuntos);
 
     const formData = {
@@ -182,13 +219,12 @@ export default function PlazoFijoSimulado() {
       closingDate,
     };
 
-
     try {
       const response = await fetch("http://localhost:8080/fixedTerm", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(formData),
       });
@@ -198,7 +234,7 @@ export default function PlazoFijoSimulado() {
         setSimulationResult(data);
         console.log("Plazo fijo creado:", data);
         setOpen(false);
-        navigate('/home');
+        navigate("/home");
       } else {
         console.error("Error al crear plazo fijo:", response.statusText);
       }
@@ -207,11 +243,45 @@ export default function PlazoFijoSimulado() {
     }
   };
 
+  const handleAceptarTerminos = (event) => {
+    setAceptaTerminos(event.target.checked);
+  };
+
   const CustomButton = styled(Button)({
     backgroundColor: "#1565C0",
     color: "white",
     width: 216,
     height: 56,
+    "&:hover": {
+      backgroundColor: "#1565C0",
+      border: "3px solid #46A044",
+    },
+    "&:focus": {
+      backgroundColor: "#1565C0",
+      outline: "none",
+    },
+  });
+
+  const CustomButtonSecundario = styled(Button)({
+    backgroundColor: "#2CABF3",
+    color: "white",
+    width: 150,
+    height: 40,
+    "&:hover": {
+      backgroundColor: "#2CABF3",
+      border: "3px solid #2CABF3",
+    },
+    "&:focus": {
+      backgroundColor: "#2CABF3",
+      outline: "none",
+    },
+  });
+
+  const CustomButtonCrear = styled(Button)({
+    backgroundColor: "#1565C0",
+    color: "white",
+    width: 150,
+    height: 40,
     "&:hover": {
       backgroundColor: "#1565C0",
       border: "3px solid #46A044",
@@ -234,13 +304,20 @@ export default function PlazoFijoSimulado() {
       <hr className="gray-line-top" />
 
       <article className="titulos">
-        <p className="titulo-secundario cuenta">Cuentas</p>
+        <p className="titulo-secundario cuenta">Cuenta Origen</p>
         <p className="titulo-secundario montoInvertir">Monto a invertir</p>
         <p className="titulo-secundario fechaInicio">Fecha Inicio Plazo Fijo</p>
         <p className="titulo-secundario diasInvertir">Días a invertir</p>
+        <p className="titulo-secundario"></p>
       </article>
 
-      <Box component="form" noValidate autoComplete="off" id="box-secundario" onSubmit={handleSubmit}>
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        id="box-secundario"
+        onSubmit={handleSubmit}
+      >
         {/* Cuentas */}
         <div>
           <FormControl
@@ -259,12 +336,20 @@ export default function PlazoFijoSimulado() {
           >
             <Select value={cuenta} onChange={handleCuenta}>
               {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
-              {status === "succeeded" && accounts.map((account) => (
-                <MenuItem key={account.id} value={account.id}>
-                  {account.accountType + " " + account.currency}
-                </MenuItem>
-              ))}
-              {status === "failed" && <MenuItem>Error al cargar cuentas</MenuItem>}
+              {status === "succeeded" &&
+                accounts.map((account) => (
+                  <MenuItem key={account.id} value={account.id}>
+                    {account.accountType === "CAJA_AHORRO"
+                      ? "Caja de Ahorro"
+                      : account.accountType === "CUENTA_CORRIENTE"
+                      ? "Cuenta Corriente"
+                      : account.accountType}{" "}
+                    {account.currency}
+                  </MenuItem>
+                ))}
+              {status === "failed" && (
+                <MenuItem>Error al cargar cuentas</MenuItem>
+              )}
             </Select>
           </FormControl>
         </div>
@@ -281,25 +366,38 @@ export default function PlazoFijoSimulado() {
               marginBottom: 1,
               "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: errorMonto ? "red" : "transparent" },
-                "&:hover fieldset": { borderColor: errorMonto ? "red" : "transparent" },
-                "&.Mui-focused fieldset": { borderColor: errorMonto ? "red" : "#0D99FF" },
+                "& fieldset": {
+                  borderColor: errorMonto ? "red" : "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: errorMonto ? "red" : "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: errorMonto ? "red" : "#0D99FF",
+                },
               },
             }}
             InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
             }}
             value={monto}
             onChange={handleChangeMonto}
             error={errorMonto}
             helperText={
-              errorMonto ? "El monto ingresado tiene que ser mayor o igual a 500" : ""
+              errorMonto
+                ? "El monto ingresado tiene que ser mayor o igual a 500"
+                : ""
             }
           />
         </div>
 
         {/* Calendario de Fecha de inicio */}
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"en-gb"}>
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+          adapterLocale={"en-gb"}
+        >
           <Stack
             spacing={3}
             sx={{
@@ -343,45 +441,118 @@ export default function PlazoFijoSimulado() {
           ></TextField>
         </div>
 
+        {/* Terminos y Condiciones */}
+
         {/* Boton simular */}
         <div>
-          <CustomButton variant="outlined" onClick={handleSubmit}>
+          <CustomButton
+            variant="outlined"
+            onClick={handleSubmit}
+            disabled={!cuenta || dias < 30}
+          >
             Simular <StyledArrowRightIcon />
           </CustomButton>
+
           <Dialog
             open={open}
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Resumen del Plazo Fijo"}</DialogTitle>
-            <DialogContent>
+            <DialogTitle id="alert-dialog-title">
+              <p className="titulo-resumen-plazo-fijo">
+                Resumen del Plazo Fijo
+              </p>
+            </DialogTitle>
+            <DialogContent className="box-popup">
               <DialogContentText id="alert-dialog-description">
                 {simulationResult && (
-                  <>
-                    <p>Capital Invertido: {simulationResult.invertedAmount}</p>
-                    <p>Intereses Ganados: {simulationResult.gainedInterest}</p>
-                    <p>Taza de interes: 0.2%</p>
-                    <p>Plazo: {fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month() + 1)} - {simulationResult.closingDate.split("/")[0]} de {obtenerNombreDelMes(parseInt(simulationResult.closingDate.split("/")[1],10))}</p>
-                    <p>{dias} días</p>
-                  </>
+                  <span className="all-popup-box">
+                    <article className="popup-text-box">
+                      <span className="popup-text">
+                        <p>Capital Invertido:</p>
+                        <p>
+                          ${" "}
+                          {new Intl.NumberFormat("de-DE").format(
+                            simulationResult.invertedAmount
+                          )}
+                        </p>
+                      </span>
+                      <span className="popup-text">
+                        <p>Intereses Ganados:</p>
+                        <p>
+                          ${" "}
+                          {parseFloat(simulationResult.gainedInterest)
+                            .toFixed(2)
+                            .replace(".00", "")
+                            .replace(".", ",")
+                            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
+                        </p>
+                      </span>
+                      <span className="popup-text">
+                        <p>Taza de interes:</p>
+                        <p>0,2%</p>
+                      </span>
+                    </article>
+
+                    <span className="popup-plazo-box">
+                      <p>{dias} días</p>
+                      <p id="popup-plazo-meses">
+                        {fechaInicial.date()} de{" "}
+                        {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
+                        {simulationResult.closingDate.split("/")[0]} de{" "}
+                        {obtenerNombreDelMes(
+                          parseInt(
+                            simulationResult.closingDate.split("/")[1],
+                            10
+                          )
+                        )}
+                      </p>
+                    </span>
+                  </span>
                 )}
               </DialogContentText>
             </DialogContent>
-            <DialogActions>
-              <CustomButton onClick={handleClose}>Cancelar</CustomButton>
-              <CustomButton onClick={handleCreate} autoFocus>
-                Crear
-              </CustomButton>
+            <DialogActions className="dialog-actions-box">
+              <div className="popup-botones">
+                <hr className="ayuda" />
+
+                <span className="terminos-y-condiciones">
+                  <p>
+                    <Checkbox
+                      checked={aceptaTerminos}
+                      onChange={handleAceptarTerminos}
+                      inputProps={label.inputProps}
+                    />
+                    Aceptar términos y condiciones
+                  </p>
+                </span>
+
+                <CustomButtonSecundario onClick={handleClose}>
+                  Cancelar
+                </CustomButtonSecundario>
+
+                <CustomButtonCrear
+                  onClick={handleCreate}
+                  autoFocus
+                  disabled={!aceptaTerminos}
+                >
+                  Crear
+                </CustomButtonCrear>
+              </div>
             </DialogActions>
           </Dialog>
         </div>
       </Box>
+
       <p className="aviso">
-        Si la fecha de vencimiento cae un día no hábil, la misma se pasará{" "}
-        <br /> al primer día hábil siguiente.
+        No olvide que los plazos fijos tienen un plazo minimo de 30 días <br />
+        Terminos y Condiciones: No se puede mover este dinero hasta que no
+        cumpla la fecha estipulada
       </p>
       <hr className="gray-line-bottom" />
+
+      <Bubble />
     </section>
   );
 }
