@@ -24,13 +24,14 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAccounts } from "../../Redux/slice/accountSlice";
-import Checkbox from '@mui/material/Checkbox';
+import Checkbox from "@mui/material/Checkbox";
+
 import "./fixedTerm.css";
 
 import Bubble from "../Calculadora";
 
 export default function PlazoFijoSimulado() {
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const dispatch = useDispatch();
   const accounts = useSelector((state) => state.account.accounts);
   const status = useSelector((state) => state.account.status);
@@ -68,15 +69,14 @@ export default function PlazoFijoSimulado() {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  const defaultAccount = accounts.length > 0 ? accounts[0].id : "";
-const [cuenta, setCuenta] = useState(defaultAccount);
+  const [cuenta, setCuenta] = useState();
   const [monto, setMonto] = useState("");
   const [fechaInicial, setFechaInicial] = useState(dayjs());
   const [dias, setDias] = useState(30);
   const [errorMonto, setErrorMonto] = useState(false);
   const [errorDias, setErrorDias] = useState(false);
   const [simulationResult, setSimulationResult] = useState(null);
-
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
 
   const handleCuenta = async (event) => {
     const value = event.target.value;
@@ -124,14 +124,22 @@ const [cuenta, setCuenta] = useState(defaultAccount);
 
   const handleFechaInicial = (event) => setFechaInicial(event.target.value);
   const handleChangeDias = (event) => {
-    const value = parseInt(event.target.value, 10);
-    setDias(value); // Actualiza el estado de días
-  
-    // Validación: muestra error si el número de días es menor que 30
-    if (value < 30) {
-      setErrorDias(true);
-    } else {
-      setErrorDias(false);
+    const value = event.target.value;
+    const numericValue = parseInt(value, 10);
+
+    if (value === "") {
+      setDias(""); // Permitir que el campo esté vacío temporalmente
+      setErrorDias(true); // Mostrar error si el campo está vacío
+    } else if (!isNaN(numericValue)) {
+      setDias(numericValue); // Actualizar el estado con el valor numérico
+      setErrorDias(numericValue < 30); // Validar si los días son menos de 30
+    }
+  };
+
+  const handleBlurDias = () => {
+    if (dias === "") {
+      setDias(30); // Establecer el valor predeterminado si el campo está vacío al perder el foco
+      setErrorDias(false); // Limpiar el error si se establece el valor predeterminado
     }
   };
 
@@ -154,27 +162,27 @@ const [cuenta, setCuenta] = useState(defaultAccount);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const montoNumber = parseInt(monto.replace(/\./g, ""), 10);
     if (!montoNumber || montoNumber < 500) {
       setErrorMonto(true);
       return;
     }
-  
+
     const creationDate = transformaFecha(fechaInicial);
     const closingDateCal = fechaInicial.add(dias, "day");
     const closingDate = transformaFecha(closingDateCal);
-  
+
     const montoSinPuntos = monto.replace(/\./g, "");
     const invertedAmount = parseFloat(montoSinPuntos);
-  
+
     const formData = {
       invertedAmount,
       creationDate,
       closingDate,
       accountId: cuenta, // Incluye la cuenta seleccionada en formData
     };
-  
+
     try {
       const response = await fetch("http://localhost:8080/fixedTerm/simulate", {
         method: "POST",
@@ -184,7 +192,7 @@ const [cuenta, setCuenta] = useState(defaultAccount);
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         setSimulationResult(data);
@@ -235,6 +243,10 @@ const [cuenta, setCuenta] = useState(defaultAccount);
     }
   };
 
+  const handleAceptarTerminos = (event) => {
+    setAceptaTerminos(event.target.checked);
+  };
+
   const CustomButton = styled(Button)({
     backgroundColor: "#1565C0",
     color: "white",
@@ -253,14 +265,29 @@ const [cuenta, setCuenta] = useState(defaultAccount);
   const CustomButtonSecundario = styled(Button)({
     backgroundColor: "#2CABF3",
     color: "white",
-    width: 216,
-    height: 56,
+    width: 150,
+    height: 40,
     "&:hover": {
       backgroundColor: "#2CABF3",
       border: "3px solid #2CABF3",
     },
     "&:focus": {
       backgroundColor: "#2CABF3",
+      outline: "none",
+    },
+  });
+
+  const CustomButtonCrear = styled(Button)({
+    backgroundColor: "#1565C0",
+    color: "white",
+    width: 150,
+    height: 40,
+    "&:hover": {
+      backgroundColor: "#1565C0",
+      border: "3px solid #46A044",
+    },
+    "&:focus": {
+      backgroundColor: "#1565C0",
       outline: "none",
     },
   });
@@ -277,7 +304,7 @@ const [cuenta, setCuenta] = useState(defaultAccount);
       <hr className="gray-line-top" />
 
       <article className="titulos">
-        <p className="titulo-secundario cuenta">Cuentas</p>
+        <p className="titulo-secundario cuenta">Cuenta Origen</p>
         <p className="titulo-secundario montoInvertir">Monto a invertir</p>
         <p className="titulo-secundario fechaInicio">Fecha Inicio Plazo Fijo</p>
         <p className="titulo-secundario diasInvertir">Días a invertir</p>
@@ -291,40 +318,41 @@ const [cuenta, setCuenta] = useState(defaultAccount);
         id="box-secundario"
         onSubmit={handleSubmit}
       >
-       {/* Cuentas */}
-<div>
-  <FormControl
-    sx={{
-      m: 1,
-      minWidth: 216,
-      minHeight: 48,
-      "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
-      "& .MuiOutlinedInput-root": {
-        "& fieldset": { borderColor: "transparent" },
-        "&:hover fieldset": { borderColor: "transparent" },
-        "&.Mui-focused fieldset": { borderColor: "#0D99FF" },
-      },
-    }}
-    className="white-select"
-  >
-    <Select value={cuenta} onChange={handleCuenta}>
-      {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
-      {status === "succeeded" &&
-        accounts.map((account) => (
-          <MenuItem key={account.id} value={account.id}>
-            {account.accountType === "CAJA_AHORRO"
-              ? "Caja de Ahorro"
-              : account.accountType === "CUENTA_CORRIENTE"
-              ? "Cuenta Corriente"
-              : account.accountType}{" "}
-            {account.currency}
-          </MenuItem>
-        ))}
-      {status === "failed" && <MenuItem>Error al cargar cuentas</MenuItem>}
-      
-    </Select>
-  </FormControl>
-</div>
+        {/* Cuentas */}
+        <div>
+          <FormControl
+            sx={{
+              m: 1,
+              minWidth: 216,
+              minHeight: 48,
+              "& .MuiInputBase-root": { backgroundColor: "#DBF0FF" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "transparent" },
+                "&:hover fieldset": { borderColor: "transparent" },
+                "&.Mui-focused fieldset": { borderColor: "#0D99FF" },
+              },
+            }}
+            className="white-select"
+          >
+            <Select value={cuenta} onChange={handleCuenta}>
+              {status === "loading" && <MenuItem>Cargando cuentas...</MenuItem>}
+              {status === "succeeded" &&
+                accounts.map((account) => (
+                  <MenuItem key={account.id} value={account.id}>
+                    {account.accountType === "CAJA_AHORRO"
+                      ? "Caja de Ahorro"
+                      : account.accountType === "CUENTA_CORRIENTE"
+                      ? "Cuenta Corriente"
+                      : account.accountType}{" "}
+                    {account.currency}
+                  </MenuItem>
+                ))}
+              {status === "failed" && (
+                <MenuItem>Error al cargar cuentas</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+        </div>
 
         {/* Monto a invertir */}
         <div>
@@ -410,80 +438,117 @@ const [cuenta, setCuenta] = useState(defaultAccount);
               },
             }}
             className="white-select"
-          >
-            
-
-          </TextField>
-          
+          ></TextField>
         </div>
 
         {/* Terminos y Condiciones */}
 
         {/* Boton simular */}
         <div>
-          <CustomButton variant="outlined" onClick={handleSubmit}>
+          <CustomButton
+            variant="outlined"
+            onClick={handleSubmit}
+            disabled={!cuenta || dias < 30}
+          >
             Simular <StyledArrowRightIcon />
           </CustomButton>
-          <Dialog
-  open={open}
-  onClose={handleClose}
-  aria-labelledby="alert-dialog-title"
-  aria-describedby="alert-dialog-description"
->
-  <DialogTitle id="alert-dialog-title">
-    <p className="titulo-resumen-plazo-fijo">Resumen del Plazo Fijo</p>
-  </DialogTitle>
-  <DialogContent className="box-popup">
-    <DialogContentText id="alert-dialog-description">
-      {simulationResult && (
-        <span className="all-popup-box">
-          <article className="popup-text-box">
-            <span className="popup-text">
-              <p>Capital Invertido:</p>
-              <p>
-                $ {new Intl.NumberFormat('de-DE').format(simulationResult.invertedAmount)}
-              </p>
-            </span>
-            <span className="popup-text">
-              <p>Intereses Ganados:</p>
-              <p>
-                $ {parseFloat(simulationResult.gainedInterest).toFixed(2).replace('.00', '').replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
-              </p>
-            </span>
-            <span className="popup-text">
-              <p>Taza de interes:</p>
-              <p>0,2%</p>
-            </span>
-          </article>
 
-          <span className="popup-plazo-box">
-            <p>{dias} días</p>
-            <p id="popup-plazo-meses">
-              {fechaInicial.date()} de {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
-              {simulationResult.closingDate.split("/")[0]} de{" "}
-              {obtenerNombreDelMes(parseInt(simulationResult.closingDate.split("/")[1], 10))}
-            </p>
-          </span>
-        </span>
-      )}
-    </DialogContentText>
-  </DialogContent>
-  <DialogActions>
-    <div className="popup-botones">
-      <CustomButtonSecundario onClick={handleClose}>Cancelar</CustomButtonSecundario>
-      <CustomButton onClick={handleCreate} autoFocus>
-        
-        Crear
-      </CustomButton>
-      
-    </div>
-  </DialogActions>
-</Dialog>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              <p className="titulo-resumen-plazo-fijo">
+                Resumen del Plazo Fijo
+              </p>
+            </DialogTitle>
+            <DialogContent className="box-popup">
+              <DialogContentText id="alert-dialog-description">
+                {simulationResult && (
+                  <span className="all-popup-box">
+                    <article className="popup-text-box">
+                      <span className="popup-text">
+                        <p>Capital Invertido:</p>
+                        <p>
+                          ${" "}
+                          {new Intl.NumberFormat("de-DE").format(
+                            simulationResult.invertedAmount
+                          )}
+                        </p>
+                      </span>
+                      <span className="popup-text">
+                        <p>Intereses Ganados:</p>
+                        <p>
+                          ${" "}
+                          {parseFloat(simulationResult.gainedInterest)
+                            .toFixed(2)
+                            .replace(".00", "")
+                            .replace(".", ",")
+                            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
+                        </p>
+                      </span>
+                      <span className="popup-text">
+                        <p>Taza de interes:</p>
+                        <p>0,2%</p>
+                      </span>
+                    </article>
+
+                    <span className="popup-plazo-box">
+                      <p>{dias} días</p>
+                      <p id="popup-plazo-meses">
+                        {fechaInicial.date()} de{" "}
+                        {obtenerNombreDelMes(fechaInicial.month() + 1)} -{" "}
+                        {simulationResult.closingDate.split("/")[0]} de{" "}
+                        {obtenerNombreDelMes(
+                          parseInt(
+                            simulationResult.closingDate.split("/")[1],
+                            10
+                          )
+                        )}
+                      </p>
+                    </span>
+                  </span>
+                )}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions className="dialog-actions-box">
+              <div className="popup-botones">
+                <hr className="ayuda" />
+
+                <span className="terminos-y-condiciones">
+                  <p>
+                    <Checkbox
+                      checked={aceptaTerminos}
+                      onChange={handleAceptarTerminos}
+                      inputProps={label.inputProps}
+                    />
+                    Aceptar términos y condiciones
+                  </p>
+                </span>
+
+                <CustomButtonSecundario onClick={handleClose}>
+                  Cancelar
+                </CustomButtonSecundario>
+
+                <CustomButtonCrear
+                  onClick={handleCreate}
+                  autoFocus
+                  disabled={!aceptaTerminos}
+                >
+                  Crear
+                </CustomButtonCrear>
+              </div>
+            </DialogActions>
+          </Dialog>
         </div>
       </Box>
+
       <p className="aviso">
-        Si la fecha de vencimiento cae un día no hábil, la misma se pasará{" "}
-        <br /> al primer día hábil siguiente.
+        No olvide que los plazos fijos tienen un plazo minimo de 30 días <br />
+        Terminos y Condiciones: No se puede mover este dinero hasta que no
+        cumpla la fecha estipulada
       </p>
       <hr className="gray-line-bottom" />
 
