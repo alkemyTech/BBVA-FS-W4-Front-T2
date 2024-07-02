@@ -16,9 +16,10 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Define tres columnas iguales */
     gap: 20px; /* Espacio entre los elementos */
-
+    background-image: url(/src/assets/meow.svg);
 
 }
+
 
 .titulo{
     grid-column: span 2; /* Ocupa las tres columnas disponibles */
