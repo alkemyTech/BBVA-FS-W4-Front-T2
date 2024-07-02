@@ -22,3 +22,10 @@
       width: 100%;
     }
   }
+
+  .box-datos-transferencia{
+    display: flex;
+    flex-direction: column;
+    background-color: #D3E0EA;
+  }
+
